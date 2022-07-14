@@ -3,8 +3,12 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def naverApiKey = properties.getProperty('naver_api_key')
 android {
     compileSdk 32
 
@@ -16,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [NAVER_API_KEY: naverApiKey]
+        buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key"))
+//        buildConfigField "String", "NAVER_API_KEY", properties['naver_api_key']
     }
 
     buildTypes {
