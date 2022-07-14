@@ -9,6 +9,7 @@ import com.jae464.placememo.presentation.feed.FeedFragment
 import com.jae464.placememo.presentation.home.HomeFragment
 import com.jae464.placememo.presentation.mypage.MyPageFragment
 import com.jae464.placememo.presentation.settings.SettingsFragment
+import com.naver.maps.map.NaverMapSdk
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
