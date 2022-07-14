@@ -1,8 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def naverApiKey = properties.getProperty('naver_api_key')
 android {
     compileSdk 32
 
@@ -14,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [NAVER_API_KEY: naverApiKey]
+        buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key"))
+//        buildConfigField "String", "NAVER_API_KEY", properties['naver_api_key']
     }
 
     buildTypes {
@@ -29,9 +38,19 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        dataBinding true
+    }
+
 }
 
 dependencies {
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Naver Map API
+    implementation "com.naver.maps:map-sdk:$naver_map_version"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
