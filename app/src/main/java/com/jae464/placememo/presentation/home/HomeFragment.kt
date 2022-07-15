@@ -21,9 +21,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
 import com.jae464.placememo.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentHomeBinding
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +39,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // 권한 요청하기
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
@@ -51,20 +53,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.mapView.getMapAsync(this) // map 객체 가져오기
         super.onViewCreated(view, savedInstanceState)
+        binding.mapView.getMapAsync(this) // map 객체 가져오기
+        binding.currentLocationButton.isEnabled = true
+        initListener()
     }
 
     override fun onMapReady(map: NaverMap) {
         naverMap = map
-        println("MapReady")
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
         setUserLocation()
     }
 
     override fun onClick(p0: Overlay): Boolean {
-        TODO("Not yet implemented")
+        println(p0)
+        return true
+    }
+
+
+    private fun initListener() {
+        binding.currentLocationButton.setOnClickListener {
+            println("clicked")
+            naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(37.4140919,126.8803569)))
+        }
     }
 
     private fun setUserLocation() {
@@ -77,7 +89,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
         else {
-            // 현재 사용자 위치로 이동하기
+            // 사용자 위치 이동 버튼 활성화
+            binding.currentLocationButton.visibility = View.VISIBLE
         }
     }
 
