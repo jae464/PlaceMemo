@@ -10,7 +10,9 @@ import com.jae464.placememo.presentation.home.HomeFragment
 import com.jae464.placememo.presentation.mypage.MyPageFragment
 import com.jae464.placememo.presentation.settings.SettingsFragment
 import com.naver.maps.map.NaverMapSdk
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

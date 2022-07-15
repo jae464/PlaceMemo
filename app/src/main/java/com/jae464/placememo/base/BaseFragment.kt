@@ -14,6 +14,7 @@ abstract class BaseFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): 
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
