@@ -19,5 +19,14 @@ class HomeViewModel @Inject constructor(
     private val _clickedLocation: MutableLiveData<LatLng> by lazy { MutableLiveData<LatLng>() }
     val clickedLocation: LiveData<LatLng> = _clickedLocation
 
+    private val _isMapClicked = MutableLiveData(false)
+    val isMapClicked: LiveData<Boolean> = _isMapClicked
 
+    fun setMapCliekd() {
+        _isMapClicked.value = true
+    }
+
+    fun setMapUnclicked() {
+        _isMapClicked.value = false
+    }
 }

@@ -51,14 +51,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 showPermissionSnackBar(binding.root)
             }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.getMapAsync(this) // map 객체 가져오기
         binding.currentLocationButton.isEnabled = true
-//        initListener()
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -68,14 +66,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         currentMarker = Marker()
         setUserLocation()
         initListener()
+        initObserver()
     }
-
-    // Marker 클릭 시 실행되는 함수
-    override fun onClick(p0: Overlay): Boolean {
-        println(p0)
-        return true
-    }
-
 
     private fun initListener() {
         binding.currentLocationButton.setOnClickListener {
@@ -88,9 +80,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             currentMarker.map = null
             currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
             currentMarker.map = naverMap
+            viewmodel.setMapCliekd()
         }
 
+        currentMarker.setOnClickListener {
+            currentMarker.map = null
+            viewmodel.setMapUnclicked()
+            true
+        }
+    }
 
+    private fun initObserver() {
+        viewmodel.isMapClicked.observe(viewLifecycleOwner) {
+            println("isMapClicked Observer Activate")
+            binding.postButton.visibility = if (viewmodel.isMapClicked.value!!) View.VISIBLE else View.GONE
+        }
     }
 
     private fun setUserLocation() {
@@ -117,6 +121,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 startActivity(intent)
             }.show()
         }
+    }
+
+    override fun onClick(p0: Overlay): Boolean {
+        TODO("Not yet implemented")
     }
 
 }
