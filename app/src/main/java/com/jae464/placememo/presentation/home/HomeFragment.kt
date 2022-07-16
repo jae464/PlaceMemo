@@ -25,6 +25,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private val viewmodel: HomeViewModel by viewModels()
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var naverMap: NaverMap
+    private lateinit var currentMarker: Marker
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,16 +58,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.getMapAsync(this) // map 객체 가져오기
         binding.currentLocationButton.isEnabled = true
-        initListener()
+//        initListener()
     }
 
     override fun onMapReady(map: NaverMap) {
         naverMap = map
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
+        currentMarker = Marker()
         setUserLocation()
+        initListener()
     }
 
+    // Marker 클릭 시 실행되는 함수
     override fun onClick(p0: Overlay): Boolean {
         println(p0)
         return true
@@ -77,6 +82,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             println("clicked")
             naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(37.4140919,126.8803569)))
         }
+        // 일반 클릭 리스너. 마커 클릭시 실행되지 않는다.
+        naverMap.setOnMapClickListener { pointF, latLng ->
+            println("클린된 좌표 : ${latLng.latitude}, ${latLng.longitude} ")
+            currentMarker.map = null
+            currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
+            currentMarker.map = naverMap
+        }
+
+
     }
 
     private fun setUserLocation() {
