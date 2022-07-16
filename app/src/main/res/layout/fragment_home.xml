@@ -10,28 +10,41 @@
 
         <com.naver.maps.map.MapView
             android:id="@+id/mapView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="0dp"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/currentLocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="48dp"
+            android:backgroundTint="@color/white"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_my_location_24"
+            android:tint="@color/black"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:backgroundTint="@color/white"
-            android:tint="@color/black"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:src="@drawable/ic_baseline_my_location_24"
-            android:padding="12dp"
-            android:layout_marginBottom="48dp"
-            android:layout_marginLeft="12dp"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/postButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:layout_marginRight="12dp"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_baseline_add_24"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
