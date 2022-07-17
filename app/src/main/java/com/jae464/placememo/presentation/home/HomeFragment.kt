@@ -17,10 +17,18 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.jae464.placememo.MainActivity
 import com.jae464.placememo.R
 import com.jae464.placememo.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentHomeBinding
+import com.jae464.placememo.presentation.post.PostFragment
+import com.jae464.placememo.presentation.settings.SettingsFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
@@ -33,11 +41,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), OnMapReadyCallback, Overlay.OnClickListener {
 
-    private val viewmodel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var naverMap: NaverMap
     private lateinit var currentMarker: Marker
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +63,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.getMapAsync(this) // map 객체 가져오기
-        binding.currentLocationButton.isEnabled = true
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -80,20 +86,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             currentMarker.map = null
             currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
             currentMarker.map = naverMap
-            viewmodel.setMapCliekd()
+            viewModel.setMapCliekd()
         }
 
         currentMarker.setOnClickListener {
             currentMarker.map = null
-            viewmodel.setMapUnclicked()
+            viewModel.setMapUnclicked()
             true
+        }
+        binding.postButton.setOnClickListener {
+            // todo 업로드 페이지로 이동 (좌표 같이 넘겨줌)
+            findNavController().navigate(
+                R.id.action_homeFragment_to_postFragment
+            )
         }
     }
 
     private fun initObserver() {
-        viewmodel.isMapClicked.observe(viewLifecycleOwner) {
+        viewModel.isMapClicked.observe(viewLifecycleOwner) {
             println("isMapClicked Observer Activate")
-            binding.postButton.visibility = if (viewmodel.isMapClicked.value!!) View.VISIBLE else View.GONE
+            binding.postButton.visibility = if (viewModel.isMapClicked.value!!) View.VISIBLE else View.GONE
         }
     }
 
