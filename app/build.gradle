@@ -22,7 +22,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [NAVER_API_KEY: naverApiKey]
         buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key"))
-//        buildConfigField "String", "NAVER_API_KEY", properties['naver_api_key']
     }
 
     buildTypes {
@@ -51,6 +50,10 @@ dependencies {
 
     // Naver Map API
     implementation "com.naver.maps:map-sdk:$naver_map_version"
+
+    // Navigation JetPack
+    implementation "androidx.navigation:navigation-fragment-ktx:${nav_version}"
+    implementation "androidx.navigation:navigation-ui-ktx:${nav_version}"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
