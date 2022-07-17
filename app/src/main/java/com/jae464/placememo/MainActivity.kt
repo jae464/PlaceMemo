@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.jae464.placememo.databinding.ActivityMainBinding
 import com.jae464.placememo.presentation.feed.FeedFragment
 import com.jae464.placememo.presentation.home.HomeFragment
@@ -16,12 +20,18 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
+        replaceFragment(HomeFragment())
+        initNavigation()
+        initListener()
+    }
+
+    private fun initListener() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
@@ -43,13 +53,16 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        replaceFragment(HomeFragment())
+    }
+    private fun initNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
     }
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .apply {
-                replace(R.id.fragmentContainer, fragment)
+                replace(R.id.nav_host_fragment, fragment)
                 commit()
             }
     }
