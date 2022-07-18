@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         initNavigation()
     }
 
-
     private fun initNavigation() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
@@ -42,13 +41,5 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigationView.isVisible =
                 (arguments?.getBoolean("ShowBottomNavigationView", true) ?: true) == true
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .apply {
-                replace(R.id.nav_host_fragment, fragment)
-                commit()
-            }
     }
 }
