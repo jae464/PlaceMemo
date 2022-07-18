@@ -6,36 +6,22 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.jae464.placememo.MainActivity
 import com.jae464.placememo.R
-import com.jae464.placememo.base.BaseFragment
+import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentHomeBinding
-import com.jae464.placememo.presentation.post.PostFragment
-import com.jae464.placememo.presentation.settings.SettingsFragment
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
-import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -97,7 +83,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         binding.postButton.setOnClickListener {
             // todo 업로드 페이지로 이동 (좌표 같이 넘겨줌)
             findNavController().navigate(
-                R.id.action_homeFragment_to_postFragment
+                R.id.action_home_to_post
             )
         }
     }

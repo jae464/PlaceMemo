@@ -2,6 +2,7 @@ package com.jae464.placememo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -27,40 +28,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
-//        initNavigation()
-//        initListener()
-//        replaceFragment(HomeFragment())
+
         initNavigation()
-//        initListener()
     }
 
-//    private fun initListener() {
-//        binding.bottomNavigationView.setOnItemSelectedListener { item ->
-//            when(item.itemId) {
-//                R.id.home -> {
-//                    replaceFragment(HomeFragment())
-//                    true
-//                }
-//                R.id.feed -> {
-//                    replaceFragment(FeedFragment())
-//                    true
-//                }
-//                R.id.mypage -> {
-//                    replaceFragment(MyPageFragment())
-//                    true
-//                }
-//                R.id.settings -> {
-//                    replaceFragment(SettingsFragment())
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-//    }
+
     private fun initNavigation() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
         binding.bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener {_,_,arguments ->
+            // PostPage 에서는 BottomNavigationView 안보이기
+            binding.bottomNavigationView.isVisible =
+                (arguments?.getBoolean("ShowBottomNavigationView", true) ?: true) == true
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {
