@@ -10,8 +10,10 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
 import com.jae464.placememo.presentation.base.BaseFragment
@@ -82,8 +84,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
         binding.postButton.setOnClickListener {
             // todo 업로드 페이지로 이동 (좌표 같이 넘겨줌)
+            val bundle = Bundle().apply {
+                putDouble("latitude", currentMarker.position.latitude)
+                putDouble("longitude", currentMarker.position.longitude)
+            }
             findNavController().navigate(
-                R.id.action_home_to_post
+                R.id.action_home_to_post,
+                bundle
             )
         }
     }
@@ -126,3 +133,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
 }
+
+
