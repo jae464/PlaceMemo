@@ -88,6 +88,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 putDouble("latitude", currentMarker.position.latitude)
                 putDouble("longitude", currentMarker.position.longitude)
             }
+            viewModel.setMapUnclicked() // 페이지 이동 시 현재 마커 제거
             findNavController().navigate(
                 R.id.action_home_to_post,
                 bundle
