@@ -15,4 +15,5 @@ class MemoLocalDataSourceImpl @Inject constructor(
     override suspend fun saveMemo(memo: MemoEntity) {
         memoDao.insertMemo(memo)
     }
+
 }
