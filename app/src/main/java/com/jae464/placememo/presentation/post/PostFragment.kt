@@ -9,19 +9,23 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.jae464.placememo.R
+import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentPostBinding
+import com.jae464.placememo.domain.model.post.Memo
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private val viewModel: PostViewModel by viewModels()
-    private lateinit var location: LatLng
+    private var latitude by Delegates.notNull<Double>()
+    private var longitude by Delegates.notNull<Double>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val latitude = arguments?.getDouble("latitude")
-        val longitude = arguments?.getDouble("longitude")
+        latitude = arguments?.getDouble("latitude")!!
+        longitude = arguments?.getDouble("longitude")!!
         println("$latitude, $longitude")
         initAppBar()
     }
@@ -37,6 +41,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             when(it.itemId) {
                 R.id.save -> {
                     Toast.makeText(requireContext(),"저장버튼클릭", Toast.LENGTH_SHORT).show()
+                    val title = binding.titleEditText.text.toString()
+                    val content = binding.contentEditText.text.toString()
+                    val imageList = listOf<String>()
+                    viewModel.saveMemo(title, content, imageList, latitude, longitude)
                 }
             }
             true

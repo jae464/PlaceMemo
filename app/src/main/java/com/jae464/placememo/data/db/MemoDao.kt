@@ -5,13 +5,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jae464.placememo.data.model.*
+import com.jae464.placememo.domain.model.post.Memo
 
 @Dao
 interface MemoDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    suspend fun insertMemo(memo: MemoEntity)
 
-   @Query("SELECT * FROM memo WHERE id = :id")
+   @Query("SELECT * FROM memo WHERE _id = :id")
    suspend fun getMemo(id: Long): MemoEntity
 
 }
