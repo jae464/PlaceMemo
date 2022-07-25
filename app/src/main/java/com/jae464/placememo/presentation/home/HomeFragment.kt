@@ -36,6 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("HomeFragment onCreate")
         // 권한 요청하기
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
@@ -51,9 +52,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.getMapAsync(this) // map 객체 가져오기
+
+        // 모든 메모 가져오기 테스트
+        viewModel.getAllMemo()
+        println(viewModel.memoList.value)
     }
 
     override fun onMapReady(map: NaverMap) {
+        println("onMapReady")
         naverMap = map
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
@@ -61,6 +67,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         setUserLocation()
         initListener()
         initObserver()
+        naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(37.4140919,126.8803569)))
     }
 
     private fun initListener() {
@@ -98,8 +105,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     private fun initObserver() {
         viewModel.isMapClicked.observe(viewLifecycleOwner) {
-            println("isMapClicked Observer Activate")
+            println("isMapClicked Observer Activated")
             binding.postButton.visibility = if (viewModel.isMapClicked.value!!) View.VISIBLE else View.GONE
+        }
+
+        viewModel.memoList.observe(viewLifecycleOwner) {
+            println("memoList Observer Activated")
+            viewModel.memoList.value?.forEach {
+                println(it.title)
+                val marker = Marker()
+                marker.position = LatLng(it.latitude, it.longitude)
+                marker.map = naverMap
+            }
         }
     }
 
