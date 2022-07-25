@@ -12,7 +12,10 @@ interface MemoDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    suspend fun insertMemo(memo: MemoEntity)
 
-   @Query("SELECT * FROM memo WHERE _id = :id")
+   @Query("SELECT * FROM memo WHERE id = :id")
    suspend fun getMemo(id: Long): MemoEntity
+
+   @Query("SELECT * FROM memo")
+   suspend fun getAllMemo(): List<MemoEntity>
 
 }

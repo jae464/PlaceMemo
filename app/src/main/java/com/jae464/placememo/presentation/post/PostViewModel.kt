@@ -14,10 +14,9 @@ import javax.inject.Inject
 class PostViewModel @Inject constructor(
     private val repository: MemoRepository
 ) : ViewModel() {
-    fun saveMemo(title: String, content: String, imageUrlList: List<String>,
-                 latitude: Double, longitude: Double) {
+    fun saveMemo(memo: Memo) {
         viewModelScope.launch {
-            repository.saveMemo(title, content, imageUrlList, latitude, longitude)
+            repository.saveMemo(memo)
         }
     }
 }

@@ -36,7 +36,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         binding.postToolBar.title = "게시글 업로드"
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)
         binding.postToolBar.setOnMenuItemClickListener {
-
             // todo 게시글 저장
             when(it.itemId) {
                 R.id.save -> {
@@ -44,7 +43,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
                     val imageList = listOf<String>()
-                    viewModel.saveMemo(title, content, imageList, latitude, longitude)
+                    viewModel.saveMemo(Memo(title,content,imageList,latitude,longitude))
+
+                    // 업로드 후 메인페이지로 이동
+                    findNavController().popBackStack()
                 }
             }
             true
