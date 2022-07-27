@@ -17,6 +17,7 @@ fun memoToMemoEntity(memo: Memo): MemoEntity {
 
 fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
     return Memo(
+        memoEntity.id,
         memoEntity.title,
         memoEntity.content,
         memoEntity.imageUrlList,

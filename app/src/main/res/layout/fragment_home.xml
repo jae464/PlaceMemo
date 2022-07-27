@@ -5,6 +5,10 @@
 
     <data>
         <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.jae464.placememo.presentation.home.HomeViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,6 +52,30 @@
             android:layout_marginBottom="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!--  게시글 요약   -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomPostView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="20dp"
+            android:background="@color/black"
+            tools:visibility="visible"
+            tools:background="@color/black"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/titleTextView"
+                app:layout_constraintTop_toTopOf="@id/bottomPostView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.memo.title}"
+                tools:text="test"
+                android:textColor="@color/white"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

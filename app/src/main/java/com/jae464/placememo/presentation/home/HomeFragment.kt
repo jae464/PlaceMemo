@@ -24,6 +24,7 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -89,6 +90,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             viewModel.setMapUnclicked()
             true
         }
+
         binding.postButton.setOnClickListener {
             // todo 업로드 페이지로 이동 (좌표 같이 넘겨줌)
             val bundle = Bundle().apply {
@@ -111,12 +113,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         viewModel.memoList.observe(viewLifecycleOwner) {
             println("memoList Observer Activated")
-            viewModel.memoList.value?.forEach {
-                println(it.title)
+            viewModel.memoList.value?.forEach { memo ->
+                println(memo.title)
                 val marker = Marker()
-                marker.position = LatLng(it.latitude, it.longitude)
+                marker.position = LatLng(memo.latitude, memo.longitude)
                 marker.map = naverMap
+                marker.icon = MarkerIcons.RED
+                marker.setOnClickListener {
+                    println("Selected Marker Listener")
+//                    println(memo.title)
+                    viewModel.getMemo(memo.id)
+//                    binding.bottomPostView.visibility = View.VISIBLE
+                    true
+                }
             }
+        }
+
+        viewModel.memo.observe(viewLifecycleOwner) {
+            println("memo Observer Activated")
+            println(it.title)
+            if (binding.bottomPostView.visibility == View.VISIBLE) {
+                binding.bottomPostView.visibility = View.GONE
+                return@observe
+            }
+            binding.bottomPostView.visibility = View.VISIBLE
+            binding.titleTextView.text = viewModel.memo.value?.title
         }
     }
 

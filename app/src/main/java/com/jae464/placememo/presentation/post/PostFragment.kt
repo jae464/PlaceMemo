@@ -43,7 +43,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
                     val imageList = listOf<String>()
-                    viewModel.saveMemo(Memo(title,content,imageList,latitude,longitude))
+                    viewModel.saveMemo(Memo(0,title,content,imageList,latitude,longitude))
 
                     // 업로드 후 메인페이지로 이동
                     findNavController().popBackStack()
