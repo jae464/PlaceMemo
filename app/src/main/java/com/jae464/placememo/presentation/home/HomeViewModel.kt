@@ -18,14 +18,14 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
 
     // 클릭된 좌표
-    private val _clickedLocation: MutableLiveData<LatLng> by lazy { MutableLiveData<LatLng>() }
-    val clickedLocation: LiveData<LatLng> = _clickedLocation
-
     private val _memoList: MutableLiveData<List<Memo>> by lazy { MutableLiveData<List<Memo>>() }
     val memoList: LiveData<List<Memo>> = _memoList
 
     private val _isMapClicked = MutableLiveData(false)
     val isMapClicked: LiveData<Boolean> = _isMapClicked
+
+    private val _memo = MutableLiveData<Memo>()
+    val memo: LiveData<Memo> get() = _memo
 
     fun setMapCliekd() {
         _isMapClicked.value = true
@@ -40,4 +40,11 @@ class HomeViewModel @Inject constructor(
             _memoList.postValue(repository.getAllMemo())
         }
     }
+
+    fun getMemo(id: Long) {
+        viewModelScope.launch {
+            _memo.postValue(repository.getMemo(id))
+        }
+    }
+
 }
