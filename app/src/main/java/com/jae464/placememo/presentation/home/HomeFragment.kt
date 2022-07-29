@@ -19,6 +19,7 @@ import com.jae464.placememo.R
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -79,6 +80,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 일반 클릭 리스너. 마커 클릭시 실행되지 않는다.
         naverMap.setOnMapClickListener { pointF, latLng ->
             println("클린된 좌표 : ${latLng.latitude}, ${latLng.longitude} ")
+
+            if(viewModel.isMemoClicked.value!!) {
+                viewModel.setMemoUnclicked()
+                binding.bottomPostView.visibility = View.GONE
+                return@setOnMapClickListener
+            }
             currentMarker.map = null
             currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
             currentMarker.map = naverMap
@@ -134,10 +141,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             println(it.title)
             if (binding.bottomPostView.visibility == View.VISIBLE) {
                 binding.bottomPostView.visibility = View.GONE
+                viewModel.setMemoUnclicked()
                 return@observe
             }
             binding.bottomPostView.visibility = View.VISIBLE
+            viewModel.setMemoClicked()
             binding.titleTextView.text = viewModel.memo.value?.title
+            binding.contentTextView.text = viewModel.memo.value?.content
+            val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
+                .animate(CameraAnimation.Easing)
+            naverMap.moveCamera(cameraUpdate)
         }
     }
 
