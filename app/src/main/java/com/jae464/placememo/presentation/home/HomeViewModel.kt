@@ -27,12 +27,23 @@ class HomeViewModel @Inject constructor(
     private val _memo = MutableLiveData<Memo>()
     val memo: LiveData<Memo> get() = _memo
 
+    private val _isMemoClicked = MutableLiveData(false)
+    val isMemoClicked: LiveData<Boolean> get() = _isMemoClicked
+
     fun setMapCliekd() {
         _isMapClicked.value = true
     }
 
     fun setMapUnclicked() {
         _isMapClicked.value = false
+    }
+
+    fun setMemoClicked() {
+        _isMemoClicked.value = true
+    }
+
+    fun setMemoUnclicked() {
+        _isMemoClicked.value = false
     }
 
     fun getAllMemo() {
