@@ -1,9 +1,12 @@
 package com.jae464.placememo.presentation.post
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,11 +26,27 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val viewModel: PostViewModel by viewModels()
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        isGranted ->
+        if (isGranted) {
+            loadImage()
+        } else {
+
+        }
+    }
+    private val getImageLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        binding.sampleImageView.setImageURI(it.data?.data)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         latitude = arguments?.getDouble("latitude")!!
         longitude = arguments?.getDouble("longitude")!!
         println("$latitude, $longitude")
         initAppBar()
+        initListener()
     }
 
     private fun initAppBar() {
@@ -52,6 +71,21 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             true
         }
 
+    }
+
+    private fun requestPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+    private fun initListener() {
+        binding.addImageButton.setOnClickListener {
+            requestPermission()
+        }
+    }
+
+    private fun loadImage() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        getImageLauncher.launch(intent)
     }
 
 }
