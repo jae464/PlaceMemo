@@ -10,6 +10,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -53,8 +54,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        println("onViewCreated")
         binding.mapView.getMapAsync(this) // map 객체 가져오기
-
         // 모든 메모 가져오기 테스트
         viewModel.getAllMemo()
         println(viewModel.memoList.value)
@@ -148,6 +149,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             viewModel.setMemoClicked()
             binding.titleTextView.text = viewModel.memo.value?.title
             binding.contentTextView.text = viewModel.memo.value?.content
+            binding.previewImageView.setImageBitmap(viewModel.memo.value?.imageUrlList)
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)

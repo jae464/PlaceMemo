@@ -2,11 +2,15 @@ package com.jae464.placememo.presentation.post
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.ImageDecoder
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -39,8 +43,19 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val getImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        binding.sampleImageView.setImageURI(it.data?.data)
+        val imageList = it.data?.data
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, imageList ?: return@registerForActivityResult))
+            viewModel.setImageList(bitmap)
+            binding.sampleImageView.setImageBitmap(bitmap)
+        }
+        else {
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageList ?: return@registerForActivityResult)
+            viewModel.setImageList(bitmap)
+            binding.sampleImageView.setImageBitmap(bitmap)
+        }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         latitude = arguments?.getDouble("latitude")!!
         longitude = arguments?.getDouble("longitude")!!
@@ -61,9 +76,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     Toast.makeText(requireContext(),"저장버튼클릭", Toast.LENGTH_SHORT).show()
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
-                    val imageList = listOf<String>()
-                    viewModel.saveMemo(Memo(0,title,content,imageList,latitude,longitude))
-
+                    viewModel.saveMemo(0,title,content,latitude,longitude)
                     // 업로드 후 메인페이지로 이동
                     findNavController().popBackStack()
                 }
@@ -85,6 +98,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun loadImage() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         getImageLauncher.launch(intent)
     }
 

@@ -1,5 +1,7 @@
 package com.jae464.placememo.data.model
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -15,8 +17,8 @@ data class MemoEntity(
     val content: String,
     @SerializedName("createdAt")
     val createdAt: Date,
-    @SerializedName("imageUrlList")
-    val imageUrlList: List<String>,
+    @SerializedName("imageList")
+    val imageUrlList: Bitmap?,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")
