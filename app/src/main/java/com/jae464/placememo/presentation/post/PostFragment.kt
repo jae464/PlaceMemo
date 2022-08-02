@@ -65,7 +65,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     private fun initAppBar() {
-        var appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
         binding.postToolBar.setupWithNavController(findNavController(), appBarConfiguration)
         binding.postToolBar.title = "게시글 업로드"
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)

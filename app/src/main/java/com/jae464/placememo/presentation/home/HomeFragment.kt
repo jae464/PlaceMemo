@@ -55,6 +55,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
+        binding.viewModel = viewModel
         binding.mapView.getMapAsync(this) // map 객체 가져오기
         // 모든 메모 가져오기 테스트
         viewModel.getAllMemo()
@@ -81,21 +82,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 일반 클릭 리스너. 마커 클릭시 실행되지 않는다.
         naverMap.setOnMapClickListener { pointF, latLng ->
             println("클린된 좌표 : ${latLng.latitude}, ${latLng.longitude} ")
-
-            if(viewModel.isMemoClicked.value!!) {
-                viewModel.setMemoUnclicked()
-                binding.bottomPostView.visibility = View.GONE
+            if(viewModel.memo.value != null) {
+                viewModel.resetMemo()
                 return@setOnMapClickListener
             }
             currentMarker.map = null
             currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
             currentMarker.map = naverMap
             viewModel.setMapCliekd()
+            viewModel.resetMemo()
         }
 
         currentMarker.setOnClickListener {
-            currentMarker.map = null
-            viewModel.setMapUnclicked()
+            viewModel.toggleMapClick()
             true
         }
 
@@ -116,43 +115,54 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private fun initObserver() {
         viewModel.isMapClicked.observe(viewLifecycleOwner) {
             println("isMapClicked Observer Activated")
-            binding.postButton.visibility = if (viewModel.isMapClicked.value!!) View.VISIBLE else View.GONE
+            if (it) {
+                binding.postButton.visibility = View.VISIBLE
+            }
+            else {
+                binding.postButton.visibility = View.GONE
+                currentMarker.map = null
+            }
         }
 
         viewModel.memoList.observe(viewLifecycleOwner) {
             println("memoList Observer Activated")
-            viewModel.memoList.value?.forEach { memo ->
+           it.forEach { memo ->
                 println(memo.title)
                 val marker = Marker()
                 marker.position = LatLng(memo.latitude, memo.longitude)
                 marker.map = naverMap
                 marker.icon = MarkerIcons.RED
                 marker.setOnClickListener {
-                    println("Selected Marker Listener")
-//                    println(memo.title)
                     viewModel.getMemo(memo.id)
-//                    binding.bottomPostView.visibility = View.VISIBLE
+//                    viewModel.toggleMemoClick()
+                    binding.bottomPostView.visibility = View.VISIBLE
+                    viewModel.setMapUnclicked()
+                    println("Selected Marker Listener")
                     true
                 }
             }
         }
 
         viewModel.memo.observe(viewLifecycleOwner) {
-            println("memo Observer Activated")
-            println(it.title)
-            if (binding.bottomPostView.visibility == View.VISIBLE) {
+            if (it == null) {
                 binding.bottomPostView.visibility = View.GONE
-                viewModel.setMemoUnclicked()
                 return@observe
             }
+            println("memo Observer Activated")
+            binding.previewImageView.setImageBitmap(it.imageUrlList)
             binding.bottomPostView.visibility = View.VISIBLE
-            viewModel.setMemoClicked()
-            binding.titleTextView.text = viewModel.memo.value?.title
-            binding.contentTextView.text = viewModel.memo.value?.content
-            binding.previewImageView.setImageBitmap(viewModel.memo.value?.imageUrlList)
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)
+        }
+
+        viewModel.isMemoClicked.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.bottomPostView.visibility = View.VISIBLE
+            }
+            else {
+                binding.bottomPostView.visibility = View.GONE
+            }
         }
     }
 
