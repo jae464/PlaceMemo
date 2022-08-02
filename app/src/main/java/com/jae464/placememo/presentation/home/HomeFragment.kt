@@ -149,7 +149,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 return@observe
             }
             println("memo Observer Activated")
-            binding.previewImageView.setImageBitmap(it.imageUrlList)
+//            binding.previewImageView.setImageBitmap(it.imageUrlList)
             binding.bottomPostView.visibility = View.VISIBLE
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)

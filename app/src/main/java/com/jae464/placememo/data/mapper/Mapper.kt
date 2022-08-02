@@ -9,7 +9,6 @@ fun memoToMemoEntity(memo: Memo): MemoEntity {
         memo.title,
         memo.content,
         Date(),
-        memo.imageUrlList,
         memo.latitude,
         memo.longitude
     )
@@ -20,7 +19,6 @@ fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
         memoEntity.id,
         memoEntity.title,
         memoEntity.content,
-        memoEntity.imageUrlList,
         memoEntity.latitude,
         memoEntity.longitude
     )
