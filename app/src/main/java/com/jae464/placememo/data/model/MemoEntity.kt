@@ -17,8 +17,6 @@ data class MemoEntity(
     val content: String,
     @SerializedName("createdAt")
     val createdAt: Date,
-    @SerializedName("imageList")
-    val imageUrlList: Bitmap?,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")

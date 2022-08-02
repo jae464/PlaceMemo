@@ -2,6 +2,7 @@ package com.jae464.placememo.presentation.post
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
@@ -43,14 +44,14 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val getImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        val imageList = it.data?.data
+        val image = it.data?.data
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, imageList ?: return@registerForActivityResult))
+            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
             viewModel.setImageList(bitmap)
             binding.sampleImageView.setImageBitmap(bitmap)
         }
         else {
-            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageList ?: return@registerForActivityResult)
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, image ?: return@registerForActivityResult)
             viewModel.setImageList(bitmap)
             binding.sampleImageView.setImageBitmap(bitmap)
         }
@@ -77,8 +78,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
                     viewModel.saveMemo(0,title,content,latitude,longitude)
+                    viewModel.saveImage(0)
                     // 업로드 후 메인페이지로 이동
-                    findNavController().popBackStack()
+//                    findNavController().popBackStack()
                 }
             }
             true
@@ -98,7 +100,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun loadImage() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         getImageLauncher.launch(intent)
     }
 

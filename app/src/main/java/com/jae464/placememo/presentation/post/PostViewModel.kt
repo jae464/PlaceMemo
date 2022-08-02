@@ -17,12 +17,12 @@ class PostViewModel @Inject constructor(
     private val repository: MemoRepository
 ) : ViewModel() {
 
-    private val _imageList = MutableLiveData<Bitmap>()
-    val imageList: LiveData<Bitmap> get() = _imageList
+    private val _imageList = MutableLiveData<List<Bitmap>>()
+    val imageList: LiveData<List<Bitmap>> get() = _imageList
 
     fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            val memo = Memo(id, title, content, imageList.value, latitude, longitude)
+            val memo = Memo(id, title, content, latitude, longitude)
             println("저장 전 내용 확인합니다.")
             println("$id $title $content $latitude $longitude")
             println(imageList)
@@ -31,6 +31,17 @@ class PostViewModel @Inject constructor(
     }
 
     fun setImageList(image: Bitmap) {
-        _imageList.postValue(image)
+        val addedImageList = (_imageList.value ?: emptyList()) + listOf(image)
+        _imageList.postValue(addedImageList)
+    }
+
+    fun saveImage(memoId: Long) {
+        if (imageList.value!!.isEmpty()) return
+        imageList.value!!.forEachIndexed { index, bitmap ->
+            println(index)
+        }
+//        viewModelScope.launch {
+//            repository.saveImage(imageList.value!!, memoId)
+//        }
     }
 }

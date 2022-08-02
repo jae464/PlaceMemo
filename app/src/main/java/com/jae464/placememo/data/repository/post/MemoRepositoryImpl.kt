@@ -1,5 +1,7 @@
 package com.jae464.placememo.data.repository.post
 
+import android.graphics.Bitmap
+import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.data.mapper.memoEntityToMemo
 import com.jae464.placememo.data.mapper.memoToMemoEntity
 import com.jae464.placememo.data.model.MemoEntity
@@ -26,5 +28,9 @@ class MemoRepositoryImpl @Inject constructor(
             memoList.add(memoEntityToMemo(it))
         }
         return memoList
+    }
+
+    override suspend fun saveImage(imageList: List<Bitmap>, memoId: Long) {
+        ImageManager.saveImage(imageList, memoId)
     }
 }
