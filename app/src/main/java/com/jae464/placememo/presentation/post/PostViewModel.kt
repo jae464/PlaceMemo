@@ -20,13 +20,16 @@ class PostViewModel @Inject constructor(
     private val _imageList = MutableLiveData<List<Bitmap>>()
     val imageList: LiveData<List<Bitmap>> get() = _imageList
 
+    private val memoId = MutableLiveData<Long>()
+
     fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
             val memo = Memo(id, title, content, latitude, longitude)
             println("저장 전 내용 확인합니다.")
             println("$id $title $content $latitude $longitude")
             println(imageList)
-            repository.saveMemo(memo)
+            memoId.value = repository.saveMemo(memo)
+            saveImage(memoId.value!!)
         }
     }
 
@@ -36,12 +39,8 @@ class PostViewModel @Inject constructor(
     }
 
     fun saveImage(memoId: Long) {
-        if (imageList.value!!.isEmpty()) return
-        imageList.value!!.forEachIndexed { index, bitmap ->
-            println(index)
-        }
-//        viewModelScope.launch {
-//            repository.saveImage(imageList.value!!, memoId)
-//        }
+        val saveImageList = (_imageList.value ?: emptyList())
+        if (saveImageList.isEmpty()) return
+        repository.saveImage(saveImageList, memoId)
     }
 }
