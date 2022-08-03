@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
 
         <variable
@@ -100,6 +99,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/addImageButton"
+                    android:scaleType="fitCenter"
                     android:layout_width="78dp"
                     android:layout_height="88dp"
                     android:layout_marginStart="12dp"
@@ -120,15 +120,22 @@
                     app:tint="@color/white"
                     android:contentDescription="사진추가" />
 
-                <ImageView
-                    android:id="@+id/sampleImageView"
-                    android:layout_width="78dp"
-                    android:layout_height="88dp"
-                    app:layout_constraintStart_toEndOf="@id/addImageButton"
-                    app:layout_constraintTop_toBottomOf="@id/addImageTextView"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imageRecyclerView"
+                    android:paddingVertical="4dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginLeft="12dp" />
+                    android:layout_marginBottom="24dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toEndOf="@id/addImageButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addImageTextView"
+                    tools:listitem="@layout/item_post_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal" />
+
+    
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

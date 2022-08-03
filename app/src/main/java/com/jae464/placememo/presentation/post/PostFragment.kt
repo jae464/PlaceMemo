@@ -31,6 +31,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val viewModel: PostViewModel by viewModels()
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
+    private val imageAdapter = ImageListAdapter()
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
@@ -48,21 +49,21 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
             viewModel.setImageList(bitmap)
-            binding.sampleImageView.setImageBitmap(bitmap)
         }
         else {
             val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, image ?: return@registerForActivityResult)
             viewModel.setImageList(bitmap)
-            binding.sampleImageView.setImageBitmap(bitmap)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         latitude = arguments?.getDouble("latitude")!!
         longitude = arguments?.getDouble("longitude")!!
+        binding.imageRecyclerView.adapter = imageAdapter
         println("$latitude, $longitude")
         initAppBar()
         initListener()
+        initObserver()
     }
 
     private fun initAppBar() {
@@ -97,6 +98,11 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
     }
 
+    private fun initObserver() {
+        viewModel.imageList.observe(viewLifecycleOwner) {
+            imageAdapter.submitList(it.toMutableList())
+        }
+    }
     private fun loadImage() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
