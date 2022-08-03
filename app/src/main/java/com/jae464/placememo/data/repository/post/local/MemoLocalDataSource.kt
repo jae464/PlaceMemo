@@ -6,5 +6,5 @@ import com.jae464.placememo.domain.model.post.Memo
 interface MemoLocalDataSource {
     suspend fun getMemo(id: Long): MemoEntity
     suspend fun getAllMemo(): List<MemoEntity>
-    suspend fun saveMemo(memo: MemoEntity)
+    suspend fun saveMemo(memo: MemoEntity): Long
 }

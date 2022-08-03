@@ -16,7 +16,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getAllMemo()
     }
 
-    override suspend fun saveMemo(memo: MemoEntity) {
-        memoDao.insertMemo(memo)
+    override suspend fun saveMemo(memo: MemoEntity): Long {
+        return memoDao.insertMemo(memo)
     }
 }

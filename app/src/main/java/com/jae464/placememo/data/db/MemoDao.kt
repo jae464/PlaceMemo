@@ -10,7 +10,7 @@ import com.jae464.placememo.domain.model.post.Memo
 @Dao
 interface MemoDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertMemo(memo: MemoEntity)
+   suspend fun insertMemo(memo: MemoEntity): Long
 
    @Query("SELECT * FROM memo WHERE id = :id")
    suspend fun getMemo(id: Long): MemoEntity
