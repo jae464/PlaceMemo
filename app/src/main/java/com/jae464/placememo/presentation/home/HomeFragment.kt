@@ -75,10 +75,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     private fun initListener() {
+
         binding.currentLocationButton.setOnClickListener {
             println("clicked")
             naverMap.moveCamera(CameraUpdate.scrollTo(LatLng(37.4140919,126.8803569)))
         }
+
         // 일반 클릭 리스너. 마커 클릭시 실행되지 않는다.
         naverMap.setOnMapClickListener { pointF, latLng ->
             println("클린된 좌표 : ${latLng.latitude}, ${latLng.longitude} ")
@@ -89,12 +91,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             currentMarker.map = null
             currentMarker.position = LatLng(latLng.latitude, latLng.longitude)
             currentMarker.map = naverMap
-            viewModel.setMapCliekd()
+            binding.postButton.visibility = View.VISIBLE
             viewModel.resetMemo()
         }
 
         currentMarker.setOnClickListener {
-            viewModel.toggleMapClick()
+//            viewModel.toggleMapClick()
+            currentMarker.map = null
+            binding.postButton.visibility = View.GONE
             true
         }
 
@@ -104,7 +108,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 putDouble("latitude", currentMarker.position.latitude)
                 putDouble("longitude", currentMarker.position.longitude)
             }
-            viewModel.setMapUnclicked() // 페이지 이동 시 현재 마커 제거
+            currentMarker.map = null
             findNavController().navigate(
                 R.id.action_home_to_post,
                 bundle
@@ -113,16 +117,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     private fun initObserver() {
-        viewModel.isMapClicked.observe(viewLifecycleOwner) {
-            println("isMapClicked Observer Activated")
-            if (it) {
-                binding.postButton.visibility = View.VISIBLE
-            }
-            else {
-                binding.postButton.visibility = View.GONE
-                currentMarker.map = null
-            }
-        }
 
         viewModel.memoList.observe(viewLifecycleOwner) {
             println("memoList Observer Activated")
@@ -134,9 +128,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 marker.icon = MarkerIcons.RED
                 marker.setOnClickListener {
                     viewModel.getMemo(memo.id)
-//                    viewModel.toggleMemoClick()
                     binding.bottomPostView.visibility = View.VISIBLE
-                    viewModel.setMapUnclicked()
+                    binding.postButton.visibility = View.GONE
+                    currentMarker.map = null
                     println("Selected Marker Listener")
                     true
                 }
@@ -148,21 +142,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 binding.bottomPostView.visibility = View.GONE
                 return@observe
             }
-            println("memo Observer Activated")
-//            binding.previewImageView.setImageBitmap(it.imageUrlList)
             binding.bottomPostView.visibility = View.VISIBLE
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)
-        }
-
-        viewModel.isMemoClicked.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.bottomPostView.visibility = View.VISIBLE
-            }
-            else {
-                binding.bottomPostView.visibility = View.GONE
-            }
         }
     }
 
