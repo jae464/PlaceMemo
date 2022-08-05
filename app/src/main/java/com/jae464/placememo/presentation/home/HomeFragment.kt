@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
+import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.naver.maps.geometry.LatLng
@@ -36,6 +37,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var naverMap: NaverMap
     private lateinit var currentMarker: Marker
+    private lateinit var viewPagerAdapter: HomeViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +145,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 return@observe
             }
             binding.bottomPostView.visibility = View.VISIBLE
+            val imageList = ImageManager.loadMemoImage(it.id)
+            viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
+            binding.thumbnailViewPager.adapter = viewPagerAdapter
+//            imageList?.let { bitmapList ->
+//                bitmapList.forEach { bitmap ->
+////                    binding.previewImageView.setImageBitmap(bitmap)
+//                    viewPagerAdapter.sub
+//                }
+//            }
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)

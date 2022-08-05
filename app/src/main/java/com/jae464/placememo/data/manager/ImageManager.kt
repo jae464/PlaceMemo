@@ -1,6 +1,7 @@
 package com.jae464.placememo.data.manager
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import java.io.File
 import java.io.FileOutputStream
 
@@ -21,4 +22,16 @@ object ImageManager {
         }
     }
 
+    // 해당 메모의 이미지들을 가져온다
+    fun loadMemoImage(memoId: Long): List<Bitmap>?{
+        val path = "${filePath}/${memoId}/"
+        val file = File(path)
+        val imageFiles = file.listFiles() ?: return null
+        val bitmapList = mutableListOf<Bitmap>()
+        imageFiles.forEach {
+           val bitmapImage = BitmapFactory.decodeFile(it.path)
+            bitmapList.add(bitmapImage)
+        }
+        return bitmapList
+    }
 }
