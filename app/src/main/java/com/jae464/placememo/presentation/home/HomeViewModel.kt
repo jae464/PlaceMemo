@@ -20,26 +20,9 @@ class HomeViewModel @Inject constructor(
     private val _memoList: MutableLiveData<List<Memo>> by lazy { MutableLiveData<List<Memo>>() }
     val memoList: LiveData<List<Memo>> = _memoList
 
-    private val _isMapClicked = MutableLiveData(false)
-    val isMapClicked: LiveData<Boolean> = _isMapClicked
 
     private val _memo = MutableLiveData<Memo?>()
     val memo: LiveData<Memo?> get() = _memo
-
-    private val _isMemoClicked = MutableLiveData(false)
-    val isMemoClicked: LiveData<Boolean> get() = _isMemoClicked
-
-    fun setMapCliekd() {
-        _isMapClicked.value = true
-    }
-
-    fun setMapUnclicked() {
-        _isMapClicked.value = false
-    }
-
-    fun toggleMapClick() {
-        _isMapClicked.value = _isMapClicked.value?.not()
-    }
 
     fun getAllMemo() {
         viewModelScope.launch {

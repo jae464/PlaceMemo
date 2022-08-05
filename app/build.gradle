@@ -61,6 +61,12 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    // CardView
+    implementation "androidx.cardview:cardview:$cardview_version"
+
+    //ViewPager2
+    implementation "androidx.viewpager2:viewpager2:$viewpager_version"
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'

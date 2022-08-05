@@ -4,6 +4,8 @@ buildscript {
     ext.naver_map_version = '3.15.0'
     ext.nav_version = "2.5.0"
     ext.room_version = "2.4.2"
+    ext.cardview_version = "1.0.0"
+    ext.viewpager_version = "1.0.0"
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
