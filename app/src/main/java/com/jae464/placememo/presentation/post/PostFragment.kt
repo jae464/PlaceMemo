@@ -81,7 +81,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     viewModel.saveMemo(0,title,content,latitude,longitude)
                     viewModel.saveImage(0)
                     // 업로드 후 메인페이지로 이동
-//                    findNavController().popBackStack()
+                    findNavController().popBackStack()
                 }
             }
             true
