@@ -5,12 +5,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.jae464.placememo.R
+import com.jae464.placememo.databinding.FragmentFeedBinding
+import com.jae464.placememo.presentation.base.BaseFragment
+import com.jae464.placememo.presentation.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class FeedFragment : Fragment(R.layout.fragment_feed) {
+@AndroidEntryPoint
+class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
+
+    private val feedListAdapter = FeedListAdapter()
+    private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.feedRecyclerView.adapter = feedListAdapter
+        initObserver()
+        viewModel.getAllMemo()
+    }
+
+    private fun initObserver() {
+        viewModel.memoList.observe(viewLifecycleOwner) {
+            println(it)
+            feedListAdapter.submitList(it)
+        }
     }
 
 }
