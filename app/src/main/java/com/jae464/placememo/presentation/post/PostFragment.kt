@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.jae464.placememo.R
+import com.jae464.placememo.data.manager.ImageManager.resizeBitmapFromUri
 import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentPostBinding
@@ -47,7 +48,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     ) {
         val image = it.data?.data
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
+//            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
+            val bitmap = resizeBitmapFromUri(image ?: return@registerForActivityResult, requireContext()) ?: return@registerForActivityResult
+            println("변형된 bitmap 사이즈 : ${bitmap.density}")
             viewModel.setImageList(bitmap)
         }
         else {
