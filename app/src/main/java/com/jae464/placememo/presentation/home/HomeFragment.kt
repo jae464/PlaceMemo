@@ -3,6 +3,7 @@ package com.jae464.placememo.presentation.home
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -58,6 +59,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
         binding.viewModel = viewModel
+        binding.memoPreview.memoCardView.visibility = View.INVISIBLE
         binding.mapView.getMapAsync(this) // map 객체 가져오기
         // 모든 메모 가져오기 테스트
         viewModel.getAllMemo()
@@ -130,7 +132,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 marker.icon = MarkerIcons.RED
                 marker.setOnClickListener {
                     viewModel.getMemo(memo.id)
-                    binding.bottomPostView.visibility = View.VISIBLE
+                    binding.memoPreview.memoCardView.visibility = View.VISIBLE
                     binding.postButton.visibility = View.GONE
                     currentMarker.map = null
                     println("Selected Marker Listener")
@@ -141,19 +143,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         viewModel.memo.observe(viewLifecycleOwner) {
             if (it == null) {
-                binding.bottomPostView.visibility = View.GONE
+                binding.memoPreview.memoCardView.visibility = View.GONE
                 return@observe
             }
-            binding.bottomPostView.visibility = View.VISIBLE
+            binding.memoPreview.memoCardView.visibility = View.VISIBLE
+            binding.memoPreview.titleTextView.text = it.title
+            binding.memoPreview.contentTextView.text = it.content
             val imageList = ImageManager.loadMemoImage(it.id)
             viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
-            binding.thumbnailViewPager.adapter = viewPagerAdapter
-//            imageList?.let { bitmapList ->
-//                bitmapList.forEach { bitmap ->
-////                    binding.previewImageView.setImageBitmap(bitmap)
-//                    viewPagerAdapter.sub
-//                }
-//            }
+            binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)
