@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jae464.placememo.databinding.ItemHomePreviewImageBinding
+import com.jae464.placememo.databinding.ItemMemoPreviewImageBinding
 
 class HomeViewPagerAdapter(private val listData: List<Bitmap>): RecyclerView.Adapter<HomeViewPagerAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(
-        private val binding: ItemHomePreviewImageBinding,
+        private val binding: ItemMemoPreviewImageBinding,
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(bitmap: Bitmap) {
@@ -18,7 +18,7 @@ class HomeViewPagerAdapter(private val listData: List<Bitmap>): RecyclerView.Ada
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = ItemHomePreviewImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemMemoPreviewImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 

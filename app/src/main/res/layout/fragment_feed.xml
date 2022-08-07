@@ -12,7 +12,7 @@
             android:id="@+id/feedRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_feed"
+            tools:listitem="@layout/item_memo_preview"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

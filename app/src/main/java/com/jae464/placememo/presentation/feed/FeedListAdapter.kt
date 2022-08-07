@@ -5,21 +5,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentFeedBinding
-import com.jae464.placememo.databinding.ItemFeedBinding
+import com.jae464.placememo.databinding.ItemMemoPreviewBinding
 import com.jae464.placememo.domain.model.post.Memo
+import com.jae464.placememo.presentation.home.HomeViewPagerAdapter
 
 class FeedListAdapter: ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
+
     inner class ItemViewHolder(
-        private val binding: ItemFeedBinding
+        private val binding: ItemMemoPreviewBinding
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(memo: Memo) {
-            binding.title.text = memo.title
+            println("FeedListAdapter")
+            binding.titleTextView.text = memo.title
+            binding.contentTextView.text = memo.content
+            val imageList = ImageManager.loadMemoImage(memo.id)
+            if (imageList != null) {
+                val viewPagerAdapter = HomeViewPagerAdapter(imageList)
+                binding.thumbnailViewPager.adapter = viewPagerAdapter
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = ItemFeedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemMemoPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 

@@ -18,7 +18,6 @@ class FeedViewModel @Inject constructor(
     private val _memoList: MutableLiveData<List<Memo>> by lazy { MutableLiveData<List<Memo>>() }
     val memoList: LiveData<List<Memo>> = _memoList
 
-
     private val _memo = MutableLiveData<Memo?>()
     val memo: LiveData<Memo?> get() = _memo
 
