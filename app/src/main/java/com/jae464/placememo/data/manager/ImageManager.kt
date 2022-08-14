@@ -22,7 +22,7 @@ object ImageManager {
                 createNewFile()
             }
             val outputFile = FileOutputStream(newFile)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputFile)
             outputFile.close()
         }
     }

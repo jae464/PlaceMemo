@@ -10,6 +10,7 @@ plugins {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def naverApiKey = properties.getProperty('naver_api_key')
+def googleAPIKey = properties.getProperty('google_api_key')
 android {
     compileSdk 31
 
@@ -21,7 +22,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [NAVER_API_KEY: naverApiKey]
+        manifestPlaceholders = [GOOGLE_API_KEY: googleAPIKey]
+        buildConfigField("String", "GOOGLE_API_KEY", properties.getProperty("google_api_key"))
         buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key"))
     }
 
@@ -51,6 +53,9 @@ dependencies {
 
     // Naver Map API
     implementation "com.naver.maps:map-sdk:$naver_map_version"
+
+    // Google Map API
+    implementation "com.google.android.gms:play-services-maps:$google_map_version"
 
     // Navigation JetPack
     implementation "androidx.navigation:navigation-fragment-ktx:${nav_version}"
