@@ -17,14 +17,20 @@
         android:layout_height="match_parent"
         tools:context=".presentation.home.HomeFragment">
 
-        <com.naver.maps.map.MapView
-            android:id="@+id/mapView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <com.naver.maps.map.MapView-->
+<!--            android:id="@+id/mapView"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <fragment
+            android:id="@+id/mapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -57,62 +63,6 @@
 
         <include layout="@layout/item_memo_preview"
             android:id="@+id/memoPreview" />
-
-        <!--  게시글 요약   -->
-<!--        <androidx.cardview.widget.CardView-->
-<!--            android:id="@+id/bottomPostView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="400dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:background="@drawable/bg_bottompost"-->
-<!--            android:visibility="gone"-->
-<!--            app:cardCornerRadius="4dp"-->
-<!--            android:layout_marginHorizontal="48dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            tools:background="@color/white"-->
-<!--            tools:visibility="visible">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
-<!--                -->
-<!--                <TextView-->
-<!--                    android:id="@+id/titleTextView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@{viewModel.memo.title}"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:textSize="32sp"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    tools:text="Title" />-->
-
-<!--                <TextView-->
-<!--                    android:id="@+id/contentTextView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@{viewModel.memo.content}"-->
-<!--                    android:maxLines="2"-->
-<!--                    android:ellipsize="end"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/titleTextView"-->
-<!--                    tools:text="Content" />-->
-
-<!--                <androidx.viewpager2.widget.ViewPager2-->
-<!--                    android:id="@+id/thumbnailViewPager"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:background="@color/black"-->
-<!--                    android:layout_marginTop="12dp"-->
-<!--                    app:layout_constraintDimensionRatio="16:13"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/contentTextView" />-->
-
-
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--        </androidx.cardview.widget.CardView>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
