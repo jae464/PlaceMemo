@@ -16,7 +16,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/memoCardView"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_marginHorizontal="48dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/white"

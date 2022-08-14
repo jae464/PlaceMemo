@@ -62,7 +62,9 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <include layout="@layout/item_memo_preview"
-            android:id="@+id/memoPreview" />
+            android:id="@+id/memoPreview"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
