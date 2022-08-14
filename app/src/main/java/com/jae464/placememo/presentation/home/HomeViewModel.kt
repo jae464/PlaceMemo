@@ -20,25 +20,9 @@ class HomeViewModel @Inject constructor(
     private val _memoList: MutableLiveData<List<Memo>> by lazy { MutableLiveData<List<Memo>>() }
     val memoList: LiveData<List<Memo>> = _memoList
 
-
-    private val _memo = MutableLiveData<Memo?>()
-    val memo: LiveData<Memo?> get() = _memo
-
     fun getAllMemo() {
         viewModelScope.launch {
             _memoList.postValue(repository.getAllMemo())
         }
     }
-
-    fun getMemo(id: Long) {
-        viewModelScope.launch {
-            _memo.postValue(repository.getMemo(id))
-        }
-    }
-
-    fun resetMemo() {
-        _memo.value = null
-    }
-
-
 }
