@@ -1,14 +1,19 @@
 package com.jae464.placememo.presentation.base
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
@@ -23,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
 
-abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment(), OnMapReadyCallback {
+abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, LocationListener {
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
@@ -68,6 +73,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
             setMinZoomPreference(6.0f)
             setMaxZoomPreference(14.0f)
         }
+        map.setOnMyLocationButtonClickListener(this)
         setUserLocation()
     }
 
@@ -82,7 +88,6 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         }
         else {
             // 사용자 위치 이동 버튼 활성화
-//            binding.currentLocationButton.visibility = View.VISIBLE
             map.uiSettings.isMyLocationButtonEnabled = true
             map.isMyLocationEnabled = true
         }
@@ -100,8 +105,32 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         }
     }
 
+    override fun onMyLocationButtonClick(): Boolean {
+        println("on my location Button click")
+        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            println("location매니저에 위치정보를 요청합니다.")
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
+        } else {
+            Toast.makeText(context, "GPS를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        return false
+    }
+
+    private fun getLocation(): Location? {
+        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        println("${location?.latitude} ${location?.longitude}")
+        return location
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onLocationChanged(p0: Location) {
+        println("Location Changed to $p0")
     }
 }
