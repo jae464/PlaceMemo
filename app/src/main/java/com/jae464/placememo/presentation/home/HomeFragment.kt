@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.home
 
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -122,6 +123,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         super.onDestroyView()
         map.clear()
     }
+
 
 }
 
