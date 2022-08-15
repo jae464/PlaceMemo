@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.home
 
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -25,10 +26,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
+    private lateinit var geocoder: Geocoder
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
+        geocoder = Geocoder(context)
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
         viewModel.getAllMemo()
@@ -61,6 +64,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                 MarkerOptions()
                     .position(LatLng(it.latitude, it.longitude))
             )
+            val addressList = geocoder.getFromLocation(it.latitude, it.longitude, 5)
+            println("Location List")
+            println(addressList)
             currentMarker?.tag = "current"
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
             map.animateCamera(cameraUpdate, 500, null)
@@ -111,6 +117,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val imageList = ImageManager.loadMemoImage(memo.id)
         map.animateCamera(cameraUpdate, 200, null)
         binding.memoPreview.memoCardView.visibility = View.VISIBLE
+        binding.postButton.visibility = View.GONE
         binding.memoPreview.titleTextView.text = memo.title
         binding.memoPreview.contentTextView.text = memo.content
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())

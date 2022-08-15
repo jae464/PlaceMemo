@@ -17,15 +17,6 @@
         android:layout_height="match_parent"
         tools:context=".presentation.home.HomeFragment">
 
-<!--        <com.naver.maps.map.MapView-->
-<!--            android:id="@+id/mapView"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
         <fragment
             android:id="@+id/mapFragment"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -33,31 +24,17 @@
             android:layout_height="match_parent" />
 
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/currentLocationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginBottom="48dp"
-            android:backgroundTint="@color/white"
-            android:padding="12dp"
-            android:src="@drawable/ic_baseline_my_location_24"
-            android:tint="@color/black"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible" />
-
         <ImageView
             android:id="@+id/postButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_post_button"
             android:layout_marginRight="12dp"
             android:layout_marginBottom="48dp"
-            android:backgroundTint="@color/white"
             android:padding="12dp"
             android:src="@drawable/ic_baseline_add_24"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

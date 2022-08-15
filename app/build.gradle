@@ -24,7 +24,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [GOOGLE_API_KEY: googleAPIKey]
         buildConfigField("String", "GOOGLE_API_KEY", properties.getProperty("google_api_key"))
-        buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key"))
+        buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key_id"))
+        buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key_secret"))
     }
 
     buildTypes {
@@ -71,6 +72,15 @@ dependencies {
 
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:$viewpager_version"
+
+    // Retrofit2
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

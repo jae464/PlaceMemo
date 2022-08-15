@@ -107,13 +107,13 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     override fun onMyLocationButtonClick(): Boolean {
         println("on my location Button click")
-        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            println("location매니저에 위치정보를 요청합니다.")
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
-        } else {
-            Toast.makeText(context, "GPS를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show()
-        }
+//        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            println("location매니저에 위치정보를 요청합니다.")
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
+//        } else {
+//            Toast.makeText(context, "GPS를 받아올 수 없습니다.", Toast.LENGTH_SHORT).show()
+//        }
 
         return false
     }
