@@ -7,6 +7,8 @@ buildscript {
     ext.cardview_version = "1.0.0"
     ext.viewpager_version = "1.0.0"
     ext.google_map_version = '18.0.2'
+    ext.retrofit_version = '2.9.0'
+    ext.okhttp_version = '4.10.0'
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
