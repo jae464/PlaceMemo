@@ -13,11 +13,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.jae464.placememo.R
+import com.jae464.placememo.data.api.RetrofitClient
+import com.jae464.placememo.data.api.response.GeoResponse
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.base.BaseMapFragment
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @AndroidEntryPoint
 class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home), GoogleMap.OnMarkerClickListener {
@@ -64,9 +69,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                 MarkerOptions()
                     .position(LatLng(it.latitude, it.longitude))
             )
-            val addressList = geocoder.getFromLocation(it.latitude, it.longitude, 5)
+            requestAddr(it.longitude, it.latitude)
             println("Location List")
-            println(addressList)
             currentMarker?.tag = "current"
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
             map.animateCamera(cameraUpdate, 500, null)
@@ -131,7 +135,23 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         map.clear()
     }
 
+    private fun requestAddr(
+        x: Double, y: Double
+    ) {
+        RetrofitClient.geoService.getAddress("$x,$y", "json")
+            .enqueue(object: Callback<GeoResponse> {
+                override fun onResponse(call: Call<GeoResponse>, response: Response<GeoResponse>) {
+                    if (response.isSuccessful)
+                        println(response.body())
+                    else
+                        Log.d("HomeFragment", "request failure: ${response.message()}")
+                }
 
+                override fun onFailure(call: Call<GeoResponse>, t: Throwable) {
+                    Log.d("HomeFragment", "throwable: ${t.message}")
+                }
+            })
+    }
 }
 
 
