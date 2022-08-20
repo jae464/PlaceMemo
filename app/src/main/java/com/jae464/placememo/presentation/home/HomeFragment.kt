@@ -68,12 +68,13 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             currentMarker = map.addMarker(
                 MarkerOptions()
                     .position(LatLng(it.latitude, it.longitude))
+                    .title("주소")
             )
-            requestAddr(it.longitude, it.latitude)
             println("Location List")
             currentMarker?.tag = "current"
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
             map.animateCamera(cameraUpdate, 500, null)
+            viewModel.getAddressName(it.latitude, it.longitude)
             binding.postButton.visibility = View.VISIBLE
         }
 
@@ -107,6 +108,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                memoMarker?.tag = memo
             }
         }
+
+        viewModel.currentAddress.observe(viewLifecycleOwner) {
+            currentMarker?.snippet = it
+            currentMarker?.showInfoWindow()
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -135,23 +141,23 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         map.clear()
     }
 
-    private fun requestAddr(
-        x: Double, y: Double
-    ) {
-        RetrofitClient.geoService.getAddress("$x,$y", "json")
-            .enqueue(object: Callback<GeoResponse> {
-                override fun onResponse(call: Call<GeoResponse>, response: Response<GeoResponse>) {
-                    if (response.isSuccessful)
-                        println(response.body())
-                    else
-                        Log.d("HomeFragment", "request failure: ${response.message()}")
-                }
-
-                override fun onFailure(call: Call<GeoResponse>, t: Throwable) {
-                    Log.d("HomeFragment", "throwable: ${t.message}")
-                }
-            })
-    }
+//    private fun requestAddr(
+//        x: Double, y: Double
+//    ) {
+//        RetrofitClient.geoService.getAddress("$x,$y", "json")
+//            .enqueue(object: Callback<GeoResponse> {
+//                override fun onResponse(call: Call<GeoResponse>, response: Response<GeoResponse>) {
+//                    if (response.isSuccessful)
+//                        println(response.body())
+//                    else
+//                        Log.d("HomeFragment", "request failure: ${response.message()}")
+//                }
+//
+//                override fun onFailure(call: Call<GeoResponse>, t: Throwable) {
+//                    Log.d("HomeFragment", "throwable: ${t.message}")
+//                }
+//            })
+//    }
 }
 
 

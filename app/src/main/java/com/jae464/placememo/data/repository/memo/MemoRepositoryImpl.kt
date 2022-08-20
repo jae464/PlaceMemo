@@ -1,10 +1,10 @@
-package com.jae464.placememo.data.repository.post
+package com.jae464.placememo.data.repository.memo
 
 import android.graphics.Bitmap
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.data.mapper.memoEntityToMemo
 import com.jae464.placememo.data.mapper.memoToMemoEntity
-import com.jae464.placememo.data.repository.post.local.MemoLocalDataSource
+import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.MemoRepository
 import javax.inject.Inject
