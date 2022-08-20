@@ -70,6 +70,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/locationTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/titleEditText"
+                    app:layout_constraintBottom_toTopOf="@id/contentEditText"
+                    android:layout_marginHorizontal="12dp"
+                    android:textSize="16sp"
+                    tools:text="현재 위치"
+                    android:text="@{postViewModel.addressName}"
+                    app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
+                    android:drawablePadding="5dp"/>
+
                 <EditText
                     android:id="@+id/contentEditText"
                     android:layout_width="match_parent"
@@ -81,7 +94,7 @@
                     app:layout_constraintBottom_toTopOf="@id/addImageTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/titleEditText" />
+                    app:layout_constraintTop_toBottomOf="@id/locationTextView" />
 
                 <TextView
                     android:id="@+id/addImageTextView"
