@@ -1,8 +1,7 @@
-package com.jae464.placememo.data.repository.post.local
+package com.jae464.placememo.data.repository.memo.local
 
 import com.jae464.placememo.data.db.MemoDao
 import com.jae464.placememo.data.model.MemoEntity
-import com.jae464.placememo.domain.model.post.Memo
 import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(

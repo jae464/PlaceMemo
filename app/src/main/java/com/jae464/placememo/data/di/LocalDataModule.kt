@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.jae464.placememo.data.db.MemoDao
 import com.jae464.placememo.data.db.MemoDatabase
-import com.jae464.placememo.data.repository.post.local.MemoLocalDataSource
-import com.jae464.placememo.data.repository.post.local.MemoLocalDataSourceImpl
+import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSource
+import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
