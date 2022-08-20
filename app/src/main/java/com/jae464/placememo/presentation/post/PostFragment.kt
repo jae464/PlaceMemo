@@ -63,6 +63,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         latitude = arguments?.getDouble("latitude")!!
         longitude = arguments?.getDouble("longitude")!!
         binding.imageRecyclerView.adapter = imageAdapter
+        binding.postViewModel = viewModel
+        viewModel.getAddress(latitude, longitude)
         println("$latitude, $longitude")
         initAppBar()
         initListener()
@@ -95,6 +97,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun requestPermission() {
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
+
     private fun initListener() {
         binding.addImageButton.setOnClickListener {
             requestPermission()
@@ -106,6 +109,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             imageAdapter.submitList(it.toMutableList())
         }
     }
+
     private fun loadImage() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"

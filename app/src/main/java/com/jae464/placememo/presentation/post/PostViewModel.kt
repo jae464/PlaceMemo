@@ -7,18 +7,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jae464.placememo.domain.model.post.Memo
+import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val repository: MemoRepository
+    private val repository: MemoRepository,
+    private val addressRepository: AddressRepository
 ) : ViewModel() {
 
     private val _imageList = MutableLiveData<List<Bitmap>>()
     val imageList: LiveData<List<Bitmap>> get() = _imageList
+
+    private val _addressName = MutableLiveData<String>()
+    val addressName: LiveData<String> get() = _addressName
 
     private val memoId = MutableLiveData<Long>()
 
@@ -42,5 +48,13 @@ class PostViewModel @Inject constructor(
         val saveImageList = (_imageList.value ?: emptyList())
         if (saveImageList.isEmpty()) return
         repository.saveImage(saveImageList, memoId)
+    }
+
+    fun getAddress(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            val addressName = addressRepository.getAddress(longitude, latitude) ?: ""
+            println(addressName)
+            _addressName.postValue(addressName)
+        }
     }
 }
