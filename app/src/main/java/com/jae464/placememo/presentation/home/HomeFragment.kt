@@ -39,9 +39,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         println("onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
+        initAppBar()
         viewModel.getAllMemo()
 //        println(viewModel.memoList.value)
-        initAppBar()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -59,11 +59,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun initAppBar() {
-        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-        binding.homeToolBar.title = "홈"
     }
-
     private fun initListener() {
         map.setOnMapClickListener { it ->
             // 현재 보여지고 있는 메모가 있는 경우 해당 메모를 지운다.
