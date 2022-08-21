@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jae464.placememo.data.api.response.RegionResponse
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.MemoRepository
@@ -23,14 +24,21 @@ class PostViewModel @Inject constructor(
     private val _imageList = MutableLiveData<List<Bitmap>>()
     val imageList: LiveData<List<Bitmap>> get() = _imageList
 
-    private val _addressName = MutableLiveData<String>()
-    val addressName: LiveData<String> get() = _addressName
+    private val _address = MutableLiveData<RegionResponse?>()
+    val address: LiveData<RegionResponse?> get() = _address
 
     private val memoId = MutableLiveData<Long>()
 
     fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            val memo = Memo(id, title, content, latitude, longitude)
+            val region = _address.value
+
+            val memo = Memo(
+                id, title, content, latitude, longitude,
+                region?.area1?.name ?: "",
+                region?.area2?.name ?: "",
+                region?.area3?.name ?: ""
+            )
             println("저장 전 내용 확인합니다.")
             println("$id $title $content $latitude $longitude")
             println(imageList)
@@ -52,9 +60,12 @@ class PostViewModel @Inject constructor(
 
     fun getAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            val addressName = addressRepository.getAddress(longitude, latitude) ?: ""
-            println(addressName)
-            _addressName.postValue(addressName)
+            val address = addressRepository.getAddress(longitude, latitude)
+            _address.postValue(address)
         }
+    }
+
+    fun getAddressName(region: RegionResponse?): String {
+        return addressRepository.addressToString(region)
     }
 }

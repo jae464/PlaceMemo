@@ -10,6 +10,7 @@ import com.jae464.placememo.databinding.FragmentFeedBinding
 import com.jae464.placememo.databinding.ItemMemoPreviewBinding
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.home.HomeViewPagerAdapter
+import com.jae464.placememo.presentation.regionToString
 
 class FeedListAdapter: ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
 
@@ -20,6 +21,7 @@ class FeedListAdapter: ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
             println("FeedListAdapter")
             binding.titleTextView.text = memo.title
             binding.contentTextView.text = memo.content
+            binding.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
             val imageList = ImageManager.loadMemoImage(memo.id)
             if (imageList != null) {
                 val viewPagerAdapter = HomeViewPagerAdapter(imageList)

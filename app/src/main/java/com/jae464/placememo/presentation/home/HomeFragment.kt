@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -31,16 +33,15 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
-    private lateinit var geocoder: Geocoder
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
-        geocoder = Geocoder(context)
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
         viewModel.getAllMemo()
-        println(viewModel.memoList.value)
+//        println(viewModel.memoList.value)
+        initAppBar()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -55,6 +56,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
         initListener()
         initObserver()
+    }
+
+    private fun initAppBar() {
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
+        binding.homeToolBar.title = "홈"
     }
 
     private fun initListener() {
@@ -113,6 +120,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             currentMarker?.snippet = it
             currentMarker?.showInfoWindow()
         }
+
+        viewModel.memoAddress.observe(viewLifecycleOwner) {
+            binding.memoPreview.locationTextView.text = it
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -130,6 +141,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         binding.postButton.visibility = View.GONE
         binding.memoPreview.titleTextView.text = memo.title
         binding.memoPreview.contentTextView.text = memo.content
+        viewModel.getMemoAddressName(memo)
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
         Log.d("HomeFragment onMarkerClick", memo.title)
@@ -140,24 +152,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         super.onDestroyView()
         map.clear()
     }
-
-//    private fun requestAddr(
-//        x: Double, y: Double
-//    ) {
-//        RetrofitClient.geoService.getAddress("$x,$y", "json")
-//            .enqueue(object: Callback<GeoResponse> {
-//                override fun onResponse(call: Call<GeoResponse>, response: Response<GeoResponse>) {
-//                    if (response.isSuccessful)
-//                        println(response.body())
-//                    else
-//                        Log.d("HomeFragment", "request failure: ${response.message()}")
-//                }
-//
-//                override fun onFailure(call: Call<GeoResponse>, t: Throwable) {
-//                    Log.d("HomeFragment", "throwable: ${t.message}")
-//                }
-//            })
-//    }
 }
 
 

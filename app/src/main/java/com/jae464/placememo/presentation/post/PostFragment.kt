@@ -91,7 +91,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             }
             true
         }
-
     }
 
     private fun requestPermission() {
@@ -107,6 +106,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private fun initObserver() {
         viewModel.imageList.observe(viewLifecycleOwner) {
             imageAdapter.submitList(it.toMutableList())
+        }
+
+        viewModel.address.observe(viewLifecycleOwner) {
+            binding.locationTextView.text = viewModel.getAddressName(it)
         }
     }
 
