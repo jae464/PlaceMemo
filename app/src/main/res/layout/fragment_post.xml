@@ -79,7 +79,6 @@
                     android:layout_marginHorizontal="12dp"
                     android:textSize="16sp"
                     tools:text="현재 위치"
-                    android:text="@{postViewModel.addressName}"
                     app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
                     android:drawablePadding="5dp"/>
 

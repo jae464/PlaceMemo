@@ -9,5 +9,9 @@ data class Memo (
     val title: String,
     val content: String,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val area1: String = "",
+    val area2: String = "",
+    val area3: String = ""
 )
+

@@ -35,5 +35,4 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
             feedListAdapter.submitList(it.toMutableList())
         }
     }
-
 }
