@@ -86,7 +86,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         map.setOnMarkerClickListener(this)
 
         binding.postButton.setOnClickListener {
-            // todo 업로드 페이지로 이동 (좌표 같이 넘겨줌)
             currentMarker ?: return@setOnClickListener
             val bundle = Bundle().apply {
                 putDouble("latitude", currentMarker!!.position.latitude)
@@ -96,6 +95,14 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             findNavController().navigate(
                 R.id.action_home_to_post,
                 bundle
+            )
+        }
+
+        // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
+        binding.memoPreview.memoCardView.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeToDetailMemo(1)
+            findNavController().navigate(
+                action
             )
         }
     }

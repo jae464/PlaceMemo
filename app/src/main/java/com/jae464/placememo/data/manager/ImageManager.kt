@@ -51,7 +51,6 @@ object ImageManager {
         }
         input?.close()
         return sampleSize
-
     }
     fun resizeBitmapFromUri(uri: Uri, context: Context): Bitmap? {
         val input = context.contentResolver.openInputStream(uri)

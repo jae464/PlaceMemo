@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +72,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         map = googleMap
         map.apply {
             setMinZoomPreference(6.0f)
-            setMaxZoomPreference(14.0f)
+            setMaxZoomPreference(16.0f)
         }
         map.setOnMyLocationButtonClickListener(this)
         setUserLocation()
@@ -107,6 +108,9 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     override fun onMyLocationButtonClick(): Boolean {
         println("on my location Button click")
+        val currentLocation = getLocation()
+        Log.d("BaseMapFragment", "${currentLocation?.latitude.toString()} ${currentLocation?.longitude.toString()}")
+
 //        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 //        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 //            println("location매니저에 위치정보를 요청합니다.")
@@ -120,6 +124,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     private fun getLocation(): Location? {
         var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
         var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         println("${location?.latitude} ${location?.longitude}")
         return location

@@ -28,6 +28,7 @@ class HomeViewModel @Inject constructor(
 
     private val _memoAddress = MutableLiveData<String>()
     val memoAddress: LiveData<String> get() = _memoAddress
+
     fun getAllMemo() {
         viewModelScope.launch {
             _memoList.postValue(repository.getAllMemo())
