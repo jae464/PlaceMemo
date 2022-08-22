@@ -77,7 +77,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         binding.postToolBar.title = "게시글 업로드"
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)
         binding.postToolBar.setOnMenuItemClickListener {
-            // todo 게시글 저장
+
             when(it.itemId) {
                 R.id.save -> {
                     Toast.makeText(requireContext(),"저장버튼클릭", Toast.LENGTH_SHORT).show()

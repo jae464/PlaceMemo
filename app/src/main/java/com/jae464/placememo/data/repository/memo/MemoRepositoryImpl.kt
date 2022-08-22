@@ -14,7 +14,6 @@ class MemoRepositoryImpl @Inject constructor(
 ): MemoRepository {
     override suspend fun getMemo(id: Long): Memo = memoEntityToMemo(memoLocalDataSource.getMemo(id))
 
-    // todo Memo -> MemoEntity로 변환하여 saveMemo
     override suspend fun saveMemo(memo: Memo): Long {
         return memoLocalDataSource.saveMemo(memoToMemoEntity(memo))
     }

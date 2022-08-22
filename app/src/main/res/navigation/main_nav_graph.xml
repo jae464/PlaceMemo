@@ -25,6 +25,13 @@
         <action
             android:id="@+id/action_home_to_post"
             app:destination="@id/post" />
+        <action
+            android:id="@+id/action_home_to_detail_memo"
+            app:destination="@id/detail_memo">
+            <argument
+                android:name="memoId"
+                app:argType="long" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/post"
@@ -35,5 +42,10 @@
             android:name="ShowBottomNavigationView"
             android:defaultValue="false" />
     </fragment>
+    <fragment
+        android:id="@+id/detail_memo"
+        android:name="com.jae464.placememo.presentation.detail.DetailMemoFragment"
+        android:label="DetailMemoFragment"
+        tools:layout="@layout/fragment_detail_memo" />
 
 </navigation>
