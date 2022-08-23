@@ -33,6 +33,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
+    private var currentMemoId = -1L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -100,7 +101,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
         binding.memoPreview.memoCardView.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeToDetailMemo(1)
+            val action = HomeFragmentDirections.actionHomeToDetailMemo(currentMemoId)
             findNavController().navigate(
                 action
             )
@@ -139,6 +140,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
         currentMarker?.remove()
         val memo = marker.tag as Memo
+        currentMemoId = memo.id
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 15F)
         val imageList = ImageManager.loadMemoImage(memo.id)
         map.animateCamera(cameraUpdate, 200, null)
