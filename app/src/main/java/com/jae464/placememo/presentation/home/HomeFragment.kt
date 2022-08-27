@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.jae464.placememo.R
 import com.jae464.placememo.data.api.RetrofitClient
 import com.jae464.placememo.data.api.response.GeoResponse
+import com.jae464.placememo.data.api.response.RegionResponse
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.jae464.placememo.domain.model.post.Memo
@@ -27,7 +28,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @AndroidEntryPoint
-class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home), GoogleMap.OnMarkerClickListener {
+class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home),
+    GoogleMap.OnMarkerClickListener {
 
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var mapFragment: SupportMapFragment
@@ -60,9 +62,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun initAppBar() {
-        val appBarConfiguration = AppBarConfiguration(findNavController().graph, binding.drawerLayout)
+        val appBarConfiguration =
+            AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
     }
+
     private fun initListener() {
         map.setOnMapClickListener { it ->
             // 현재 보여지고 있는 메모가 있는 경우 해당 메모를 지운다.
@@ -78,7 +82,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             )
             println("Location List")
             currentMarker?.tag = "current"
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
+            val cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
             map.animateCamera(cameraUpdate, 500, null)
             viewModel.getAddressName(it.latitude, it.longitude)
             binding.postButton.visibility = View.VISIBLE
@@ -107,18 +112,19 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             )
         }
     }
-//
+
+    //
     private fun initObserver() {
         viewModel.memoList.observe(viewLifecycleOwner) {
             println("memoList Observer Activated")
-           it.forEach { memo ->
+            it.forEach { memo ->
                 println(memo.title)
                 val memoMarker = map.addMarker(
                     MarkerOptions()
                         .position(LatLng(memo.latitude, memo.longitude))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 )
-               memoMarker?.tag = memo
+                memoMarker?.tag = memo
             }
         }
 
@@ -141,7 +147,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         currentMarker?.remove()
         val memo = marker.tag as Memo
         currentMemoId = memo.id
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 15F)
+        val cameraUpdate =
+            CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 15F)
         val imageList = ImageManager.loadMemoImage(memo.id)
         map.animateCamera(cameraUpdate, 200, null)
         binding.memoPreview.memoCardView.visibility = View.VISIBLE
@@ -154,6 +161,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         Log.d("HomeFragment onMarkerClick", memo.title)
         return true
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
