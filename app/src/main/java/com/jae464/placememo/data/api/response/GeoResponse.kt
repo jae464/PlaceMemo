@@ -9,7 +9,7 @@ data class GeoResponse(
 
 data class ResultResponse(
     @SerializedName("name")
-    val convertName: String,
+    val name: String,
 
     @SerializedName("region")
     val region: RegionResponse
