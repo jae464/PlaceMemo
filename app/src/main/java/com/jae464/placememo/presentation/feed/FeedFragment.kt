@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.FragmentFeedBinding
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
-    private val feedListAdapter = FeedListAdapter()
+    private val feedListAdapter = FeedListAdapter(this::goToDeatilPage)
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,5 +35,12 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
             println(it)
             feedListAdapter.submitList(it.toMutableList())
         }
+    }
+
+    private fun goToDeatilPage(memoId: Long) {
+        val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
+        findNavController().navigate(
+            action
+        )
     }
 }
