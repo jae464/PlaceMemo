@@ -12,16 +12,20 @@ import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.home.HomeViewPagerAdapter
 import com.jae464.placememo.presentation.regionToString
 
-class FeedListAdapter: ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
+class FeedListAdapter(private val onClick: (Long) -> (Unit)): ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
 
     inner class ItemViewHolder(
         private val binding: ItemMemoPreviewBinding
     ): RecyclerView.ViewHolder(binding.root) {
+
         fun bind(memo: Memo) {
             println("FeedListAdapter")
             binding.titleTextView.text = memo.title
             binding.contentTextView.text = memo.content
             binding.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
+            binding.memoCardView.setOnClickListener {
+                onClick(memo.id)
+            }
             val imageList = ImageManager.loadMemoImage(memo.id)
             if (imageList != null) {
                 val viewPagerAdapter = HomeViewPagerAdapter(imageList)
