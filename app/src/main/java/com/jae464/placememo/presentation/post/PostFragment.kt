@@ -7,8 +7,11 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -69,6 +72,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         initAppBar()
         initListener()
         initObserver()
+        initSpinner()
     }
 
     private fun initAppBar() {
@@ -111,6 +115,29 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         viewModel.address.observe(viewLifecycleOwner) {
             binding.locationTextView.text = viewModel.getAddressName(it)
         }
+    }
+
+    private fun initSpinner() {
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.category_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.categorySpinner.adapter = adapter
+        }
+        binding.categorySpinner.onItemSelectedListener =
+            object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if (p0 != null) {
+                        Toast.makeText(requireContext(),p0.getItemAtPosition(p2).toString(),Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    return
+                }
+            }
     }
 
     private fun loadImage() {
