@@ -36,10 +36,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
+    private var category = 0
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) {
-        isGranted ->
+    ) { isGranted ->
         if (isGranted) {
             loadImage()
         } else {
@@ -52,12 +52,16 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         val image = it.data?.data
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 //            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
-            val bitmap = resizeBitmapFromUri(image ?: return@registerForActivityResult, requireContext()) ?: return@registerForActivityResult
+            val bitmap =
+                resizeBitmapFromUri(image ?: return@registerForActivityResult, requireContext())
+                    ?: return@registerForActivityResult
             println("변형된 bitmap 사이즈 : ${bitmap.density}")
             viewModel.setImageList(bitmap)
-        }
-        else {
-            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, image ?: return@registerForActivityResult)
+        } else {
+            val bitmap = MediaStore.Images.Media.getBitmap(
+                requireContext().contentResolver,
+                image ?: return@registerForActivityResult
+            )
             viewModel.setImageList(bitmap)
         }
     }
@@ -82,12 +86,12 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)
         binding.postToolBar.setOnMenuItemClickListener {
 
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.save -> {
-                    Toast.makeText(requireContext(),"저장버튼클릭", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "저장버튼클릭", Toast.LENGTH_SHORT).show()
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
-                    viewModel.saveMemo(0,title,content,latitude,longitude)
+                    viewModel.saveMemo(0, title, content, latitude, longitude, category)
                     viewModel.saveImage(0)
                     // 업로드 후 메인페이지로 이동
                     findNavController().popBackStack()
@@ -127,10 +131,15 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             binding.categorySpinner.adapter = adapter
         }
         binding.categorySpinner.onItemSelectedListener =
-            object: AdapterView.OnItemSelectedListener {
+            object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p0 != null) {
-                        Toast.makeText(requireContext(),p0.getItemAtPosition(p2).toString(),Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            p0.getItemAtPosition(p2).toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        category = p2
                     }
                 }
 

@@ -27,14 +27,15 @@ class PostViewModel @Inject constructor(
     private val _address = MutableLiveData<RegionResponse?>()
     val address: LiveData<RegionResponse?> get() = _address
 
-    private val memoId = MutableLiveData<Long>()
+    private var memoId: Long = -1
 
-    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double) {
+    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double, category: Int) {
         viewModelScope.launch {
             val region = _address.value
 
             val memo = Memo(
                 id, title, content, latitude, longitude,
+                category,
                 region?.area1?.name ?: "",
                 region?.area2?.name ?: "",
                 region?.area3?.name ?: ""
@@ -42,8 +43,8 @@ class PostViewModel @Inject constructor(
             println("저장 전 내용 확인합니다.")
             println("$id $title $content $latitude $longitude")
             println(imageList)
-            memoId.value = repository.saveMemo(memo)
-            saveImage(memoId.value!!)
+            memoId = repository.saveMemo(memo)
+            saveImage(memoId)
         }
     }
 

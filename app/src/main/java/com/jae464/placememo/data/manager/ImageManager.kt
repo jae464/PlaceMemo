@@ -1,9 +1,12 @@
 package com.jae464.placememo.data.manager
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.res.Resources
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import androidx.core.content.res.ResourcesCompat
 import java.io.File
 import java.io.FileOutputStream
 
@@ -81,6 +84,24 @@ object ImageManager {
         }
 
         return inSampleSize
+    }
+
+    fun changeColor(color: Int, resourceId: Int, context: Context): Bitmap {
+        val drawable = ResourcesCompat.getDrawable(context.resources, resourceId, null)
+        val bitmap = Bitmap.createBitmap(
+            drawable!!.intrinsicWidth,
+            drawable!!.intrinsicWidth,
+            Bitmap.Config.ARGB_8888
+        )
+        val paint = Paint()
+        val colorFilter = PorterDuffColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+        paint.colorFilter = colorFilter
+
+        val canvas = Canvas(bitmap)
+        canvas.drawBitmap(bitmap, 0f,0f,paint)
+
+        return bitmap
+
     }
 
 }
