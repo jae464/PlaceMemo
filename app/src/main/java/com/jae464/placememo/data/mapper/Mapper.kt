@@ -12,6 +12,7 @@ fun memoToMemoEntity(memo: Memo): MemoEntity {
         Date(),
         memo.latitude,
         memo.longitude,
+        memo.category,
         Region(memo.area1, memo.area2, memo.area3)
     )
 }
@@ -23,6 +24,7 @@ fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
         memoEntity.content,
         memoEntity.latitude,
         memoEntity.longitude,
+        memoEntity.category,
         memoEntity.region?.area1.toString(),
         memoEntity.region?.area2.toString(),
         memoEntity.region?.area3.toString()

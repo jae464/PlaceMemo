@@ -22,6 +22,7 @@ import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.base.BaseMapFragment
+import com.jae464.placememo.presentation.markerIconList
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,7 +57,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 16F))
         initListener()
         initObserver()
     }
@@ -83,7 +84,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             println("Location List")
             currentMarker?.tag = "current"
             val cameraUpdate =
-                CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15F)
+                CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16F)
             map.animateCamera(cameraUpdate, 500, null)
             viewModel.getAddressName(it.latitude, it.longitude)
             binding.postButton.visibility = View.VISIBLE
@@ -119,10 +120,13 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             println("memoList Observer Activated")
             it.forEach { memo ->
                 println(memo.title)
+                val resourceId = markerIconList[memo.category] ?: R.drawable.marker
+//                val icon = ImageManager.changeColor(0, resourceId, requireContext())
                 val memoMarker = map.addMarker(
                     MarkerOptions()
                         .position(LatLng(memo.latitude, memo.longitude))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        .icon(BitmapDescriptorFactory.fromResource(resourceId))
                 )
                 memoMarker?.tag = memo
             }
@@ -148,7 +152,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val memo = marker.tag as Memo
         currentMemoId = memo.id
         val cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 15F)
+            CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 16F)
         val imageList = ImageManager.loadMemoImage(memo.id)
         map.animateCamera(cameraUpdate, 200, null)
         binding.memoPreview.memoCardView.visibility = View.VISIBLE

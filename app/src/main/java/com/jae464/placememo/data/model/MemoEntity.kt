@@ -22,6 +22,8 @@ data class MemoEntity(
     val latitude: Double,
     @SerializedName("longitude")
     val longitude: Double,
+    @SerializedName("category")
+    val category: Int,
     @Embedded
     val region: Region? = null,
     @SerializedName("id")
