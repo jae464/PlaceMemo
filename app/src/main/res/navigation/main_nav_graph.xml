@@ -60,5 +60,9 @@
             android:name="memoId"
             app:argType="long"/>
     </fragment>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.jae464.placememo.LoginActivity"
+        android:label="LoginActivity" />
 
 </navigation>

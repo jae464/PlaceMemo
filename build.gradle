@@ -9,11 +9,13 @@ buildscript {
     ext.google_map_version = '18.0.2'
     ext.retrofit_version = '2.9.0'
     ext.okhttp_version = '4.10.0'
+    ext.google_service_version = '4.3.13'
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
         classpath "androidx.navigation.safeargs.kotlin:androidx.navigation.safeargs.kotlin.gradle.plugin:$nav_version"
+        classpath "com.google.gms:google-services:$google_service_version"
     }
 }
 
