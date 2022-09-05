@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.jae464.placememo.databinding.ActivityMainBinding
 import com.jae464.placememo.presentation.feed.FeedFragment
 import com.jae464.placememo.presentation.home.HomeFragment

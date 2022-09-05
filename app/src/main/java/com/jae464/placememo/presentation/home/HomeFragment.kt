@@ -66,6 +66,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val appBarConfiguration =
             AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
+        binding.homeToolBar.title = "PlaceMemo"
     }
 
     private fun initListener() {
