@@ -8,6 +8,7 @@
         tools:context=".presentation.mypage.MyPageFragment">
 
         <TextView
+            android:id="@+id/userEmailTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -15,7 +16,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="MyPage" />
+            tools:text="사용자정보" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="로그아웃"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -16,7 +16,6 @@ class ImageListAdapter: ListAdapter<Bitmap, ImageListAdapter.ItemViewHolder>(dif
             fun bind(bitmap: Bitmap) {
                 binding.memoImageView.setImageBitmap(bitmap)
             }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -37,7 +36,6 @@ class ImageListAdapter: ListAdapter<Bitmap, ImageListAdapter.ItemViewHolder>(dif
             override fun areContentsTheSame(oldItem: Bitmap, newItem: Bitmap): Boolean {
                 return false
             }
-
         }
     }
 }
