@@ -43,8 +43,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         println("onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
-        initAppBar()
         viewModel.getAllMemo()
+        viewModel.checkLogin()
+        initAppBar()
 //        println(viewModel.memoList.value)
     }
 
@@ -140,6 +141,15 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         viewModel.memoAddress.observe(viewLifecycleOwner) {
             binding.memoPreview.locationTextView.text = it
+        }
+
+        viewModel.isLoggedIn.observe(viewLifecycleOwner) {
+            if(it == true) {
+                binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu)
+            }
+            else {
+                binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
+            }
         }
     }
 
