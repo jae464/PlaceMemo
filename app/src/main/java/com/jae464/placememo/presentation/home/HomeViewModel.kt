@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.jae464.placememo.R
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.MemoRepository
@@ -19,7 +21,6 @@ class HomeViewModel @Inject constructor(
     private val repository: MemoRepository,
     private val addressRepository: AddressRepository
 ): ViewModel() {
-
     private val _memoList: MutableLiveData<List<Memo>> by lazy { MutableLiveData<List<Memo>>() }
     val memoList: LiveData<List<Memo>> = _memoList
 
@@ -28,6 +29,11 @@ class HomeViewModel @Inject constructor(
 
     private val _memoAddress = MutableLiveData<String>()
     val memoAddress: LiveData<String> get() = _memoAddress
+
+    private val _isLoggedIn = MutableLiveData<Boolean>()
+    val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
+
+    private val _drawerResource = MutableLiveData<Int>()
 
     fun getAllMemo() {
         viewModelScope.launch {
@@ -47,5 +53,11 @@ class HomeViewModel @Inject constructor(
             val addressName = addressRepository.getAddress(memo.longitude, memo.latitude)
             _memoAddress.postValue(addressRepository.addressToString(addressName))
         }
+    }
+
+    fun checkLogin() {
+        val user = FirebaseAuth.getInstance().currentUser
+        Log.d("HomeViewModel", user.toString())
+        _isLoggedIn.postValue(user != null)
     }
 }
