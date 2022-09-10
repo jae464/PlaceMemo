@@ -1,7 +1,7 @@
 package com.jae464.placememo.presentation.mypage
-
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -12,16 +12,27 @@ import com.jae464.placememo.databinding.FragmentMyPageBinding
 import com.jae464.placememo.presentation.base.BaseFragment
 
 class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
+
+    private val user = FirebaseAuth.getInstance().currentUser
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
-        val user = FirebaseAuth.getInstance().currentUser
-        // 로그인 상태가 아닐 때 로그인 화면으로 이동
+        initView()
+
+    }
+
+    private fun initView() {
+        Log.d("MyPageFragment", user?.email.toString())
         if (user == null) {
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
+            binding.loginViewGroup.visibility = View.GONE
+            binding.logoutViewGroup.visibility = View.VISIBLE
         }
-        binding.userEmailTextView.text = user?.email
+        else {
+            binding.logoutViewGroup.visibility = View.GONE
+            binding.loginViewGroup.visibility = View.VISIBLE
+            binding.nickNameTextView.text = user.email
+        }
     }
 
     private fun initListener() {
@@ -31,5 +42,11 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
         }
+
+        binding.loginButton.setOnClickListener {
+            val intent = Intent(context, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
