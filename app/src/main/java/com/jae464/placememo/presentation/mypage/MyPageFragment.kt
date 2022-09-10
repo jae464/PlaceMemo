@@ -2,13 +2,10 @@ package com.jae464.placememo.presentation.mypage
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.jae464.placememo.LoginActivity
+import com.jae464.placememo.presentation.login.LoginActivity
 import com.jae464.placememo.MainActivity
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.FragmentMyPageBinding

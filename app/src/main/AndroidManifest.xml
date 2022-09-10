@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LoginActivity"
+        <activity android:name=".presentation.login.LoginActivity"
             android:exported="true">
 
         </activity>
