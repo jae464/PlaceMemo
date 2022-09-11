@@ -14,6 +14,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import com.jae464.placememo.R
 import com.jae464.placememo.data.api.RetrofitClient
 import com.jae464.placememo.data.api.response.GeoResponse
@@ -37,6 +39,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
     private var currentMemoId = -1L
+    private var user = FirebaseAuth.getInstance().currentUser
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,9 +47,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
         viewModel.getAllMemo()
-        viewModel.checkLogin()
         initAppBar()
-//        println(viewModel.memoList.value)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -68,6 +69,13 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
         binding.homeToolBar.title = "PlaceMemo"
+        if (user == null) {
+            binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
+        }
+        else {
+            binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu)
+        }
+
     }
 
     private fun initListener() {
@@ -141,15 +149,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         viewModel.memoAddress.observe(viewLifecycleOwner) {
             binding.memoPreview.locationTextView.text = it
-        }
-
-        viewModel.isLoggedIn.observe(viewLifecycleOwner) {
-            if(it == true) {
-                binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu)
-            }
-            else {
-                binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
-            }
         }
     }
 

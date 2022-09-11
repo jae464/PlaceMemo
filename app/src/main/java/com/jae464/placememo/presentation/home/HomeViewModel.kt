@@ -30,11 +30,6 @@ class HomeViewModel @Inject constructor(
     private val _memoAddress = MutableLiveData<String>()
     val memoAddress: LiveData<String> get() = _memoAddress
 
-    private val _isLoggedIn = MutableLiveData<Boolean>()
-    val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
-
-    private val _drawerResource = MutableLiveData<Int>()
-
     fun getAllMemo() {
         viewModelScope.launch {
             _memoList.postValue(repository.getAllMemo())
@@ -53,11 +48,5 @@ class HomeViewModel @Inject constructor(
             val addressName = addressRepository.getAddress(memo.longitude, memo.latitude)
             _memoAddress.postValue(addressRepository.addressToString(addressName))
         }
-    }
-
-    fun checkLogin() {
-        val user = FirebaseAuth.getInstance().currentUser
-        Log.d("HomeViewModel", user.toString())
-        _isLoggedIn.postValue(user != null)
     }
 }
