@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.jae464.placememo.data.db.MemoDao
 import com.jae464.placememo.data.db.MemoDatabase
+import com.jae464.placememo.data.repository.login.remote.LoginRemoteDataSource
+import com.jae464.placememo.data.repository.login.remote.LoginRemoteDataSourceImpl
 import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSourceImpl
 import dagger.Module
@@ -37,5 +39,11 @@ class LocalDataModule {
     @Singleton
     fun provideMemoDao(memoDatabase: MemoDatabase): MemoDao{
         return memoDatabase.memoDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginRemoteDataSource(): LoginRemoteDataSource {
+        return LoginRemoteDataSourceImpl()
     }
 }
