@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jae464.placememo.domain.repository.LoginRepository
@@ -12,8 +13,11 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ): ViewModel() {
     fun getUserInfo(uid: String) {
+
         viewModelScope.launch {
-            loginRepository.getUserInfo(uid)
+            val result = loginRepository.getUserInfo(uid)
+            Log.d("LoginViewModel", result.toString())
         }
+
     }
 }
