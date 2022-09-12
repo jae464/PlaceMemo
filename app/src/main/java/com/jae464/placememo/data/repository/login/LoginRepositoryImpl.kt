@@ -21,4 +21,8 @@ class LoginRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(uid: String): User? {
         return userEntityToUser(loginRemoteDataSource.getUserInfoWithUid(uid))
     }
+
+    override suspend fun checkNicknameAvailable(nickname: String): Boolean {
+        return loginRemoteDataSource.checkNicknameAvailable(nickname)
+    }
 }

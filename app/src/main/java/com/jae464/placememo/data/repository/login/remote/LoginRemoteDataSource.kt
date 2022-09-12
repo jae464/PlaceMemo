@@ -8,4 +8,5 @@ import com.jae464.placememo.data.model.UserEntity
 interface LoginRemoteDataSource {
     suspend fun getUserInfoWithUid(uid: String): UserEntity?
     suspend fun setUserInfo(user: UserEntity)
+    suspend fun checkNicknameAvailable(nickname: String): Boolean
 }
