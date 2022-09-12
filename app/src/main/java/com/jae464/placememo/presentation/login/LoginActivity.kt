@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import com.jae464.placememo.MainActivity
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.ActivityLoginBinding
+import com.jae464.placememo.domain.model.login.User
 import com.jae464.placememo.presentation.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
     private lateinit var client: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
-    private val fireStore = Firebase.firestore
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +32,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         auth = FirebaseAuth.getInstance()
         setGoogleLogin()
         initListener()
+        initObserver()
     }
 
     private fun setGoogleLogin() {
@@ -78,38 +79,31 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     // 인증에 성공한 후, 현재 로그인된 유저의 정보를 가져올 수 있습니다.
                     val email = auth.currentUser?.email
                     Log.d("LoginActivity", email.toString())
-                    val user = hashMapOf(
-                        "uid" to auth.currentUser?.uid,
-                        "email" to auth.currentUser?.email
-                    )
                     viewModel.getUserInfo(auth.currentUser?.uid.toString())
-//                    // 사용자 조회 후 없으면 저장
-//                    fireStore.collection("users")
-//                        .document(auth.currentUser?.uid ?: "")
-//                        .get()
-//                        .addOnSuccessListener {
-//                            Log.d("LoginActivity", it.data.toString())
-//                            // Firebase Store에 해당 유저 정보가 없는 경우. 닉네임 받아서 넣어주기.
-//                            if (it.data == null) {
-//                                fireStore.collection("users")
-//                                    .document(auth.currentUser?.uid.toString())
-//                                    .set(user)
-//                                    .addOnSuccessListener {
-//                                        goToMain()
-//                                    }
-//                                    .addOnFailureListener {  }
-//                            }
-//                            else {
-//                                Log.d("LoginActivity","이미 존재하는 사용자입니다.")
-//                                goToMain()
-//                            }
-//                        }
-//                        .addOnFailureListener {
-//                            Log.e("LoginActivity", "사용자 조회에 실패했습니다.")
-//                            goToMain()
-//                        }
                 }
             }
+    }
+
+    private fun initObserver() {
+        viewModel.user.observe(this) {
+            Log.d("LoginActivity", it.toString())
+            if (it == null) {
+                println("파이어스토어에 등록되지 않은 유저입니다.")
+                // todo FireStore에 유저 정보 등록하기
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                if (currentUser == null) {
+                    Log.e("LoginActivity", "현재 유저 가져오기 실패")
+                    return@observe
+                }
+                val user = User(currentUser.uid, currentUser.email ?: "")
+                viewModel.setUserInfo(user)
+                Log.d("LoginActivity", "ViewModel보다 먼저 시작되는지 확인")
+                goToMain()
+            }
+            else {
+                goToMain()
+            }
+        }
     }
 
     private fun goToMain() {
