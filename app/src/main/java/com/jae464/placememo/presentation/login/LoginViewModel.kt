@@ -18,6 +18,9 @@ class LoginViewModel @Inject constructor(
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> get() = _user
 
+    private val _nicknameCheck = MutableLiveData<Boolean>()
+    val nicknameCheck: LiveData<Boolean> get() = _nicknameCheck
+
     fun getUserInfo(uid: String) {
         viewModelScope.launch {
             val userInfo = loginRepository.getUserInfo(uid)
@@ -30,6 +33,12 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loginRepository.setUserInfo(user)
             Log.d("LoginViewModel", "setUser 완료")
+        }
+    }
+
+    fun checkNicknameAvailable(nickname: String) {
+        viewModelScope.launch {
+            _nicknameCheck.postValue(loginRepository.checkNicknameAvailable(nickname))
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.fragment.app.DialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,10 +23,10 @@ import com.jae464.placememo.presentation.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
+class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login),
+SettingNicknameDialog.NoticeDialogListener {
     private lateinit var client: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
-    private val fireStore = Firebase.firestore
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,13 +96,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     Log.e("LoginActivity", "현재 유저 가져오기 실패")
                     return@observe
                 }
-                val user = User(currentUser.uid, currentUser.email ?: "")
-                viewModel.setUserInfo(user)
-                Log.d("LoginActivity", "ViewModel보다 먼저 시작되는지 확인")
-                goToMain()
+                showNicknameDialog()
+//                val user = User(currentUser.uid, currentUser.email ?: "")
+//                SettingNicknameDialog().show(supportFragmentManager, "nickname")
+//                viewModel.setUserInfo(user)
+//                Log.d("LoginActivity", "ViewModel보다 먼저 시작되는지 확인")
+//                goToMain()
             }
             else {
-                goToMain()
+//                goToMain()
             }
         }
     }
@@ -110,5 +113,19 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun showNicknameDialog() {
+        val dialog = SettingNicknameDialog()
+        dialog.show(supportFragmentManager, "SettingNicknameDialogFragment")
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment, nickname: String) {
+        println("onDialogPositiveClick")
+        println(nickname)
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        TODO("Not yet implemented")
     }
 }

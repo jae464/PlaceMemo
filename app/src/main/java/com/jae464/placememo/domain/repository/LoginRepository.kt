@@ -6,4 +6,5 @@ interface LoginRepository {
     suspend fun setUserInfo(user: User)
     fun doLogout()
     suspend fun getUserInfo(uid: String): User?
+    suspend fun checkNicknameAvailable(nickname: String): Boolean
 }
