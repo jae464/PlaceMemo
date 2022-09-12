@@ -2,8 +2,6 @@ package com.jae464.placememo.data.mapper
 
 import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.data.model.Region
-import com.jae464.placememo.data.model.UserEntity
-import com.jae464.placememo.domain.model.login.User
 import com.jae464.placememo.domain.model.post.Memo
 import java.util.*
 
@@ -30,20 +28,5 @@ fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
         memoEntity.region?.area1.toString(),
         memoEntity.region?.area2.toString(),
         memoEntity.region?.area3.toString()
-    )
-}
-
-fun userToUserEntity(user: User): UserEntity {
-    return UserEntity(
-        user.uid,
-        user.email
-    )
-}
-
-fun userEntityToUser(userEntity: UserEntity?): User? {
-    if (userEntity == null) return null
-    return User(
-        userEntity.uid,
-        userEntity.email
     )
 }
