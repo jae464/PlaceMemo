@@ -13,7 +13,7 @@ import okhttp3.internal.wait
 class LoginRemoteDataSourceImpl : LoginRemoteDataSource {
     private val firestore = Firebase.firestore
 
-    override suspend fun getUserInfoWithUid(uid: String): UserEntity? {
+    override suspend fun getUserInfoWithUid(uid: String) {
         var userInfo: UserEntity? = null
         val userRef = firestore.collection("users")
             .document(uid)
@@ -21,24 +21,20 @@ class LoginRemoteDataSourceImpl : LoginRemoteDataSource {
         userRef.get()
             .addOnSuccessListener {
                 Log.d("LoginRemoteDataSourceImpl", it.data.toString())
-                if (it.data != null) {
-                    userInfo = UserEntity(it.data?.get("uid").toString(),
-                    it.data?.get("email").toString())
-                }
+                userInfo = UserEntity(it.data?.get("uid").toString(),
+                it.data?.get("email").toString())
             }
             .addOnFailureListener {
 
             }
             .await()
 
+
         Log.d("LoginRemoteDataSourceImpl", "$userInfo")
-        return userInfo
 
     }
 
     override suspend fun setUserInfo(user: UserEntity) {
-        val userDoc = firestore.collection("users")
-            .document(user.uid)
-        userDoc.set(user)
+
     }
 }
