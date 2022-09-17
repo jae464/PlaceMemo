@@ -101,7 +101,7 @@
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         app:layout_constraintBottom_toTopOf="@id/contentEditText"
                         app:layout_constraintEnd_toStartOf="@id/categorySpinner"
                         app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
                     <Spinner
                         android:id="@+id/categorySpinner"
                         android:layout_width="160dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@id/contentEditText"
                         app:layout_constraintStart_toEndOf="@+id/categoryTextView"
