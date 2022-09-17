@@ -22,8 +22,11 @@ class LoginRemoteDataSourceImpl : LoginRemoteDataSource {
         userRef.get()
             .addOnSuccessListener {
                 if (it.data != null) {
-                    userInfo = UserEntity(it.data?.get("uid").toString(),
-                    it.data?.get("email").toString())
+                    userInfo = UserEntity(
+                        it.data?.get("uid").toString(),
+                        it.data?.get("email").toString(),
+                        it.data?.get("nickname").toString()
+                    )
                 }
             }
             .addOnFailureListener {

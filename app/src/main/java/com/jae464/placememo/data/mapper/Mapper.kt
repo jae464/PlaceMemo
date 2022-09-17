@@ -36,7 +36,8 @@ fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
 fun userToUserEntity(user: User): UserEntity {
     return UserEntity(
         user.uid,
-        user.email
+        user.email,
+        user.nickname
     )
 }
 
@@ -44,6 +45,7 @@ fun userEntityToUser(userEntity: UserEntity?): User? {
     if (userEntity == null) return null
     return User(
         userEntity.uid,
-        userEntity.email
+        userEntity.email,
+        userEntity.nickname
     )
 }
