@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.FragmentFeedBinding
@@ -26,7 +28,13 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         super.onViewCreated(view, savedInstanceState)
         binding.feedRecyclerView.adapter = feedListAdapter
         initObserver()
+        initAppBar()
         viewModel.getAllMemo()
+    }
+
+    private fun initAppBar() {
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        binding.postToolBar.setupWithNavController(findNavController(), appBarConfiguration)
     }
 
     private fun initObserver() {
