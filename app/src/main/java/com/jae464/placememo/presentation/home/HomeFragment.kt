@@ -75,7 +75,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         else {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu)
         }
-
     }
 
     private fun initListener() {
