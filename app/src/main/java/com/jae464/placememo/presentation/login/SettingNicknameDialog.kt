@@ -63,31 +63,16 @@ class SettingNicknameDialog : DialogFragment() {
         initObserver()
     }
 
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        Log.d("SettingNicknameDialog", "onCreateDialog")
-//        return activity?.let {
-//            val builder = AlertDialog.Builder(it)
-//            val inflater = requireActivity().layoutInflater
-//            val layout = inflater.inflate(R.layout.dialog_setting_nickname, null)
-//            nicknameEditText = layout.findViewById(R.id.nicknameEditText)
-//            button = layout.findViewById(R.id.checkButton)
-//            initListener()
-//            builder.setView(layout)
-//                .setPositiveButton("저장",
-//                    DialogInterface.OnClickListener { dialog, id ->
-//                        Log.d("SetSettingNicknameDialog", "nickname : ${nicknameEditText.text}")
-//                        viewModel.checkNicknameAvailable(nicknameEditText.text.toString())
-//                        listener.onDialogPositiveClick(this, nicknameEditText.text.toString())
-//                    })
-//            builder.create()
-//        } ?: throw IllegalStateException("no")
-//    }
-
     private fun initListener() {
         binding.checkButton.setOnClickListener {
             println("sendButton click")
             println(binding.nicknameEditText.text)
             viewModel.checkNicknameAvailable(binding.nicknameEditText.text.toString())
+        }
+
+        binding.sendButton.setOnClickListener {
+            listener.onDialogPositiveClick(this, binding.nicknameEditText.text.toString())
+            dismiss()
         }
     }
 

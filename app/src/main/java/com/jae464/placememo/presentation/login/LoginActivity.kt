@@ -97,14 +97,9 @@ SettingNicknameDialog.NoticeDialogListener {
                     return@observe
                 }
                 showNicknameDialog()
-//                val user = User(currentUser.uid, currentUser.email ?: "")
-//                SettingNicknameDialog().show(supportFragmentManager, "nickname")
-//                viewModel.setUserInfo(user)
-//                Log.d("LoginActivity", "ViewModel보다 먼저 시작되는지 확인")
-//                goToMain()
             }
             else {
-//                goToMain()
+                goToMain()
             }
         }
     }
@@ -123,6 +118,13 @@ SettingNicknameDialog.NoticeDialogListener {
     override fun onDialogPositiveClick(dialog: DialogFragment, nickname: String) {
         println("onDialogPositiveClick")
         println(nickname)
+        // TODO Firestore 에 유저 정보 업로드하기
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+        if (currentUser.email == null) return
+        val user = User(currentUser.uid, currentUser.email!!, nickname)
+        viewModel.setUserInfo(user)
+        goToMain()
+
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
