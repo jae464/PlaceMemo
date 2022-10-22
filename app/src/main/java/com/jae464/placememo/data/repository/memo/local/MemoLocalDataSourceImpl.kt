@@ -18,4 +18,9 @@ class MemoLocalDataSourceImpl @Inject constructor(
     override suspend fun saveMemo(memo: MemoEntity): Long {
         return memoDao.insertMemo(memo)
     }
+
+    override suspend fun getMemoByCategory(category: Int): List<MemoEntity> {
+        return memoDao.getMemoByCategory(category)
+    }
+
 }
