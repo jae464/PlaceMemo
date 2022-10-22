@@ -26,6 +26,14 @@ class MemoRepositoryImpl @Inject constructor(
         return memoList
     }
 
+    override suspend fun getMemoByCategory(category: Int): List<Memo> {
+        val memoList = mutableListOf<Memo>()
+        memoLocalDataSource.getMemoByCategory(category).forEach {
+            memoList.add(memoEntityToMemo(it))
+        }
+        return memoList
+    }
+
     override fun saveImage(imageList: List<Bitmap>, memoId: Long) {
         ImageManager.saveImage(imageList, memoId)
     }

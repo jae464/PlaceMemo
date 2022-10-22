@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.home
 
+import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentHomeBinding
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.base.BaseMapFragment
+import com.jae464.placememo.presentation.login.LoginActivity
 import com.jae464.placememo.presentation.markerIconList
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
@@ -71,8 +73,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         binding.homeToolBar.title = "PlaceMemo"
         if (user == null) {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
-        }
-        else {
+        } else {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu)
         }
     }
@@ -121,6 +122,36 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                 action
             )
         }
+
+        binding.chipGroupType.setOnCheckedStateChangeListener { group, checkedIds ->
+            // 모든 칩이 체크 해제되어 있는 경우 전체에 다시 체크함
+            println(checkedIds)
+            if (checkedIds.isEmpty()) {
+                binding.chipTypeAll.isChecked = true
+                return@setOnCheckedStateChangeListener
+            }
+
+            if (checkedIds.size > 1 && checkedIds.contains(R.id.chip_type_all)) {
+                binding.chipTypeAll.isChecked = false
+                return@setOnCheckedStateChangeListener
+            }
+        }
+
+        binding.chipTypeAll.setOnClickListener {
+            clearChipGroup()
+            binding.chipTypeAll.isChecked = true
+        }
+
+        binding.drawerNavigationView.setNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.login -> {
+                    val intent = Intent(context, LoginActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     //
@@ -149,6 +180,14 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         viewModel.memoAddress.observe(viewLifecycleOwner) {
             binding.memoPreview.locationTextView.text = it
         }
+
+    }
+
+    private fun clearChipGroup() {
+        binding.chipTypeFood.isChecked = false
+        binding.chipTypeCafe.isChecked = false
+        binding.chipTypeHotel.isChecked = false
+        binding.chipTypeOther.isChecked = false
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {

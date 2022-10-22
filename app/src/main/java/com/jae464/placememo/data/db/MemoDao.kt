@@ -18,4 +18,7 @@ interface MemoDao {
    @Query("SELECT * FROM memo")
    suspend fun getAllMemo(): List<MemoEntity>
 
+   @Query("SELECT * FROM memo WHERE category = :category")
+   suspend fun getMemoByCategory(category: Int): List<MemoEntity>
+
 }
