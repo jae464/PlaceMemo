@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -32,11 +33,14 @@ import kotlin.properties.Delegates
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
+    private val TAG = "PostFragment"
     private val viewModel: PostViewModel by viewModels()
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
     private var category = 0
+    private var imageUrlList = mutableListOf<Uri>()
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -50,6 +54,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         ActivityResultContracts.StartActivityForResult()
     ) {
         val image = it.data?.data
+        imageUrlList.add(image!!)
+        Log.d(TAG, image.toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 //            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
             val bitmap =
@@ -91,7 +97,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     Toast.makeText(requireContext(), "저장버튼클릭", Toast.LENGTH_SHORT).show()
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
-                    viewModel.saveMemo(0, title, content, latitude, longitude, category)
+                    viewModel.saveMemo(0, title, content, latitude, longitude, category, imageUrlList)
                     viewModel.saveImage(0)
                     // 업로드 후 메인페이지로 이동
                     findNavController().popBackStack()

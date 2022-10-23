@@ -52,9 +52,11 @@ object ImageManager {
             BitmapFactory.decodeStream(input, null, this)
             sampleSize = calculateInSampleSize(this)
         }
+
         input?.close()
         return sampleSize
     }
+
     fun resizeBitmapFromUri(uri: Uri, context: Context): Bitmap? {
         val input = context.contentResolver.openInputStream(uri)
         var bitmap: Bitmap?
@@ -101,7 +103,6 @@ object ImageManager {
         canvas.drawBitmap(bitmap, 0f,0f,paint)
 
         return bitmap
-
     }
 
 }
