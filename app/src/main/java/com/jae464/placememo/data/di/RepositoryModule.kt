@@ -6,6 +6,7 @@ import com.jae464.placememo.data.repository.login.LoginRepositoryImpl
 import com.jae464.placememo.data.repository.login.remote.LoginRemoteDataSource
 import com.jae464.placememo.data.repository.memo.MemoRepositoryImpl
 import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSource
+import com.jae464.placememo.data.repository.memo.remote.MemoRemoteDataSource
 import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.LoginRepository
 import com.jae464.placememo.domain.repository.MemoRepository
@@ -21,9 +22,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideMemoRepository(
-        memoLocalDataSource: MemoLocalDataSource
+        memoLocalDataSource: MemoLocalDataSource,
+        memoRemoteDataSource: MemoRemoteDataSource
     ): MemoRepository {
-        return MemoRepositoryImpl(memoLocalDataSource)
+        return MemoRepositoryImpl(memoLocalDataSource, memoRemoteDataSource)
     }
 
     @Provides
