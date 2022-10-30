@@ -3,23 +3,22 @@ package com.jae464.placememo.data.di
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.jae464.placememo.data.repository.memo.remote.MemoRemoteDataSource
-import com.jae464.placememo.data.repository.memo.remote.MemoRemoteDataSourceImpl
-import dagger.Binds
+import com.jae464.placememo.data.api.GeoService
+import com.jae464.placememo.data.api.RetrofitClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-class RemoteDataModule {
+@InstallIn(SingletonComponent::class)
+class AppModule {
 
     @Singleton
     @Provides
-    fun provideMemoRemoteDataSource(firestore: FirebaseFirestore): MemoRemoteDataSource {
-        return MemoRemoteDataSourceImpl(firestore)
+    fun provideGeoService(): GeoService {
+        return RetrofitClient.geoService
     }
 
     @Singleton
@@ -27,4 +26,5 @@ class RemoteDataModule {
     fun provideFireStore(): FirebaseFirestore {
         return Firebase.firestore
     }
+
 }

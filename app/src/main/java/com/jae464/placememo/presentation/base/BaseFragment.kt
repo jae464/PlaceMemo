@@ -1,6 +1,7 @@
 package com.jae464.placememo.presentation.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment() {
 
+    private val TAG: String = "BaseFragment"
     protected lateinit var binding: T
 
     override fun onCreateView(

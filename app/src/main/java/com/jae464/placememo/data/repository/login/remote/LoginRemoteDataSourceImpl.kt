@@ -2,6 +2,7 @@ package com.jae464.placememo.data.repository.login.remote
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.jae464.placememo.data.model.UserEntity
@@ -10,9 +11,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import okhttp3.internal.wait
+import javax.inject.Inject
 
-class LoginRemoteDataSourceImpl : LoginRemoteDataSource {
-    private val firestore = Firebase.firestore
+class LoginRemoteDataSourceImpl @Inject constructor(
+    private val firestore: FirebaseFirestore
+) : LoginRemoteDataSource {
+
 
     override suspend fun getUserInfoWithUid(uid: String): UserEntity? {
         var userInfo: UserEntity? = null

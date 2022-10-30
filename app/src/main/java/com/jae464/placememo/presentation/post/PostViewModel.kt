@@ -52,6 +52,7 @@ class PostViewModel @Inject constructor(
                 val imageFileName = "${user?.uid}_${timeStamp}_${i}.jpg"
                 imageFileNameList.add(imageFileName)
             }
+
             val memo = Memo(
                 id, title, content, latitude, longitude,
                 category,
@@ -60,6 +61,7 @@ class PostViewModel @Inject constructor(
                 region?.area3?.name ?: "",
                 imageFileNameList
             )
+
             println("저장 전 내용 확인합니다.")
             println("$id $title $content $latitude $longitude")
             println(imageList)
