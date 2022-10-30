@@ -4,7 +4,7 @@ import com.jae464.placememo.data.model.Region
 import java.util.*
 
 data class MemoDTO(
-    val userId: String,
+    val userId: String, // Firebase Store 에 저장된 user의 uid
     val title: String,
     val content: String,
     val createdAt: Date,

@@ -5,7 +5,9 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -36,6 +38,8 @@ import retrofit2.Response
 class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home),
     GoogleMap.OnMarkerClickListener {
 
+    private val TAG: String = "HomeFragment"
+
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null
@@ -45,7 +49,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("onViewCreated")
+        Log.d(TAG,"onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
         viewModel.getAllMemo()
@@ -53,7 +57,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     override fun onMapReady(map: GoogleMap) {
-        println("onMapReady")
+        Log.d(TAG, "onMapReady")
         super.onMapReady(map)
         val seoul = LatLng(37.554891, 126.970814)
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
@@ -91,7 +95,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     .position(LatLng(it.latitude, it.longitude))
                     .title("주소")
             )
-            println("Location List")
+            Log.d(TAG, "Location List")
             currentMarker?.tag = "current"
             val cameraUpdate =
                 CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16F)
@@ -125,7 +129,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         binding.chipGroupType.setOnCheckedStateChangeListener { group, checkedIds ->
             // 모든 칩이 체크 해제되어 있는 경우 전체에 다시 체크함
-            println(checkedIds)
+            Log.d(TAG, checkedIds.toString())
             if (checkedIds.isEmpty()) {
                 binding.chipTypeAll.isChecked = true
                 return@setOnCheckedStateChangeListener
@@ -157,9 +161,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         viewModel.memoList.observe(viewLifecycleOwner) {
-            println("memoList Observer Activated")
+            Log.d(TAG, "memoList Observer Activated")
             it.forEach { memo ->
-                println(memo.title)
+                Log.d(TAG, memo.title)
                 val resourceId = markerIconList[memo.category] ?: R.drawable.marker
 //                val icon = ImageManager.changeColor(0, resourceId, requireContext())
                 val memoMarker = map.addMarker(

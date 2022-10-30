@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
+    private val TAG: String = "FeedFragment"
     private val feedListAdapter = FeedListAdapter(this::goToDeatilPage)
     private val viewModel: FeedViewModel by viewModels()
 
