@@ -65,7 +65,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 16F))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 36F))
         initListener()
         initObserver()
     }
@@ -119,6 +119,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             )
         }
 
+        binding.currentLocationButton.setOnClickListener {
+            val currentLocation = getLocation()
+            Log.d("BaseMapFragment", "${currentLocation?.latitude.toString()} ${currentLocation?.longitude.toString()}")
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 16f))
+        }
         // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
         binding.memoPreview.memoCardView.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeToDetailMemo(currentMemoId)

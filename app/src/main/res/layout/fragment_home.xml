@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -33,6 +34,8 @@
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/homeToolBar"
+                    android:background="@color/blue_200"
+                    app:titleTextColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:fitsSystemWindows="true"
@@ -108,6 +111,15 @@
                     android:text="기타" />
 
             </com.google.android.material.chip.ChipGroup>
+
+            <Button
+                android:id="@+id/currentLocationButton"
+                android:text="현위치"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/postButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <ImageView
                 android:id="@+id/postButton"
