@@ -17,13 +17,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class LocalDataModule {
-
-//    @Provides
-//    @Singleton
-//    fun provideMemoLocalDataSource(memoDao: MemoDao):MemoLocalDataSource {
-//        return MemoLocalDataSourceImpl(memoDao)
-//    }
+class LocalDataBaseModule {
 
     @Provides
     @Singleton
@@ -38,13 +32,8 @@ class LocalDataModule {
 
     @Provides
     @Singleton
-    fun provideMemoDao(memoDatabase: MemoDatabase): MemoDao{
+    fun provideMemoDao(memoDatabase: MemoDatabase): MemoDao {
         return memoDatabase.memoDao()
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideLoginRemoteDataSource(): LoginRemoteDataSource {
-//        return LoginRemoteDataSourceImpl()
-//    }
 }

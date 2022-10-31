@@ -36,26 +36,4 @@ interface RepositoryModule {
         loginRepositoryImpl: LoginRepositoryImpl
     ): LoginRepository
 
-//    @Provides
-//    @Singleton
-//    fun provideMemoRepository(
-//        memoLocalDataSource: MemoLocalDataSource,
-//        memoRemoteDataSource: MemoRemoteDataSource
-//    ): MemoRepository {
-//        return MemoRepositoryImpl(memoLocalDataSource, memoRemoteDataSource)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideAddressRepository(): AddressRepository {
-//        return AddressRepositoryImpl(RetrofitClient.geoService)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideLoginRepository(
-//        loginRemoteDataSource: LoginRemoteDataSource
-//    ): LoginRepository {
-//        return LoginRepositoryImpl(loginRemoteDataSource)
-//    }
 }

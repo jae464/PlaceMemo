@@ -28,15 +28,4 @@ interface RemoteDataSourceModule {
         memoRemoteDataSourceImpl: MemoRemoteDataSourceImpl
     ): MemoRemoteDataSource
 
-//    @Singleton
-//    @Provides
-//    fun provideFireStore(): FirebaseFirestore {
-//        return Firebase.firestore
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun provideMemoRemoteDataSource(firestore: FirebaseFirestore): MemoRemoteDataSource {
-//        return MemoRemoteDataSourceImpl(firestore)
-//    }
 }
