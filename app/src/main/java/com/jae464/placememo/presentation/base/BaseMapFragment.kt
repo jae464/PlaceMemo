@@ -22,10 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
@@ -75,6 +72,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
             setMinZoomPreference(6.0f)
             setMaxZoomPreference(16.0f)
         }
+        map.uiSettings.isMapToolbarEnabled = false
         setUserLocation()
     }
 
