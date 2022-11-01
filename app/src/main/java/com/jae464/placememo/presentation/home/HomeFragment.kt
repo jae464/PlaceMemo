@@ -84,27 +84,16 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun initListener() {
-        map.setOnMapClickListener { it ->
+        map.setOnMapClickListener { location ->
+
             // 현재 보여지고 있는 메모가 있는 경우 해당 메모를 지운다.
             if (binding.memoPreview.memoCardView.visibility == View.VISIBLE) {
                 binding.memoPreview.memoCardView.visibility = View.GONE
                 binding.currentLocationButton.visibility = View.VISIBLE
                 return@setOnMapClickListener
             }
-            currentMarker?.remove()
-            currentMarker = map.addMarker(
-                MarkerOptions()
-                    .position(LatLng(it.latitude, it.longitude))
-                    .title("주소")
-            )
 
-            currentMarker?.tag = "current"
-            val cameraUpdate =
-                CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16F)
-
-            map.animateCamera(cameraUpdate, 500, null)
-            viewModel.getAddressName(it.latitude, it.longitude)
-            binding.postButton.visibility = View.VISIBLE
+            displayCurrentMarker(location)
         }
 
         map.setOnMarkerClickListener(this)
@@ -199,18 +188,46 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
+
         if (marker.tag == "current") {
             marker.remove()
             binding.postButton.visibility = View.GONE
             return false
         }
-        currentMarker?.remove()
+
         val memo = marker.tag as Memo
         currentMemoId = memo.id
         val cameraUpdate =
             CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 16F)
-        val imageList = ImageManager.loadMemoImage(memo.id)
+
         map.animateCamera(cameraUpdate, 200, null)
+
+        displayMemoPreview(memo)
+
+        return true
+    }
+
+    private fun displayCurrentMarker(location: LatLng) {
+        currentMarker?.remove()
+        currentMarker = map.addMarker(
+            MarkerOptions()
+                .position(LatLng(location.latitude, location.longitude))
+                .title("주소")
+        )
+
+        currentMarker?.tag = "current"
+        val cameraUpdate =
+            CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16F)
+
+        map.animateCamera(cameraUpdate, 500, null)
+        viewModel.getAddressName(location.latitude, location.longitude)
+        binding.postButton.visibility = View.VISIBLE
+    }
+
+    private fun displayMemoPreview(memo: Memo) {
+        currentMarker?.remove()
+
+        val imageList = ImageManager.loadMemoImage(memo.id)
 
         binding.memoPreview.memoCardView.visibility = View.VISIBLE
         binding.currentLocationButton.visibility = View.GONE
@@ -221,10 +238,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
-
-        return true
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
