@@ -121,7 +121,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.currentLocationButton.setOnClickListener {
-            val currentLocation = getLocation()
+            val currentLocation = getLocation() ?: return@setOnClickListener
             Log.d("BaseMapFragment", "${currentLocation?.latitude.toString()} ${currentLocation?.longitude.toString()}")
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 16f))
         }
