@@ -21,7 +21,9 @@ class AddressRepositoryImpl @Inject constructor(
             if(!response.isSuccessful) {
                 null
             }
-            else response.body()?.results?.get(0)?.region
+            else {
+                response.body()?.results?.get(0)?.region
+            }
         }
     }
 
