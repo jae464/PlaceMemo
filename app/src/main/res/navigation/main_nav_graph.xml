@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/feed"
         android:name="com.jae464.placememo.presentation.feed.FeedFragment"
-        android:label="FeedFragment"
+        android:label="피드"
         tools:layout="@layout/fragment_feed">
         <action
             android:id="@+id/action_feed_to_detail_memo"
@@ -18,15 +18,15 @@
     <fragment
         android:id="@+id/mypage"
         android:name="com.jae464.placememo.presentation.mypage.MyPageFragment"
-        android:label="MyPageFragment" />
+        android:label="마이페이지" />
     <fragment
         android:id="@+id/settings"
         android:name="com.jae464.placememo.presentation.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="설정" />
     <fragment
         android:id="@+id/home"
         android:name="com.jae464.placememo.presentation.home.HomeFragment"
-        android:label="HomeFragment"
+        android:label="PlaceMemo"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_home_to_post"
@@ -42,7 +42,7 @@
     <fragment
         android:id="@+id/post"
         android:name="com.jae464.placememo.presentation.post.PostFragment"
-        android:label="PostFragment"
+        android:label="게시글 업로드"
         tools:layout="@layout/fragment_post">
         <argument
             android:name="ShowBottomNavigationView"
@@ -63,6 +63,6 @@
     <activity
         android:id="@+id/loginActivity"
         android:name="com.jae464.placememo.presentation.login.LoginActivity"
-        android:label="LoginActivity" />
+        android:label="로그인" />
 
 </navigation>
