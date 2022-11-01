@@ -20,8 +20,7 @@ class FeedListAdapter(private val onClick: (Long) -> (Unit)): ListAdapter<Memo, 
 
         fun bind(memo: Memo) {
             println("FeedListAdapter")
-            binding.titleTextView.text = memo.title
-            binding.contentTextView.text = memo.content
+            binding.memo = memo
             binding.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
             binding.memoCardView.setOnClickListener {
                 onClick(memo.id)

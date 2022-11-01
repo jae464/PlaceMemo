@@ -8,8 +8,9 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewModel"
-            type="com.jae464.placememo.presentation.feed.FeedViewModel" />
+            name="memo"
+            type="com.jae464.placememo.domain.model.post.Memo" />
+
 
     </data>
     <!--  게시글 요약   -->
@@ -41,6 +42,7 @@
                 android:maxLines="1"
                 android:textColor="@color/black"
                 android:textSize="24sp"
+                android:text="@{memo.title}"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title" />
 
@@ -64,6 +66,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:textSize="16sp"
+                android:text="@{memo.content}"
                 android:maxLines="2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
