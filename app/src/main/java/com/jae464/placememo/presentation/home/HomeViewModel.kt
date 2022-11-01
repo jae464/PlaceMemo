@@ -27,9 +27,6 @@ class HomeViewModel @Inject constructor(
     private val _currentAddress: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val currentAddress: LiveData<String> = _currentAddress
 
-    private val _memoAddress = MutableLiveData<String>()
-    val memoAddress: LiveData<String> get() = _memoAddress
-
     fun getAllMemo() {
         viewModelScope.launch {
             _memoList.postValue(repository.getAllMemo())
@@ -43,10 +40,4 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMemoAddressName(memo: Memo) {
-        viewModelScope.launch {
-            val addressName = addressRepository.getAddress(memo.longitude, memo.latitude)
-            _memoAddress.postValue(addressRepository.addressToString(addressName))
-        }
-    }
 }

@@ -29,6 +29,7 @@ import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.base.BaseMapFragment
 import com.jae464.placememo.presentation.login.LoginActivity
 import com.jae464.placememo.presentation.markerIconList
+import com.jae464.placememo.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
@@ -74,7 +75,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val appBarConfiguration =
             AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-        binding.homeToolBar.title = "PlaceMemo"
+
         if (user == null) {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
         } else {
@@ -96,10 +97,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     .position(LatLng(it.latitude, it.longitude))
                     .title("주소")
             )
-            Log.d(TAG, "Location List")
+
             currentMarker?.tag = "current"
             val cameraUpdate =
                 CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 16F)
+
             map.animateCamera(cameraUpdate, 500, null)
             viewModel.getAddressName(it.latitude, it.longitude)
             binding.postButton.visibility = View.VISIBLE
@@ -122,9 +124,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         binding.currentLocationButton.setOnClickListener {
             val currentLocation = getLocation() ?: return@setOnClickListener
-            Log.d("BaseMapFragment", "${currentLocation?.latitude.toString()} ${currentLocation?.longitude.toString()}")
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 16f))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 16f))
         }
+
         // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
         binding.memoPreview.memoCardView.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeToDetailMemo(currentMemoId)
@@ -167,7 +169,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         viewModel.memoList.observe(viewLifecycleOwner) {
-            Log.d(TAG, "memoList Observer Activated")
             it.forEach { memo ->
                 Log.d(TAG, memo.title)
                 val resourceId = markerIconList[memo.category] ?: R.drawable.marker
@@ -187,9 +188,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             currentMarker?.showInfoWindow()
         }
 
-        viewModel.memoAddress.observe(viewLifecycleOwner) {
-            binding.memoPreview.locationTextView.text = it
-        }
 
     }
 
@@ -218,13 +216,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         binding.currentLocationButton.visibility = View.GONE
         binding.postButton.visibility = View.GONE
 
-        binding.memoPreview.titleTextView.text = memo.title
-        binding.memoPreview.contentTextView.text = memo.content
-        viewModel.getMemoAddressName(memo)
+        binding.memoPreview.memo = memo
+        binding.memoPreview.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
+
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
 
-        Log.d("HomeFragment onMarkerClick", memo.title)
         return true
     }
 

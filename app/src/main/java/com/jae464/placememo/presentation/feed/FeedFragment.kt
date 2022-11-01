@@ -36,7 +36,6 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
     private fun initAppBar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
         binding.postToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-        binding.postToolBar.title = "피드"
     }
 
     private fun initObserver() {
