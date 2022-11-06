@@ -229,15 +229,15 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         val imageList = ImageManager.loadMemoImage(memo.id)
 
-        binding.memoPreview.memoCardView.visibility = View.VISIBLE
-        binding.currentLocationButton.visibility = View.GONE
-        binding.postButton.visibility = View.GONE
-
         binding.memoPreview.memo = memo
         binding.memoPreview.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
 
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
+
+        binding.memoPreview.memoCardView.visibility = View.VISIBLE
+        binding.currentLocationButton.visibility = View.GONE
+        binding.postButton.visibility = View.GONE
     }
 
     override fun onDestroyView() {

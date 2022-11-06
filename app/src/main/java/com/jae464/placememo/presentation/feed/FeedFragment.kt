@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.FragmentFeedBinding
@@ -30,6 +31,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         binding.feedRecyclerView.adapter = feedListAdapter
         initObserver()
         initAppBar()
+        initListener()
         viewModel.getAllMemo()
     }
 
@@ -46,6 +48,20 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         }
     }
 
+    private fun initListener() {
+        binding.chipTypeFeedType.setOnCheckedStateChangeListener { group, checkedIds ->
+            Log.d(TAG, checkedIds.toString())
+
+            when (checkedIds[0]) {
+                R.id.chip_type_card_view -> {
+                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+                }
+                R.id.chip_type_grid_view -> {
+                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                }
+            }
+        }
+    }
     private fun goToDeatilPage(memoId: Long) {
         val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
         findNavController().navigate(
