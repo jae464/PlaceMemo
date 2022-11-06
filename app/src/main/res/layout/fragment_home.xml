@@ -71,6 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
+                    android:textColor="@color/black"
                     android:text="전체"
                     app:chipBackgroundColor="@color/bg_chip" />
 
@@ -79,6 +80,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="음식점"
                     app:chipBackgroundColor="@color/bg_chip" />
@@ -88,6 +90,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="카페"
                     app:chipBackgroundColor="@color/bg_chip" />
@@ -97,6 +100,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="호텔"
                     app:chipBackgroundColor="@color/bg_chip" />
@@ -106,6 +110,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="기타"
                     app:chipBackgroundColor="@color/bg_chip" />
