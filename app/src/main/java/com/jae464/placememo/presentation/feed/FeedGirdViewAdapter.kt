@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jae464.placememo.data.manager.ImageManager
-import com.jae464.placememo.databinding.FragmentFeedBinding
 import com.jae464.placememo.databinding.ItemMemoPreviewBinding
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.home.HomeViewPagerAdapter
 import com.jae464.placememo.presentation.regionToString
 
-class FeedListAdapter(private val onClick: (Long) -> (Unit)): ListAdapter<Memo, FeedListAdapter.ItemViewHolder>(diff) {
+class FeedGirdViewAdapter(private val onClick: (Long) -> (Unit)): ListAdapter<Memo, FeedGirdViewAdapter.ItemViewHolder>(diff) {
 
     inner class ItemViewHolder(
         private val binding: ItemMemoPreviewBinding
