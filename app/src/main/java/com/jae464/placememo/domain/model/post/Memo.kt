@@ -15,4 +15,5 @@ data class Memo (
     val area2: String = "",
     val area3: String = "",
     val imageUriList: List<String>? = null,
+    val viewType: Int = 0,
 )
