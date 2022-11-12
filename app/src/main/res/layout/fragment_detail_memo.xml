@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.jae464.placememo.presentation.detail.DetailMemoViewModel" />
@@ -55,18 +57,50 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/titleTextView"
+                    android:id="@+id/memo_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
+                    android:text="@{viewModel.memo.title}"
                     android:textSize="24sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="제목"
-                    android:text="@{viewModel.memo.title}"/>
+                    tools:text="제목" />
 
+                <TextView
+                    android:id="@+id/memo_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="8dp"
+                    app:drawableLeftCompat="@drawable/ic_baseline_location_on_24"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/memo_title"
+                    tools:text="위치" />
+
+                <fragment
+                    android:id="@+id/mapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:layout_constraintTop_toBottomOf="@id/memo_location"
+                    tools:layout_editor_absoluteX="-35dp" />
+
+                <TextView
+                    android:id="@+id/memo_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.memo.content}"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:paddingVertical="4dp"
+                    android:textColor="@color/black"
+                    tools:text="글내용"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mapFragment" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

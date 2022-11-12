@@ -36,6 +36,7 @@ class HomeViewModel @Inject constructor(
     fun getAddressName(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             val addressName = addressRepository.getAddress(longitude, latitude)
+            println("주소 요청 중")
             _currentAddress.postValue(addressRepository.addressToString(addressName))
         }
     }
