@@ -70,6 +70,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
             }
         }
     }
+
     private fun goToDeatilPage(memoId: Long) {
         val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
         findNavController().navigate(

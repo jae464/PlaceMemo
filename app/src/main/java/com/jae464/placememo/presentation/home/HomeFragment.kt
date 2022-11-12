@@ -60,6 +60,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     override fun onMapReady(map: GoogleMap) {
         Log.d(TAG, "onMapReady")
         super.onMapReady(map)
+        map.apply {
+            setMinZoomPreference(6.0f)
+            setMaxZoomPreference(16.0f)
+        }
+        setUserLocation()
         val seoul = LatLng(37.554891, 126.970814)
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment = mapFragment.also {
@@ -220,7 +225,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16F)
 
         map.animateCamera(cameraUpdate, 500, null)
+        println("주소 요청 전")
         viewModel.getAddressName(location.latitude, location.longitude)
+        println("주소 요청 후")
         binding.postButton.visibility = View.VISIBLE
     }
 

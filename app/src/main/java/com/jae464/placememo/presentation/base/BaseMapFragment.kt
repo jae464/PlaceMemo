@@ -68,15 +68,10 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.apply {
-            setMinZoomPreference(6.0f)
-            setMaxZoomPreference(16.0f)
-        }
         map.uiSettings.isMapToolbarEnabled = false
-        setUserLocation()
     }
 
-    private fun setUserLocation() {
+    fun setUserLocation() {
         if(ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION

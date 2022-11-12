@@ -12,6 +12,5 @@ data class MemoDTO(
     val longitude: Double,
     val category: Int,
     val region: Region? = null,
-    val id: Int = -1,
     val imageUrlList: List<String>? = emptyList(),
 )
