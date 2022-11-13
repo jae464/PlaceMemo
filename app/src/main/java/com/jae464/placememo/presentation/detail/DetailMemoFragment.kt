@@ -131,4 +131,9 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             }
             .show()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("DetailMemoFragment", "onDestroyView")
+    }
 }
