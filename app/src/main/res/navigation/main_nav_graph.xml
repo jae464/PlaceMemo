@@ -56,6 +56,9 @@
         <argument
             android:name="memoId"
             app:argType="long"/>
+        <argument
+            android:name="ShowBottomNavigationView"
+            android:defaultValue="false" />
     </fragment>
     <activity
         android:id="@+id/loginActivity"
