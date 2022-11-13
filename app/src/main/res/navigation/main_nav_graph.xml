@@ -51,11 +51,8 @@
     <fragment
         android:id="@+id/detail_memo"
         android:name="com.jae464.placememo.presentation.detail.DetailMemoFragment"
-        android:label="DetailMemoFragment"
+        android:label=""
         tools:layout="@layout/fragment_detail_memo">
-        <argument
-            android:name="ShowBottomNavigationView"
-            android:defaultValue="false" />
         <argument
             android:name="memoId"
             app:argType="long"/>

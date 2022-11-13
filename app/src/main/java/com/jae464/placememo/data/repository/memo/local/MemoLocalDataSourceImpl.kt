@@ -23,4 +23,8 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemoByCategory(category)
     }
 
+    override suspend fun deleteMemo(id: Long) {
+        memoDao.deleteMemo(id)
+    }
+
 }

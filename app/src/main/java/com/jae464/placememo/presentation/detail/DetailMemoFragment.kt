@@ -1,8 +1,14 @@
 package com.jae464.placememo.presentation.detail
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
@@ -13,10 +19,13 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
+import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentDetailMemoBinding
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.presentation.base.BaseMapFragment
+import com.jae464.placememo.presentation.home.HomeViewPagerAdapter
 import com.jae464.placememo.presentation.markerIconList
 import com.jae464.placememo.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +35,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
 
     private val args: DetailMemoFragmentArgs by navArgs()
     private val viewModel: DetailMemoViewModel by viewModels()
+    private lateinit var viewPagerAdapter: HomeViewPagerAdapter
     private lateinit var mapFragment: SupportMapFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +44,9 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         binding.viewModel = viewModel
         viewModel.getMemo(args.memoId)
         initAppBar()
+        initView()
         initObserver()
+        initListener()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -54,8 +66,16 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     private fun initAppBar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
         binding.detailToolbar.setupWithNavController(findNavController(), appBarConfiguration)
-        binding.detailToolbar.title = args.memoId.toString()
         binding.detailToolbar.inflateMenu(R.menu.detail_toolbar_menu)
+        binding.detailToolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.delete -> {
+                    // TODO 삭제 다이얼로드 표시
+                    showDeleteDialog()
+                }
+            }
+            true
+        }
     }
 
     private fun initObserver() {
@@ -63,13 +83,52 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
             val resourceId = markerIconList[memo.category] ?: R.drawable.marker
-//                val icon = ImageManager.changeColor(0, resourceId, requireContext())
-            val memoMarker = map.addMarker(
+            map.addMarker(
                 MarkerOptions()
                     .position(LatLng(memo.latitude, memo.longitude))
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     .icon(BitmapDescriptorFactory.fromResource(resourceId))
             )
         }
+    }
+
+    private fun initView() {
+        val imageList = ImageManager.loadMemoImage(memoId = args.memoId)
+        // imageList 가 없을 경우 chip 제거
+        if (imageList == null) {
+            binding.chipTypeViewMode.visibility = View.INVISIBLE
+            return
+        }
+        viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
+        binding.memoPhotoViewpager.adapter = viewPagerAdapter
+    }
+
+    private fun initListener() {
+        binding.chipTypeViewMode.setOnCheckedStateChangeListener { group, checkedIds ->
+            when(checkedIds[0]) {
+                R.id.chip_type_map -> {
+                    binding.mapContainer.visibility = View.VISIBLE
+                    binding.memoPhotoViewpager.visibility = View.INVISIBLE
+                }
+                R.id.chip_type_photo -> {
+                    binding.memoPhotoViewpager.visibility = View.VISIBLE
+                    binding.mapContainer.visibility = View.INVISIBLE
+                }
+            }
+        }
+    }
+
+    private fun showDeleteDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Title")
+            .setMessage("정말 삭제하시겠습니까?")
+            .setPositiveButton("삭제") { p0, p1 ->
+                viewModel.deleteMemo(args.memoId)
+                Snackbar.make(binding.root, "메모 삭제가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
+            .setNegativeButton("취소") { p0, p1 ->
+
+            }
+            .show()
     }
 }
