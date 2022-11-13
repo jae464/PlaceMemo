@@ -9,88 +9,108 @@
         android:background="#EBEBE3"
         tools:context=".presentation.feed.FeedFragment">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue_200"
-            app:layout_constraintBottom_toTopOf="@id/chip_type_feed_type"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/postToolBar"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-                app:titleTextColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blue_200"
 
-        </com.google.android.material.appbar.AppBarLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_type_feed_type"
-            style="@style/Widget.MaterialComponents.ChipGroup"
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/postToolBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+                    app:titleTextColor="@color/white" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_type_feed_type"
+                style="@style/Widget.MaterialComponents.ChipGroup"
+                android:layout_width="match_parent"
+                app:selectionRequired="true"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="4dp"
+                app:checkedChip="@id/chip_type_card_view"
+                app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_type_card_view"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="카드뷰"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/bg_chip"
+                    app:chipIcon="@drawable/ic_card_view"
+                    app:chipIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_type_grid_view"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="그리드뷰"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/bg_chip"
+                    app:chipIcon="@drawable/ic_grid_view"
+                    app:chipIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_type_list_view"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:text="리스트뷰"
+                    app:chipBackgroundColor="@color/bg_chip"
+                    app:chipIcon="@drawable/ic_list_view"
+                    app:chipIconVisible="true" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:id="@+id/memo_scroll_view"
+            app:layout_constraintTop_toBottomOf="@id/top_view"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
-            app:selectionRequired="true"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="4dp"
-            app:checkedChip="@id/chip_type_card_view"
-            app:layout_constraintBottom_toTopOf="@id/feedRecyclerView"
-            app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-            app:singleSelection="true">
+            android:layout_height="0dp">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_type_card_view"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="카드뷰"
-                android:textColor="@color/black"
-                app:chipBackgroundColor="@color/bg_chip"
-                app:chipIcon="@drawable/ic_card_view"
-                app:chipIconVisible="true" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_type_grid_view"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="그리드뷰"
-                android:textColor="@color/black"
-                app:chipBackgroundColor="@color/bg_chip"
-                app:chipIcon="@drawable/ic_grid_view"
-                app:chipIconVisible="true" />
+                <androidx.recyclerview.widget.RecyclerView
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/feedRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="1"
+                    tools:listitem="@layout/item_memo_preview" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_type_list_view"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="리스트뷰"
-                app:chipBackgroundColor="@color/bg_chip"
-                app:chipIcon="@drawable/ic_list_view"
-                app:chipIconVisible="true" />
-
-        </com.google.android.material.chip.ChipGroup>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/feedRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/chip_type_feed_type"
-            app:spanCount="1"
-            tools:listitem="@layout/item_memo_preview" />
-
-
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
