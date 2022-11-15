@@ -3,16 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="viewModel"
-            type="com.jae464.placememo.presentation.mypage.MyPageViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f4f4f4"
+        android:background="#fafafa"
         tools:context=".presentation.mypage.MyPageFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -68,13 +62,12 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="24dp"
-                    android:scaleType="centerCrop"
-                    android:clipToOutline="true"
                     android:background="@drawable/bg_profile_image"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_sample_profile"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="s" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/nickname_text_view"
@@ -96,7 +89,7 @@
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/nickname_text_view"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@{viewModel.user.nickname}" />
+                    tools:text="유저" />
 
                 <TextView
                     android:id="@+id/email_text_view"
@@ -108,23 +101,22 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/userProfileImageView"
-                    app:layout_constraintTop_toBottomOf="@id/user_nickname"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/user_nickname" />
 
                 <TextView
                     android:id="@+id/user_email"
-                    app:layout_constraintTop_toBottomOf="@id/nickname_text_view"
-                    app:layout_constraintStart_toEndOf="@id/email_text_view"
-                    android:gravity="bottom"
-                    android:ellipsize="end"
-                    android:textSize="14sp"
-                    android:maxLines="2"
-                    android:ems="10"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="24dp"
-                    tools:text="@{viewModel.user.email}"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:maxEms="8"
+                    android:gravity="bottom"
+                    android:maxLines="2"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@id/email_text_view"
+                    app:layout_constraintTop_toBottomOf="@id/nickname_text_view"
+                    tools:text="emaileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/logoutButton"
