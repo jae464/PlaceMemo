@@ -100,6 +100,8 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         }
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPhotoViewpager.adapter = viewPagerAdapter
+        binding.dotIndicator.attachTo(binding.memoPhotoViewpager)
+
     }
 
     private fun initListener() {
@@ -108,9 +110,11 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
                 R.id.chip_type_map -> {
                     binding.mapContainer.visibility = View.VISIBLE
                     binding.memoPhotoViewpager.visibility = View.INVISIBLE
+                    binding.dotIndicator.visibility = View.INVISIBLE
                 }
                 R.id.chip_type_photo -> {
                     binding.memoPhotoViewpager.visibility = View.VISIBLE
+                    binding.dotIndicator.visibility = View.VISIBLE
                     binding.mapContainer.visibility = View.INVISIBLE
                 }
             }
