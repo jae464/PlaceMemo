@@ -241,6 +241,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
+        binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
 
         binding.memoPreview.memoCardView.visibility = View.VISIBLE
         binding.currentLocationButton.visibility = View.GONE

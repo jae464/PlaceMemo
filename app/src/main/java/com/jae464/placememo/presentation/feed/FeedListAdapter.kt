@@ -45,6 +45,7 @@ class FeedListAdapter(private val onClick: (Long) -> (Unit), private val viewTyp
             if (imageList != null) {
                 val viewPagerAdapter = HomeViewPagerAdapter(imageList)
                 binding.thumbnailViewPager.adapter = viewPagerAdapter
+                binding.dotIndicator.attachTo(binding.thumbnailViewPager)
             }
         }
     }
