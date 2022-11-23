@@ -62,6 +62,15 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     private fun initAppBar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
         binding.myPageToolBar.setupWithNavController(findNavController(), appBarConfiguration)
+        binding.myPageToolBar.setOnMenuItemClickListener {
+            Log.d("MyPageFragment", it.toString())
+            when (it.itemId) {
+                R.id.setting -> {
+                    findNavController().navigate(R.id.settings)
+                }
+            }
+            true
+        }
 
     }
 
