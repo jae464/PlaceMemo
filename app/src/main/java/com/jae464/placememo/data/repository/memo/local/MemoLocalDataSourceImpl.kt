@@ -19,6 +19,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.insertMemo(memo)
     }
 
+    override suspend fun updateMemo(memo: MemoEntity) {
+        memoDao.updateMemo(memo)
+    }
+
     override suspend fun getMemoByCategory(category: Int): List<MemoEntity> {
         return memoDao.getMemoByCategory(category)
     }

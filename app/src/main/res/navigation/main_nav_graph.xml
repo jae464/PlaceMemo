@@ -45,6 +45,10 @@
         android:label="게시글 업로드"
         tools:layout="@layout/fragment_post">
         <argument
+            android:name="memoId"
+            app:argType="long"
+            android:defaultValue="-1L"/>
+        <argument
             android:name="ShowBottomNavigationView"
             android:defaultValue="false" />
     </fragment>
@@ -55,10 +59,17 @@
         tools:layout="@layout/fragment_detail_memo">
         <argument
             android:name="memoId"
-            app:argType="long"/>
+            app:argType="long" />
         <argument
             android:name="ShowBottomNavigationView"
-            android:defaultValue="false" />
+            android:defaultValue="false"  />
+        <action
+            android:id="@+id/action_detail_memo_to_post"
+            app:destination="@id/post">
+            <argument
+                android:name="memoId"
+                app:argType="long" />
+        </action>
     </fragment>
     <activity
         android:id="@+id/loginActivity"

@@ -39,6 +39,12 @@ class PostViewModel @Inject constructor(
     private var memoId: Long = -1
     private var user = FirebaseAuth.getInstance().currentUser
 
+    private val _memo = MutableLiveData<Memo>()
+    val memo: LiveData<Memo> get() = _memo
+
+    private val _isDone = MutableLiveData<Boolean>()
+    val isDone: LiveData<Boolean> get() = _isDone
+
     private val imageFileNameList = mutableListOf<String>()
 
     @SuppressLint("SimpleDateFormat")
@@ -75,6 +81,21 @@ class PostViewModel @Inject constructor(
                 Log.d(TAG, user.toString())
                 repository.saveMemoOnRemote(user?.uid.toString(), memo)
             }
+
+            _isDone.postValue(true)
+
+        }
+    }
+
+    fun updateMemo(title: String, content: String, category: Int) {
+        val beforeMemo = memo.value ?: return
+        val newMemo = Memo(beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
+        category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageFileNameList)
+        Log.d(TAG, newMemo.toString())
+        viewModelScope.launch {
+            repository.updateMemo(newMemo)
+            saveImage(newMemo.id)
+            _isDone.postValue(true)
         }
     }
 
@@ -83,7 +104,7 @@ class PostViewModel @Inject constructor(
         _imageList.postValue(addedImageList)
     }
 
-    fun saveImage(memoId: Long) {
+    private fun saveImage(memoId: Long) {
         val saveImageList = (_imageList.value ?: emptyList())
         Log.d(TAG, "saveImage function")
         if (saveImageList.isEmpty()) return
@@ -104,10 +125,21 @@ class PostViewModel @Inject constructor(
         return addressRepository.addressToString(region)
     }
 
+    fun getMemo(memoId: Long) {
+        viewModelScope.launch {
+            val memo = repository.getMemo(memoId)
+            _memo.postValue(memo)
+
+            memo.imageUriList?.forEach {
+                imageFileNameList.add(it)
+            }
+        }
+    }
     private fun saveImageOnRemote(saveImageList: List<Bitmap>) {
         viewModelScope.launch {
             Log.d(TAG, imageFileNameList.toString())
             repository.saveImageOnRemote(saveImageList, imageFileNameList)
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.jae464.placememo.presentation.post
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -18,9 +19,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.jae464.placememo.R
+import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.data.manager.ImageManager.resizeBitmapFromUri
 import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.presentation.base.BaseFragment
@@ -34,6 +37,7 @@ import kotlin.properties.Delegates
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private val TAG = "PostFragment"
+    private val args: PostFragmentArgs by navArgs()
     private val viewModel: PostViewModel by viewModels()
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
@@ -53,13 +57,13 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private val getImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        val image = it.data?.data
-        imageUrlList.add(image!!)
+        val image = it.data?.data ?: return@registerForActivityResult
+        imageUrlList.add(image)
         Log.d(TAG, image.toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 //            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
             val bitmap =
-                resizeBitmapFromUri(image ?: return@registerForActivityResult, requireContext())
+                resizeBitmapFromUri(image, requireContext())
                     ?: return@registerForActivityResult
             println("변형된 bitmap 사이즈 : ${bitmap.density}")
             viewModel.setImageList(bitmap)
@@ -73,13 +77,15 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        latitude = arguments?.getDouble("latitude")!!
-        longitude = arguments?.getDouble("longitude")!!
+        Log.d(tag, arguments.toString())
+        if (arguments?.getDouble("latitude", 0.0) == 0.0) {
+            println("latitude 정보가 없습니다.")
+        }
         binding.imageRecyclerView.adapter = imageAdapter
         binding.postViewModel = viewModel
-        viewModel.getAddress(latitude, longitude)
-        println("$latitude, $longitude")
+
         initAppBar()
+        initData()
         initListener()
         initObserver()
         initSpinner()
@@ -90,17 +96,20 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         binding.postToolBar.setupWithNavController(findNavController(), appBarConfiguration)
         binding.postToolBar.title = "게시글 업로드"
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)
-        binding.postToolBar.setOnMenuItemClickListener {
 
+        // insert, update 경우 분리하기
+        binding.postToolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.save -> {
-                    Toast.makeText(requireContext(), "저장버튼클릭", Toast.LENGTH_SHORT).show()
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
-                    viewModel.saveMemo(0, title, content, latitude, longitude, category, imageUrlList)
-                    viewModel.saveImage(0)
-                    // 업로드 후 메인페이지로 이동
-                    findNavController().popBackStack()
+                    // 저장
+                    if (args.memoId == -1L) {
+                        viewModel.saveMemo(0, title, content, latitude, longitude, category, imageUrlList)
+                    }
+                    else {
+                        viewModel.updateMemo(title, content, category)
+                    }
                 }
             }
             true
@@ -111,12 +120,30 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
+    private fun initData() {
+        println("argument memoId : ${args.memoId}")
+        when (args.memoId) {
+            // 새 메모 업로드
+            -1L -> {
+                latitude = arguments?.getDouble("latitude")!!
+                longitude = arguments?.getDouble("longitude")!!
+                viewModel.getAddress(latitude, longitude)
+            }
+            // 기존 메모 수정
+            else -> {
+                viewModel.getMemo(args.memoId)
+            }
+        }
+
+    }
+
     private fun initListener() {
         binding.addImageButton.setOnClickListener {
             requestPermission()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initObserver() {
         viewModel.imageList.observe(viewLifecycleOwner) {
             imageAdapter.submitList(it.toMutableList())
@@ -124,6 +151,25 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
         viewModel.address.observe(viewLifecycleOwner) {
             binding.locationTextView.text = viewModel.getAddressName(it)
+        }
+
+        // 메모 수정인 경우 해당 memoId 의 메모를 가져와서 세팅해줌
+        viewModel.memo.observe(viewLifecycleOwner) { it ->
+            binding.titleEditText.setText(it.title)
+            binding.contentEditText.setText(it.content)
+            binding.locationTextView.text = "${it.area1} ${it.area2} ${it.area3}"
+
+            val imageBitmapList = ImageManager.loadMemoImage(it.id)
+
+            imageBitmapList?.forEach { bitmap ->
+                viewModel.setImageList(bitmap)
+            }
+        }
+
+        viewModel.isDone.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().popBackStack()
+            }
         }
     }
 
