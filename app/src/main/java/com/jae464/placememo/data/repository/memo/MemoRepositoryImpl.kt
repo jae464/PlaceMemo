@@ -23,6 +23,10 @@ class MemoRepositoryImpl @Inject constructor(
         return memoLocalDataSource.saveMemo(memoToMemoEntity(memo))
     }
 
+    override suspend fun updateMemo(memo: Memo) {
+        memoLocalDataSource.updateMemo(memoToMemoEntity(memo))
+    }
+
     override suspend fun saveMemoOnRemote(userId: String, memo: Memo) {
         return memoRemoteDataSource.insertMemo(MemoDTO(
             userId,

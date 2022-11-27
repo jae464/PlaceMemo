@@ -16,7 +16,8 @@ fun memoToMemoEntity(memo: Memo): MemoEntity {
         memo.latitude,
         memo.longitude,
         memo.category,
-        Region(memo.area1, memo.area2, memo.area3)
+        Region(memo.area1, memo.area2, memo.area3),
+        memo.id
     )
 }
 

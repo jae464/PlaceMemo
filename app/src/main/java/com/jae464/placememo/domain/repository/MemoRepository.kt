@@ -6,6 +6,7 @@ import com.jae464.placememo.domain.model.post.Memo
 interface MemoRepository {
     suspend fun getMemo(id: Long): Memo
     suspend fun saveMemo(memo: Memo): Long
+    suspend fun updateMemo(memo: Memo)
     suspend fun saveMemoOnRemote(userId: String, memo: Memo)
     suspend fun getAllMemo(): List<Memo>
     suspend fun getMemoByCategory(category: Int) : List<Memo>

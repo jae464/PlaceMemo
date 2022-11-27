@@ -73,6 +73,12 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
                     // TODO 삭제 다이얼로드 표시
                     showDeleteDialog()
                 }
+                R.id.edit -> {
+                    val action = DetailMemoFragmentDirections.actionDetailMemoToPost(args.memoId)
+                    findNavController().navigate(
+                        action
+                    )
+                }
             }
             true
         }

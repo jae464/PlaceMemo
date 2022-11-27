@@ -98,9 +98,9 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
     }
 
     fun getLocation(): Location? {
-        var locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
-        var location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         println("${location?.latitude} ${location?.longitude}")
         return location
     }
