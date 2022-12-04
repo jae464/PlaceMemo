@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ class DetailMemoViewModel @Inject constructor(
     private val _memo = MutableLiveData<Memo>()
     val memo: LiveData<Memo> get() = _memo
 
+    private val _isDone = MutableLiveData<Boolean>()
+    val isDone: LiveData<Boolean> get() = _isDone
+
     fun getMemo(id: Long) {
         viewModelScope.launch {
            _memo.postValue(memoRepository.getMemo(id))
@@ -29,6 +33,11 @@ class DetailMemoViewModel @Inject constructor(
     fun deleteMemo(id: Long) {
         viewModelScope.launch {
             memoRepository.deleteMemo(id)
+            Log.d(TAG,"삭제 후 지연 함수")
+            delay(1000L)
+            Log.d(TAG, "삭제 후 지연 함수 완료")
+            _isDone.postValue(true)
         }
     }
+
 }

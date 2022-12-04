@@ -53,8 +53,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         Log.d(TAG,"onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
-        viewModel.getAllMemo()
-        initAppBar()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -72,8 +70,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             SupportMapFragment.newInstance(mapOptions)
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 36F))
-        initListener()
         initObserver()
+        initListener()
+        initAppBar()
+        viewModel.getAllMemo()
     }
 
     private fun initAppBar() {

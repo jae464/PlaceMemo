@@ -51,7 +51,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         if (isGranted) {
             loadImage()
         } else {
-
+            // TODO requestPermission 예외처리
         }
     }
     private val getImageLauncher = registerForActivityResult(
