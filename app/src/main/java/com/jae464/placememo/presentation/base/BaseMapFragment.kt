@@ -36,7 +36,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("HomeFragment onCreate")
+        println("BaseFragment onCreate")
         // 권한 요청하기
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 isGranted: Boolean ->
