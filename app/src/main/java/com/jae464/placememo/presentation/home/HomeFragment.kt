@@ -163,6 +163,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         viewModel.memoList.observe(viewLifecycleOwner) {
+            map.clear()
             it.forEach { memo ->
                 Log.d(TAG, memo.title)
                 val resourceId = markerIconList[memo.category] ?: R.drawable.marker
