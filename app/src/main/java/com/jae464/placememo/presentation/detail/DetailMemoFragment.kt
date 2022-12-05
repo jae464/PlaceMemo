@@ -42,11 +42,11 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         super.onViewCreated(view, savedInstanceState)
         Log.d("DetailMemoFragment", "view created")
         binding.viewModel = viewModel
-        viewModel.getMemo(args.memoId)
         initAppBar()
         initView()
         initObserver()
         initListener()
+        viewModel.getMemo(args.memoId)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -87,6 +87,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     private fun initObserver() {
         viewModel.memo.observe(viewLifecycleOwner) { memo ->
             binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
+            map.clear()
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
             val resourceId = markerIconList[memo.category] ?: R.drawable.marker
             map.addMarker(
