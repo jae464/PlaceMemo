@@ -63,7 +63,8 @@
                 app:checkedChip="@id/chip_type_all"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/mapFragment"
-                app:singleLine="true">
+                app:singleLine="true"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_type_all"
@@ -71,8 +72,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:textColor="@color/black"
                     android:text="전체"
+                    android:textColor="@color/black"
                     app:chipBackgroundColor="@color/bg_chip" />
 
                 <com.google.android.material.chip.Chip
@@ -80,9 +81,9 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="음식점"
+                    android:textColor="@color/black"
                     app:chipBackgroundColor="@color/bg_chip" />
 
                 <com.google.android.material.chip.Chip
@@ -90,9 +91,9 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="카페"
+                    android:textColor="@color/black"
                     app:chipBackgroundColor="@color/bg_chip" />
 
                 <com.google.android.material.chip.Chip
@@ -100,9 +101,9 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="호텔"
+                    android:textColor="@color/black"
                     app:chipBackgroundColor="@color/bg_chip" />
 
                 <com.google.android.material.chip.Chip
@@ -110,9 +111,9 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:checkable="true"
                     android:text="기타"
+                    android:textColor="@color/black"
                     app:chipBackgroundColor="@color/bg_chip" />
 
             </com.google.android.material.chip.ChipGroup>
@@ -123,8 +124,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="12dp"
                 android:layout_marginBottom="12dp"
-                android:padding="12dp"
                 android:background="@drawable/bg_post_button"
+                android:padding="12dp"
                 android:src="@drawable/ic_baseline_my_location_24"
                 app:layout_constraintBottom_toTopOf="@id/postButton"
                 app:layout_constraintEnd_toEndOf="parent" />

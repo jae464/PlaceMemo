@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.jae464.placememo.R
+import com.jae464.placememo.domain.model.post.Category
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.MemoRepository
@@ -38,6 +39,13 @@ class HomeViewModel @Inject constructor(
             val addressName = addressRepository.getAddress(longitude, latitude)
             println("주소 요청 중")
             _currentAddress.postValue(addressRepository.addressToString(addressName))
+        }
+    }
+
+    fun getMemoByCategory(category: Category) {
+        viewModelScope.launch {
+            val temp = repository.getMemoByCategory(category.ordinal)
+            _memoList.postValue(temp)
         }
     }
 

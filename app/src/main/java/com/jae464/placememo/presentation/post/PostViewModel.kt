@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.jae464.placememo.data.api.response.RegionResponse
+import com.jae464.placememo.domain.model.post.Category
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.domain.repository.AddressRepository
 import com.jae464.placememo.domain.repository.LoginRepository
@@ -48,7 +49,7 @@ class PostViewModel @Inject constructor(
     private val imageFileNameList = mutableListOf<String>()
 
     @SuppressLint("SimpleDateFormat")
-    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double, category: Int, imageUriList: List<Uri>) {
+    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double, category: Category, imageUriList: List<Uri>) {
         viewModelScope.launch {
             val region = _address.value
 
@@ -87,7 +88,7 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun updateMemo(title: String, content: String, category: Int) {
+    fun updateMemo(title: String, content: String, category: Category) {
         val beforeMemo = memo.value ?: return
         val newMemo = Memo(beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
         category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageFileNameList)

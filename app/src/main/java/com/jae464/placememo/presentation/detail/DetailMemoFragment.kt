@@ -89,7 +89,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
             map.clear()
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
-            val resourceId = markerIconList[memo.category] ?: R.drawable.marker
+            val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
             map.addMarker(
                 MarkerOptions()
                     .position(LatLng(memo.latitude, memo.longitude))
@@ -109,7 +109,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             binding.chipTypeViewMode.visibility = View.INVISIBLE
             return
         }
-        viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
+        viewPagerAdapter = HomeViewPagerAdapter(imageList)
         binding.memoPhotoViewpager.adapter = viewPagerAdapter
         binding.dotIndicator.attachTo(binding.memoPhotoViewpager)
 

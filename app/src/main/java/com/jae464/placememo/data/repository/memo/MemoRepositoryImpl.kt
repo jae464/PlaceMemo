@@ -3,6 +3,8 @@ package com.jae464.placememo.data.repository.memo
 import android.graphics.Bitmap
 import com.jae464.placememo.data.dto.MemoDTO
 import com.jae464.placememo.data.manager.ImageManager
+import com.jae464.placememo.data.mapper.categoryToInt
+import com.jae464.placememo.data.mapper.intToCategory
 import com.jae464.placememo.data.mapper.memoEntityToMemo
 import com.jae464.placememo.data.mapper.memoToMemoEntity
 import com.jae464.placememo.data.model.Region
@@ -35,7 +37,7 @@ class MemoRepositoryImpl @Inject constructor(
             Date(),
             memo.latitude,
             memo.longitude,
-            memo.category,
+            categoryToInt(memo.category),
             Region(memo.area1, memo.area1, memo.area3),
             imageUrlList = memo.imageUriList
         ))

@@ -28,7 +28,9 @@ import com.jae464.placememo.data.manager.ImageManager.resizeBitmapFromUri
 import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.presentation.base.BaseFragment
 import com.jae464.placememo.databinding.FragmentPostBinding
+import com.jae464.placememo.domain.model.post.Category
 import com.jae464.placememo.domain.model.post.Memo
+import com.jae464.placememo.presentation.indexToCategory
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
@@ -42,7 +44,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
-    private var category = 0
+    private var category = Category.OTHER
     private var imageUrlList = mutableListOf<Uri>()
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -191,7 +193,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                             p0.getItemAtPosition(p2).toString(),
                             Toast.LENGTH_SHORT
                         ).show()
-                        category = p2
+                        category = indexToCategory(p2)
                     }
                 }
 

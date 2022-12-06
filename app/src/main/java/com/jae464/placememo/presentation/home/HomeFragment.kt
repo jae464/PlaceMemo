@@ -25,6 +25,7 @@ import com.jae464.placememo.data.api.response.GeoResponse
 import com.jae464.placememo.data.api.response.RegionResponse
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentHomeBinding
+import com.jae464.placememo.domain.model.post.Category
 import com.jae464.placememo.domain.model.post.Memo
 import com.jae464.placememo.presentation.base.BaseMapFragment
 import com.jae464.placememo.presentation.login.LoginActivity
@@ -130,6 +131,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.chipGroupType.setOnCheckedStateChangeListener { group, checkedIds ->
+            Log.d("HomeFragment", checkedIds.toString())
             // 모든 칩이 체크 해제되어 있는 경우 전체에 다시 체크함
             Log.d(TAG, checkedIds.toString())
             if (checkedIds.isEmpty()) {
@@ -140,6 +142,26 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             if (checkedIds.size > 1 && checkedIds.contains(R.id.chip_type_all)) {
                 binding.chipTypeAll.isChecked = false
                 return@setOnCheckedStateChangeListener
+            }
+
+            checkedIds.forEach {
+                when (it) {
+                    R.id.chip_type_all -> {
+                        viewModel.getAllMemo()
+                    }
+                    R.id.chip_type_food -> {
+                        viewModel.getMemoByCategory(Category.RESTAURANT)
+                    }
+                    R.id.chip_type_cafe -> {
+                        viewModel.getMemoByCategory(Category.CAFE)
+                    }
+                    R.id.chip_type_hotel -> {
+                        viewModel.getMemoByCategory(Category.HOTEL)
+                    }
+                    R.id.chip_type_other -> {
+                        viewModel.getMemoByCategory(Category.OTHER)
+                    }
+                }
             }
         }
 
@@ -166,7 +188,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             map.clear()
             it.forEach { memo ->
                 Log.d(TAG, memo.title)
-                val resourceId = markerIconList[memo.category] ?: R.drawable.marker
+                val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
 //                val icon = ImageManager.changeColor(0, resourceId, requireContext())
                 val memoMarker = map.addMarker(
                     MarkerOptions()
