@@ -1,5 +1,7 @@
 package com.jae464.placememo.presentation
 
+import com.jae464.placememo.domain.model.post.Category
+
 fun regionToString(area1: String, area2: String, area3: String): String {
     return "$area1 $area2 $area3"
 }
@@ -14,3 +16,12 @@ fun categoryToString(code: Int): String =
         else -> ""
     }
 
+fun indexToCategory(index: Int): Category =
+    when(index) {
+        0 -> Category.RESTAURANT
+        1 -> Category.TOURIST
+        2 -> Category.CAFE
+        3 -> Category.HOTEL
+        4 -> Category.OTHER
+        else -> Category.OTHER
+    }

@@ -1,8 +1,9 @@
 package com.jae464.placememo.domain.model.post
 
 enum class Category {
-    RESTORANT,
-    TOURLIST,
+    RESTAURANT,
+    TOURIST,
     CAFE,
-    HOTEL
+    HOTEL,
+    OTHER,
 }
