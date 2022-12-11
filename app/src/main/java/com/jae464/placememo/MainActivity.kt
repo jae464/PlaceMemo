@@ -1,34 +1,23 @@
 package com.jae464.placememo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.jae464.placememo.databinding.ActivityMainBinding
-import com.jae464.placememo.presentation.feed.FeedFragment
-import com.jae464.placememo.presentation.home.HomeFragment
-import com.jae464.placememo.presentation.mypage.MyPageFragment
-import com.jae464.placememo.presentation.settings.SettingsFragment
-import com.naver.maps.map.NaverMapSdk
+import com.jae464.placememo.presentation.base.BaseActivity
+
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
-    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
         initNavigation()
     }
