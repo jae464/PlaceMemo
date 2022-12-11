@@ -10,7 +10,7 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def naverApiKey = properties.getProperty('naver_api_key')
+
 def googleAPIKey = properties.getProperty('google_api_key')
 android {
     compileSdk 31
