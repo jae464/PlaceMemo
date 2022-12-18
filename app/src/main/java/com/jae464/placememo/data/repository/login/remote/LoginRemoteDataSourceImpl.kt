@@ -1,6 +1,7 @@
 package com.jae464.placememo.data.repository.login.remote
 
 import android.content.ContentValues.TAG
+import android.graphics.Bitmap
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -29,7 +30,7 @@ class LoginRemoteDataSourceImpl @Inject constructor(
                     userInfo = UserEntity(
                         it.data?.get("uid").toString(),
                         it.data?.get("email").toString(),
-                        it.data?.get("nickname").toString()
+                        it.data?.get("nickname").toString(),
                     )
                 }
             }
@@ -64,6 +65,12 @@ class LoginRemoteDataSourceImpl @Inject constructor(
             }
             .await()
         return result
+    }
+
+    override suspend fun updateUserProfileImage(uid: String, image: Bitmap) {
+        // TODO uid 에 해당되는 유저 가져오기
+
+        // TODO 해당 User 의 profileImage 속성 값에 프로필 이미지 저장
     }
 
 }

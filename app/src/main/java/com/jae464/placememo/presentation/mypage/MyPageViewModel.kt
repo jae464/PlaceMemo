@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.mypage
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,5 +26,11 @@ class MyPageViewModel @Inject constructor(
             _user.postValue(user)
         }
     }
+
+    // image 만 필요함
+    fun updateUserProfileImage(image: Bitmap) {
+
+    }
+
 
 }

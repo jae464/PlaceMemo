@@ -1,5 +1,6 @@
 package com.jae464.placememo.data.repository.login
 
+import android.graphics.Bitmap
 import com.jae464.placememo.data.mapper.userEntityToUser
 import com.jae464.placememo.data.mapper.userToUserEntity
 import com.jae464.placememo.data.repository.login.remote.LoginRemoteDataSource
@@ -24,5 +25,9 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun checkNicknameAvailable(nickname: String): Boolean {
         return loginRemoteDataSource.checkNicknameAvailable(nickname)
+    }
+
+    override suspend fun updateUserProfileImage(uid: String, image: Bitmap) {
+        loginRemoteDataSource.updateUserProfileImage(uid, image)
     }
 }

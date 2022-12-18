@@ -18,11 +18,18 @@
     <fragment
         android:id="@+id/mypage"
         android:name="com.jae464.placememo.presentation.mypage.MyPageFragment"
-        android:label="마이페이지" />
+        android:label="마이페이지"
+        tools:layout="@layout/fragment_my_page">
+        <action
+            android:id="@+id/action_mypage_to_friend_list"
+            app:destination="@id/friend_list" />
+    </fragment>
+
     <fragment
         android:id="@+id/settings"
         android:name="com.jae464.placememo.presentation.settings.SettingsFragment"
-        android:label="설정" />
+        android:label="설정"
+        tools:layout="@layout/fragment_settings"/>
     <fragment
         android:id="@+id/home"
         android:name="com.jae464.placememo.presentation.home.HomeFragment"
@@ -71,9 +78,16 @@
                 app:argType="long" />
         </action>
     </fragment>
+
     <activity
         android:id="@+id/loginActivity"
         android:name="com.jae464.placememo.presentation.login.LoginActivity"
-        android:label="로그인" />
+        android:label="로그인"
+        tools:layout="@layout/activity_login"/>
+    <fragment
+        android:id="@+id/friend_list"
+        android:name="com.jae464.placememo.presentation.friend.FriendListFragment"
+        android:label="친구목록"
+        tools:layout="@layout/fragment_friend_list"/>
 
 </navigation>
