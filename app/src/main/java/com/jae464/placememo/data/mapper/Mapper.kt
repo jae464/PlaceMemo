@@ -40,7 +40,8 @@ fun userToUserEntity(user: User): UserEntity {
     return UserEntity(
         user.uid,
         user.email,
-        user.nickname
+        user.nickname,
+        user.image
     )
 }
 
@@ -49,7 +50,8 @@ fun userEntityToUser(userEntity: UserEntity?): User? {
     return User(
         userEntity.uid,
         userEntity.email,
-        userEntity.nickname
+        userEntity.nickname,
+        userEntity.image
     )
 }
 

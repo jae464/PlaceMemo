@@ -4,4 +4,5 @@ data class UserEntity(
     var uid: String,
     var email: String,
     var nickname: String,
+    var image: String? = null,
 )

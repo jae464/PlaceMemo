@@ -184,6 +184,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     //
     private fun initObserver() {
+        Log.d(tag, "initObserver")
         viewModel.memoList.observe(viewLifecycleOwner) {
             map.clear()
             it.forEach { memo ->

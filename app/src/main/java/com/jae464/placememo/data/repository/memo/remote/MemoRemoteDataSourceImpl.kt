@@ -31,12 +31,15 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     override suspend fun saveImageOnRemote(imageList: List<Bitmap>, imageUriList: List<String>) {
         val imagesRef = storage.reference.child("images")
         for (index in imageUriList.indices) {
+
             val baos = ByteArrayOutputStream()
             val image = imageList[index]
             image.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+
             val data = baos.toByteArray()
             val imageRef = imagesRef.child(imageUriList[index])
             val uploadTask = imageRef.putBytes(data)
+
             uploadTask.addOnSuccessListener {
                 Log.d(TAG, it.toString())
             }.addOnFailureListener {
