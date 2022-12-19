@@ -29,8 +29,9 @@ class MyPageViewModel @Inject constructor(
 
     // image 만 필요함
     fun updateUserProfileImage(image: Bitmap) {
-
+        viewModelScope.launch {
+            loginRepository.updateUserProfileImage(user.value!!.uid, image)
+        }
     }
-
 
 }

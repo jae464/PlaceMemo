@@ -1,6 +1,7 @@
 package com.jae464.placememo.presentation.mypage
 import android.Manifest
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,7 +13,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.jae464.placememo.presentation.login.LoginActivity
 import com.jae464.placememo.MainActivity
 import com.jae464.placememo.R
@@ -31,12 +35,15 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
+
         if (isGranted) {
             loadImage()
-        } else {
+        }
+        else {
             // TODO requestPermission 예외처리
         }
     }
+
     private val getImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -123,7 +130,16 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun initObserver() {
+        viewModel.user.observe(viewLifecycleOwner) {
+            it ?: return@observe
+            val imageUrl = it.imageUrl ?: return@observe
 
+            Glide.with(requireContext() /* context */)
+                .load(imageUrl)
+                .into(binding.userProfileImageView)
+
+
+        }
     }
 
     private fun loadImage() {
@@ -132,4 +148,5 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         getImageLauncher.launch(intent)
     }
+
 }

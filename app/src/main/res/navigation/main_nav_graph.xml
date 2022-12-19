@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_mypage_to_friend_list"
             app:destination="@id/friend_list" />
+        <action
+            android:id="@+id/action_mypage_to_settings"
+            app:destination="@id/settings" />
     </fragment>
 
     <fragment
