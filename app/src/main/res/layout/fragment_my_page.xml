@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
 
                     app:constraint_referenced_ids="logoutButton, userProfileImageView, user_nickname, nickname_text_view,
-                        user_nickname, user_email, email_text_view" />
+                        user_nickname, user_email, email_text_view, edit_profile_button" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/logoutViewGroup"
