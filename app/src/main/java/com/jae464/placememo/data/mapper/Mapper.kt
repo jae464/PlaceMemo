@@ -1,6 +1,5 @@
 package com.jae464.placememo.data.mapper
 
-import com.jae464.placememo.data.dto.MemoDTO
 import com.jae464.placememo.data.model.MemoEntity
 import com.jae464.placememo.data.model.Region
 import com.jae464.placememo.data.model.UserEntity
@@ -41,7 +40,7 @@ fun userToUserEntity(user: User): UserEntity {
         user.uid,
         user.email,
         user.nickname,
-        user.image
+        user.imageUrl
     )
 }
 
@@ -51,7 +50,7 @@ fun userEntityToUser(userEntity: UserEntity?): User? {
         userEntity.uid,
         userEntity.email,
         userEntity.nickname,
-        userEntity.image
+        userEntity.imageUrl
     )
 }
 
