@@ -7,6 +7,27 @@
         android:layout_height="match_parent"
         tools:context=".presentation.settings.SettingsFragment">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/settingToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/blue_200"
+                android:fitsSystemWindows="true"
+                app:navigationIcon="@drawable/ic_baseline_menu_24"
+                app:title="PlaceMemo"
+                app:titleTextColor="@color/white" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
