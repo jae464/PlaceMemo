@@ -38,7 +38,7 @@ import retrofit2.Response
 
 @AndroidEntryPoint
 class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home),
-    GoogleMap.OnMarkerClickListener {
+    GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private val TAG: String = "HomeFragment"
 
@@ -103,6 +103,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         map.setOnMarkerClickListener(this)
+        map.setOnInfoWindowClickListener(this)
 
         binding.postButton.setOnClickListener {
             currentMarker ?: return@setOnClickListener
@@ -249,9 +250,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16F)
 
         map.animateCamera(cameraUpdate, 500, null)
-        println("주소 요청 전")
         viewModel.getAddressName(location.latitude, location.longitude)
-        println("주소 요청 후")
         binding.postButton.visibility = View.VISIBLE
     }
 
@@ -275,6 +274,20 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     override fun onDestroyView() {
         super.onDestroyView()
         map.clear()
+    }
+
+    override fun onInfoWindowClick(p0: Marker) {
+        currentMarker ?: return
+        Log.d(TAG, currentMarker.toString())
+        val bundle = Bundle().apply {
+            putDouble("latitude", currentMarker!!.position.latitude)
+            putDouble("longitude", currentMarker!!.position.longitude)
+        }
+
+        findNavController().navigate(
+            R.id.action_home_to_post,
+            bundle
+        )
     }
 }
 
