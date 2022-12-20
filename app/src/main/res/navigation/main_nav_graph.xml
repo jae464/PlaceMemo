@@ -92,5 +92,10 @@
         android:name="com.jae464.placememo.presentation.friend.FriendListFragment"
         android:label="친구목록"
         tools:layout="@layout/fragment_friend_list"/>
+    <fragment
+        android:id="@+id/search"
+        android:name="com.jae464.placememo.presentation.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search" />
 
 </navigation>
