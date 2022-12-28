@@ -18,13 +18,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
     private val TAG: String = "FeedFragment"
-    private val feedListAdapter = FeedListAdapter(this::goToDeatilPage)
+    private var feedListAdapter = FeedListAdapter(this::goToDeatilPage)
     private var listAdapter = FeedListAdapter(this::goToDeatilPage, 1)
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.feedRecyclerView.adapter = feedListAdapter
+
         initObserver()
         initAppBar()
         initListener()
@@ -40,8 +41,17 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         viewModel.memoList.observe(viewLifecycleOwner) {
             Log.d("FeedFragment","memoList Observer")
             println(it)
+
+            if (it.isEmpty()) {
+                binding.emptyMessageTextView.visibility = View.VISIBLE
+                feedListAdapter.submitList(emptyList())
+                listAdapter.submitList(emptyList())
+                return@observe
+            }
+            binding.emptyMessageTextView.visibility = View.INVISIBLE
             feedListAdapter.submitList(it.toMutableList())
             listAdapter.submitList(it.toMutableList())
+
         }
     }
 
@@ -61,7 +71,6 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
                     viewModel.getAllMemo()
                 }
                 R.id.chip_type_list_view -> {
-//                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                     binding.feedRecyclerView.adapter = listAdapter
                     binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                     viewModel.getAllMemo()
@@ -76,5 +85,12 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         findNavController().navigate(
             action
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView")
+        feedListAdapter.clearData()
+        listAdapter.clearData()
     }
 }

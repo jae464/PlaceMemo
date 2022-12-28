@@ -1,5 +1,6 @@
 package com.jae464.placememo.presentation.feed
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,5 +27,13 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch {
             _memoList.postValue(repository.getAllMemo())
         }
+    }
+
+    fun clearMemo() {
+        _memoList.postValue(emptyList())
+    }
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("FeedViewModel", "onCleared")
     }
 }
