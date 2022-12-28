@@ -23,6 +23,9 @@ class FeedListAdapter(private val onClick: (Long) -> (Unit), private val viewTyp
      * 각각 FeedGridViewHolder와 FeedListViewHolder 는 FeedViewHolder 의
      * bind 함수를 override 하여 작성
     * */
+    fun clearData() {
+        notifyDataSetChanged()
+    }
 
     sealed class FeedViewHolder(binding: ViewDataBinding):
         RecyclerView.ViewHolder(binding.root) {

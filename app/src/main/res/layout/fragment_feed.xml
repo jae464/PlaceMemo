@@ -110,6 +110,19 @@
                     app:spanCount="1"
                     tools:listitem="@layout/item_memo_preview" />
 
+                <TextView
+                    android:id="@+id/empty_message_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="160dp"
+                    android:text="작성된 메모가 없습니다."
+                    android:textSize="30sp"
+                    android:visibility="invisible"
+                />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
