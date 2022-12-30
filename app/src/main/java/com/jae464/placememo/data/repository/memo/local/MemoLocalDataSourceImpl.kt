@@ -27,6 +27,14 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemoByCategory(category)
     }
 
+    override suspend fun getMemoByTitle(title: String): List<MemoEntity> {
+        return memoDao.getMemoByTitle(title)
+    }
+
+    override suspend fun getMemoByContent(content: String): List<MemoEntity> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteMemo(id: Long) {
         memoDao.deleteMemo(id)
     }

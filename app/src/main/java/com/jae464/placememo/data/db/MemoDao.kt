@@ -24,4 +24,7 @@ interface MemoDao {
    @Query("SELECT * FROM memo WHERE category = :category")
    suspend fun getMemoByCategory(category: Int): List<MemoEntity>
 
+   @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
+   suspend fun getMemoByTitle(title: String): List<MemoEntity>
+
 }
