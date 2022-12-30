@@ -59,6 +59,20 @@ class MemoRepositoryImpl @Inject constructor(
         return memoList
     }
 
+    override suspend fun getMemoByTitle(title: String): List<Memo> {
+        // Room 에서 title 을 포함하는 메모 가져오기
+        val memoList = mutableListOf<Memo>()
+        memoLocalDataSource.getMemoByTitle(title).forEach {
+            memoList.add(memoEntityToMemo(it))
+        }
+        return memoList
+
+    }
+
+    override suspend fun getMemoByContent(content: String): List<Memo> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteMemo(id: Long) {
         memoLocalDataSource.deleteMemo(id)
     }

@@ -8,5 +8,7 @@ interface MemoLocalDataSource {
     suspend fun saveMemo(memo: MemoEntity): Long
     suspend fun updateMemo(memo: MemoEntity)
     suspend fun getMemoByCategory(category: Int): List<MemoEntity>
+    suspend fun getMemoByTitle(title: String): List<MemoEntity>
+    suspend fun getMemoByContent(content: String): List<MemoEntity>
     suspend fun deleteMemo(id: Long)
 }
