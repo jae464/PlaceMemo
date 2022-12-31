@@ -18,8 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
     private val TAG: String = "FeedFragment"
-    private var feedListAdapter = FeedListAdapter(this::goToDeatilPage)
-    private var listAdapter = FeedListAdapter(this::goToDeatilPage, 1)
+    private var feedListAdapter = FeedListAdapter(this::goToDetailPage)
+    private var listAdapter = FeedListAdapter(this::goToDetailPage, 1)
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,7 +80,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         }
     }
 
-    private fun goToDeatilPage(memoId: Long) {
+    private fun goToDetailPage(memoId: Long) {
         val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
         findNavController().navigate(
             action

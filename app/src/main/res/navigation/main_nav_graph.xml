@@ -96,6 +96,10 @@
         android:id="@+id/search"
         android:name="com.jae464.placememo.presentation.search.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_detail_memo"
+            app:destination="@id/detail_memo" />
+    </fragment>
 
 </navigation>
