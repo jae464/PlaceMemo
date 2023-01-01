@@ -9,6 +9,7 @@ interface MemoRepository {
     suspend fun updateMemo(memo: Memo)
     suspend fun saveMemoOnRemote(userId: String, memo: Memo)
     suspend fun getAllMemo(): List<Memo>
+    suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo>
     suspend fun getMemoByCategory(category: Int) : List<Memo>
     suspend fun getMemoByTitle(title: String): List<Memo>
     suspend fun getMemoByContent(content: String): List<Memo>

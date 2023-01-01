@@ -51,6 +51,12 @@ class MemoRepositoryImpl @Inject constructor(
         return memoList
     }
 
+    override suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo> {
+        val memoList = mutableListOf<Memo>()
+        memoRemoteDataSource.getAllMemoByUser(uid)
+        return memoList
+    }
+
     override suspend fun getMemoByCategory(category: Int): List<Memo> {
         val memoList = mutableListOf<Memo>()
         memoLocalDataSource.getMemoByCategory(category).forEach {

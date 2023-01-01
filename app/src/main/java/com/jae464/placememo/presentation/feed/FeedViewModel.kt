@@ -29,6 +29,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun getAllMemoByUser(uid: String) {
+        viewModelScope.launch {
+            repository.getAllMemoByUserOnRemote(uid)
+        }
+    }
+
     fun clearMemo() {
         _memoList.postValue(emptyList())
     }
