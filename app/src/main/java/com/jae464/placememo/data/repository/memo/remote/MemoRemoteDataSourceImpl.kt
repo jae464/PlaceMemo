@@ -8,6 +8,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.jae464.placememo.data.dto.MemoDTO
 import com.jae464.placememo.data.model.MemoEntity
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
@@ -19,6 +20,24 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     private val storage = Firebase.storage
 
     override suspend fun getMemo(id: Long) {
+
+    }
+
+    override suspend fun getAllMemoByUser(uid: String): List<MemoDTO> {
+        val result = mutableListOf<MemoDTO>()
+
+        Log.d(TAG, uid)
+        val memoDoc = firestore.collection("memos")
+            .whereEqualTo("userId", uid)
+
+
+        memoDoc.get().addOnSuccessListener {
+            Log.d(TAG, "총 메모 개수 : ${it.documents.size}")
+//            Log.d(TAG, it.documents.toString())
+
+        }.await()
+
+        return result
 
     }
 

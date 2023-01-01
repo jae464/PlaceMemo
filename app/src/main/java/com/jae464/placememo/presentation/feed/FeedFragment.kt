@@ -9,6 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.jae464.placememo.R
 import com.jae464.placememo.databinding.FragmentFeedBinding
 import com.jae464.placememo.presentation.base.BaseFragment
@@ -30,6 +31,9 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         initAppBar()
         initListener()
         viewModel.getAllMemo()
+
+        // Firebase 메모 불러오기 테스트
+        viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
     private fun initAppBar() {
