@@ -1,8 +1,12 @@
 package com.jae464.placememo.presentation.search
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -40,7 +44,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             Log.d(TAG, textView.text.toString())
             //TODO 검색어랑 일치하는 메모 가져오기
             viewModel.getMemoByTitle(textView.text.toString())
-            // TODO 메모 업데이트 후 EditText 에 Text 지우기
+            // TODO 메모 업데이트 후 EditText 에 Text 지우기, 키보드 내리기
+
+            ViewCompat.getWindowInsetsController(binding.root)?.hide(
+                WindowInsetsCompat.Type.ime()
+            )
+
             true
         }
     }
