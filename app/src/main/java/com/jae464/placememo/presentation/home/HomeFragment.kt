@@ -153,6 +153,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     R.id.chip_type_food -> {
                         viewModel.getMemoByCategory(Category.RESTAURANT)
                     }
+                    R.id.chip_type_tourist -> {
+                        viewModel.getMemoByCategory(Category.TOURIST)
+                    }
                     R.id.chip_type_cafe -> {
                         viewModel.getMemoByCategory(Category.CAFE)
                     }

@@ -34,6 +34,9 @@ class MemoRemoteDataSourceImpl @Inject constructor(
         memoDoc.get().addOnSuccessListener {
             Log.d(TAG, "총 메모 개수 : ${it.documents.size}")
 //            Log.d(TAG, it.documents.toString())
+            it.documents.forEach {
+
+            }
 
         }.await()
 

@@ -36,7 +36,7 @@
     <fragment
         android:id="@+id/home"
         android:name="com.jae464.placememo.presentation.home.HomeFragment"
-        android:label="PlaceMemo"
+        android:label=""
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_home_to_post"

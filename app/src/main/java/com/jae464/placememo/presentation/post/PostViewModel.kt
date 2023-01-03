@@ -69,18 +69,15 @@ class PostViewModel @Inject constructor(
                 imageFileNameList
             )
 
-            println("저장 전 내용 확인합니다.")
-            println("$id $title $content $latitude $longitude")
-            println(imageList)
             memoId = repository.saveMemo(memo)
             saveImage(memoId)
-            Log.d("PostViewModel", user.toString())
-            println(user)
+
+            val newMemo = memo.copy(id = memoId)
 
             // 로그인이 되어있을 시, 파이어베이스 스토어에 저장
             if (user != null) {
                 Log.d(TAG, user.toString())
-                repository.saveMemoOnRemote(user?.uid.toString(), memo)
+                repository.saveMemoOnRemote(user?.uid.toString(), newMemo)
             }
 
             _isDone.postValue(true)

@@ -31,6 +31,7 @@ class MemoRepositoryImpl @Inject constructor(
 
     override suspend fun saveMemoOnRemote(userId: String, memo: Memo) {
         return memoRemoteDataSource.insertMemo(MemoDTO(
+            memoId = userId + "_" + memo.id.toString(),
             userId,
             memo.title,
             memo.content,
@@ -72,7 +73,6 @@ class MemoRepositoryImpl @Inject constructor(
             memoList.add(memoEntityToMemo(it))
         }
         return memoList
-
     }
 
     override suspend fun getMemoByContent(content: String): List<Memo> {
