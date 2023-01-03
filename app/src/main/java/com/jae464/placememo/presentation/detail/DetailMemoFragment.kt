@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.jae464.placememo.R
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.databinding.FragmentDetailMemoBinding
@@ -139,6 +140,9 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             .setPositiveButton("삭제") { p0, p1 ->
                 viewModel.deleteMemo(args.memoId)
                 Snackbar.make(binding.root, "메모 삭제가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                if (FirebaseAuth.getInstance().uid != null) {
+                    viewModel.deleteMemoOnRemote(FirebaseAuth.getInstance().uid!!, args.memoId)
+                }
                 // 삭제 후 바로 popBaskTack() 하면, HomeFragment 에서 바로 반영되지 않는 현상을 방지하기 위해
                 // viewModel에서 삭제 후 isDone 변수에 postValue 하도록 변경
 

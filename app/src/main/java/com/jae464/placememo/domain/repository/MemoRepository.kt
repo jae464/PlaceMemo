@@ -14,6 +14,7 @@ interface MemoRepository {
     suspend fun getMemoByTitle(title: String): List<Memo>
     suspend fun getMemoByContent(content: String): List<Memo>
     suspend fun deleteMemo(id: Long)
+    suspend fun deleteMemoOnRemote(memoId: String)
     fun saveImage(imageList: List<Bitmap>, memoId: Long)
     suspend fun saveImageOnRemote(imageList: List<Bitmap>, imageUriList: List<String>)
 }

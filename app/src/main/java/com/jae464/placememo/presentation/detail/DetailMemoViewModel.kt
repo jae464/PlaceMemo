@@ -40,4 +40,10 @@ class DetailMemoViewModel @Inject constructor(
         }
     }
 
+    fun deleteMemoOnRemote(uid: String, id: Long) {
+        viewModelScope.launch {
+            memoRepository.deleteMemoOnRemote(uid + "_" + id.toString())
+        }
+    }
+
 }

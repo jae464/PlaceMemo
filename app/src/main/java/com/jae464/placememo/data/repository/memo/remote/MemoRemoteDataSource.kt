@@ -9,5 +9,6 @@ interface MemoRemoteDataSource {
     suspend fun getMemo(id: Long)
     suspend fun getAllMemoByUser(uid: String): List<MemoDTO>
     suspend fun insertMemo(memo: MemoDTO)
+    suspend fun deleteMemo(memoId: String)
     suspend fun saveImageOnRemote(imageList: List<Bitmap>, imageUriList: List<String>)
 }

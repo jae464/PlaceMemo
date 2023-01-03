@@ -46,8 +46,17 @@ class MemoRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun insertMemo(memo: MemoDTO) {
         val memoDoc = firestore.collection("memos")
-            .document()
+            .document(memo.memoId)
         memoDoc.set(memo)
+    }
+
+    override suspend fun deleteMemo(memoId: String) {
+
+        firestore.collection("memos")
+            .document(memoId)
+            .delete()
+            .await()
+
     }
 
     override suspend fun saveImageOnRemote(imageList: List<Bitmap>, imageUriList: List<String>) {
