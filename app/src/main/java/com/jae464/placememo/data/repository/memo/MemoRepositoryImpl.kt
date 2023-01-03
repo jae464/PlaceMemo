@@ -83,6 +83,10 @@ class MemoRepositoryImpl @Inject constructor(
         memoLocalDataSource.deleteMemo(id)
     }
 
+    override suspend fun deleteMemoOnRemote(memoId: String) {
+        memoRemoteDataSource.deleteMemo(memoId)
+    }
+
     override fun saveImage(imageList: List<Bitmap>, memoId: Long) {
         ImageManager.saveImage(imageList, memoId)
     }
