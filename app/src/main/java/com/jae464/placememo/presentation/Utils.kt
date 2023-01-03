@@ -25,3 +25,4 @@ fun indexToCategory(index: Int): Category =
         4 -> Category.OTHER
         else -> Category.OTHER
     }
+
