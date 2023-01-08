@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.jae464.placememo.data.dto.MemoDTO
@@ -26,18 +27,15 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     override suspend fun getAllMemoByUser(uid: String): List<MemoDTO> {
         val result = mutableListOf<MemoDTO>()
 
-        Log.d(TAG, uid)
         val memoDoc = firestore.collection("memos")
             .whereEqualTo("userId", uid)
 
 
         memoDoc.get().addOnSuccessListener {
             Log.d(TAG, "총 메모 개수 : ${it.documents.size}")
-//            Log.d(TAG, it.documents.toString())
-            it.documents.forEach {
-
+            it.documents.forEach { doc ->
+                doc.toObject<MemoDTO>()?.let { memoDTO -> result.add(memoDTO) }
             }
-
         }.await()
 
         return result
@@ -46,14 +44,38 @@ class MemoRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun insertMemo(memo: MemoDTO) {
         val memoDoc = firestore.collection("memos")
-            .document(memo.memoId)
+            .document()
+
         memoDoc.set(memo)
     }
 
-    override suspend fun deleteMemo(memoId: String) {
+    override suspend fun updateMemo(userId: String, memo: MemoDTO) {
+
+        val memoDoc = firestore.collection("memos")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("memoId", memo.memoId)
+            .get()
+            .await()
 
         firestore.collection("memos")
-            .document(memoId)
+            .document(memoDoc.documents[0].id)
+            .set(memo)
+
+    }
+
+    override suspend fun deleteMemo(userId: String, memoId: Long) {
+
+        val memoDoc = firestore.collection("memos")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("memoId", memoId)
+            .get()
+            .await()
+
+        Log.d("MemoRemoteDataSourceImpl", memoDoc.documents[0].id)
+
+        // 삭제
+        firestore.collection("memos")
+            .document(memoDoc.documents[0].id)
             .delete()
             .await()
 

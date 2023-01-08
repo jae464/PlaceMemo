@@ -2,6 +2,8 @@ package com.jae464.placememo.data.repository.memo
 
 import android.graphics.Bitmap
 import com.jae464.placememo.data.dto.MemoDTO
+import com.jae464.placememo.data.dto.toMemo
+import com.jae464.placememo.data.dto.toMemoDTO
 import com.jae464.placememo.data.manager.ImageManager
 import com.jae464.placememo.data.mapper.categoryToInt
 import com.jae464.placememo.data.mapper.intToCategory
@@ -29,19 +31,38 @@ class MemoRepositoryImpl @Inject constructor(
         memoLocalDataSource.updateMemo(memoToMemoEntity(memo))
     }
 
+    override suspend fun updateMemoOnRemote(userId: String, memo: Memo) {
+//        memoRemoteDataSource.updateMemo(userId, MemoDTO(
+//            memo.id,
+//            userId,
+//            memo.title,
+//            memo.content,
+//            Date(),
+//            memo.latitude,
+//            memo.longitude,
+//            categoryToInt(memo.category),
+//            Region(memo.area1, memo.area1, memo.area3),
+//            imageUrlList = memo.imageUriList
+//        ))
+
+        memoRemoteDataSource.updateMemo(userId, memo.toMemoDTO(userId))
+    }
+
     override suspend fun saveMemoOnRemote(userId: String, memo: Memo) {
-        return memoRemoteDataSource.insertMemo(MemoDTO(
-            memoId = userId + "_" + memo.id.toString(),
-            userId,
-            memo.title,
-            memo.content,
-            Date(),
-            memo.latitude,
-            memo.longitude,
-            categoryToInt(memo.category),
-            Region(memo.area1, memo.area1, memo.area3),
-            imageUrlList = memo.imageUriList
-        ))
+//        return memoRemoteDataSource.insertMemo(MemoDTO(
+//            memo.id,
+//            userId,
+//            memo.title,
+//            memo.content,
+//            Date(),
+//            memo.latitude,
+//            memo.longitude,
+//            categoryToInt(memo.category),
+//            Region(memo.area1, memo.area1, memo.area3),
+//            imageUrlList = memo.imageUriList
+//        ))
+
+        return memoRemoteDataSource.insertMemo(memo.toMemoDTO(userId))
     }
 
     override suspend fun getAllMemo(): List<Memo> {
@@ -54,7 +75,9 @@ class MemoRepositoryImpl @Inject constructor(
 
     override suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo> {
         val memoList = mutableListOf<Memo>()
-        memoRemoteDataSource.getAllMemoByUser(uid)
+        memoRemoteDataSource.getAllMemoByUser(uid).forEach {
+            memoList.add(it.toMemo())
+        }
         return memoList
     }
 
@@ -83,8 +106,8 @@ class MemoRepositoryImpl @Inject constructor(
         memoLocalDataSource.deleteMemo(id)
     }
 
-    override suspend fun deleteMemoOnRemote(memoId: String) {
-        memoRemoteDataSource.deleteMemo(memoId)
+    override suspend fun deleteMemoOnRemote(userId: String, memoId: Long) {
+        memoRemoteDataSource.deleteMemo(userId, memoId)
     }
 
     override fun saveImage(imageList: List<Bitmap>, memoId: Long) {
