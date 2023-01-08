@@ -89,10 +89,20 @@ class PostViewModel @Inject constructor(
         val beforeMemo = memo.value ?: return
         val newMemo = Memo(beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
         category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageFileNameList)
+
         Log.d(TAG, newMemo.toString())
+
         viewModelScope.launch {
+            // Local Room update
             repository.updateMemo(newMemo)
             saveImage(newMemo.id)
+
+            // Remote Firebase update
+            if (user != null) {
+                repository.updateMemoOnRemote(user?.uid.toString(), newMemo)
+                // TODO Image Remote Update
+            }
+
             _isDone.postValue(true)
         }
     }

@@ -31,7 +31,8 @@ class FeedViewModel @Inject constructor(
 
     fun getAllMemoByUser(uid: String) {
         viewModelScope.launch {
-            repository.getAllMemoByUserOnRemote(uid)
+            val remoteMemo = repository.getAllMemoByUserOnRemote(uid)
+            Log.d("FeedViewModel", "remote memo : $remoteMemo")
         }
     }
 

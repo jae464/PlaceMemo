@@ -33,16 +33,18 @@ class DetailMemoViewModel @Inject constructor(
     fun deleteMemo(id: Long) {
         viewModelScope.launch {
             memoRepository.deleteMemo(id)
-            Log.d(TAG,"삭제 후 지연 함수")
-            delay(1000L)
-            Log.d(TAG, "삭제 후 지연 함수 완료")
-            _isDone.postValue(true)
         }
     }
 
-    fun deleteMemoOnRemote(uid: String, id: Long) {
+    fun deleteMemoOnRemote(userId: String?, memoId: Long) {
+        if (userId == null) {
+            _isDone.postValue(true)
+            return
+        }
+
         viewModelScope.launch {
-            memoRepository.deleteMemoOnRemote(uid + "_" + id.toString())
+            memoRepository.deleteMemoOnRemote(userId, memoId)
+            _isDone.postValue(true)
         }
     }
 

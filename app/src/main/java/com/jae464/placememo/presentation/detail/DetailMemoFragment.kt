@@ -139,14 +139,8 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             .setMessage("정말 삭제하시겠습니까?")
             .setPositiveButton("삭제") { p0, p1 ->
                 viewModel.deleteMemo(args.memoId)
+                viewModel.deleteMemoOnRemote(FirebaseAuth.getInstance().uid, args.memoId)
                 Snackbar.make(binding.root, "메모 삭제가 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
-                if (FirebaseAuth.getInstance().uid != null) {
-                    viewModel.deleteMemoOnRemote(FirebaseAuth.getInstance().uid!!, args.memoId)
-                }
-                // 삭제 후 바로 popBaskTack() 하면, HomeFragment 에서 바로 반영되지 않는 현상을 방지하기 위해
-                // viewModel에서 삭제 후 isDone 변수에 postValue 하도록 변경
-
-//                findNavController().popBackStack()
             }
             .setNegativeButton("취소") { p0, p1 ->
 
