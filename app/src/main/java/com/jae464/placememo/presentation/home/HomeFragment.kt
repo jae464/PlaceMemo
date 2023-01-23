@@ -63,14 +63,26 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             setMinZoomPreference(6.0f)
             setMaxZoomPreference(16.0f)
         }
+
         setUserLocation()
+
         val seoul = LatLng(37.554891, 126.970814)
+        val location = getLocation()
+
+        val defaultLatLng: LatLng = if (location == null) {
+            seoul
+        } else {
+            LatLng(location.latitude, location.longitude)
+        }
+
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment = mapFragment.also {
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 36F))
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 36F))
+
         initObserver()
         initListener()
         initAppBar()
@@ -119,8 +131,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.currentLocationButton.setOnClickListener {
+//            getLocation()
             val currentLocation = getLocation() ?: return@setOnClickListener
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 16f))
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 16f), 1000, null)
         }
 
         // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
