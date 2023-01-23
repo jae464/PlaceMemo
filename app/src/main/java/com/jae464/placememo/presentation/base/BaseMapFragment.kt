@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.placememo.R
 
-abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment(), OnMapReadyCallback, LocationListener {
+abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment(), OnMapReadyCallback {
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
@@ -61,10 +61,6 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -99,7 +95,11 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
 
     fun getLocation(): Location? {
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, this)
+        val locationListener = LocationListener {
+            Log.d("BaseMapFragment", "Location Changed to $it")
+//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),16f), 100, null)
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5f, locationListener)
         val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         println("${location?.latitude} ${location?.longitude}")
         return location
@@ -110,7 +110,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         super.onDestroyView()
     }
 
-    override fun onLocationChanged(p0: Location) {
-        println("Location Changed to $p0")
-    }
+//    override fun onLocationChanged(p0: Location) {
+//        println("Location Changed to $p0")
+//    }
 }
