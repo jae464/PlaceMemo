@@ -25,6 +25,7 @@
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBarLayout"
+                style="@style/customToolbarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
@@ -36,11 +37,9 @@
                     android:id="@+id/homeToolBar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
-                    android:background="@color/blue_200"
                     android:fitsSystemWindows="true"
                     app:navigationIcon="@drawable/ic_baseline_menu_24"
-                    app:title="PlaceMemo"
-                    app:titleTextColor="@color/white" />
+                    app:title="PlaceMemo" />
 
             </com.google.android.material.appbar.AppBarLayout>
 
