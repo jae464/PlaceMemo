@@ -10,6 +10,8 @@ import com.jae464.placememo.data.mapper.intToCategory
 import com.jae464.placememo.data.mapper.memoEntityToMemo
 import com.jae464.placememo.data.mapper.memoToMemoEntity
 import com.jae464.placememo.data.model.Region
+import com.jae464.placememo.data.model.toMemo
+import com.jae464.placememo.data.model.toMemoEntity
 import com.jae464.placememo.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.placememo.data.repository.memo.remote.MemoRemoteDataSource
 import com.jae464.placememo.domain.model.post.Memo
@@ -21,14 +23,17 @@ class MemoRepositoryImpl @Inject constructor(
     private val memoLocalDataSource: MemoLocalDataSource,
     private val memoRemoteDataSource: MemoRemoteDataSource
 ): MemoRepository {
-    override suspend fun getMemo(id: Long): Memo = memoEntityToMemo(memoLocalDataSource.getMemo(id))
+//    override suspend fun getMemo(id: Long): Memo = memoEntityToMemo(memoLocalDataSource.getMemo(id))
+override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).toMemo()
 
     override suspend fun saveMemo(memo: Memo): Long {
-        return memoLocalDataSource.saveMemo(memoToMemoEntity(memo))
+//        return memoLocalDataSource.saveMemo(memoToMemoEntity(memo))
+        return memoLocalDataSource.saveMemo(memo.toMemoEntity())
     }
 
     override suspend fun updateMemo(memo: Memo) {
-        memoLocalDataSource.updateMemo(memoToMemoEntity(memo))
+//        memoLocalDataSource.updateMemo(memoToMemoEntity(memo))
+        memoLocalDataSource.updateMemo(memo.toMemoEntity())
     }
 
     override suspend fun updateMemoOnRemote(userId: String, memo: Memo) {
@@ -68,7 +73,8 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun getAllMemo(): List<Memo> {
         val memoList = mutableListOf<Memo>()
         memoLocalDataSource.getAllMemo().forEach {
-            memoList.add(memoEntityToMemo(it))
+//            memoList.add(memoEntityToMemo(it))
+            memoList.add(it.toMemo())
         }
         return memoList
     }
@@ -84,7 +90,8 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun getMemoByCategory(category: Int): List<Memo> {
         val memoList = mutableListOf<Memo>()
         memoLocalDataSource.getMemoByCategory(category).forEach {
-            memoList.add(memoEntityToMemo(it))
+//            memoList.add(memoEntityToMemo(it))
+            memoList.add(it.toMemo())
         }
         return memoList
     }
@@ -93,7 +100,8 @@ class MemoRepositoryImpl @Inject constructor(
         // Room 에서 title 을 포함하는 메모 가져오기
         val memoList = mutableListOf<Memo>()
         memoLocalDataSource.getMemoByTitle(title).forEach {
-            memoList.add(memoEntityToMemo(it))
+//            memoList.add(memoEntityToMemo(it))
+            memoList.add(it.toMemo())
         }
         return memoList
     }
