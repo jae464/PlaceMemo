@@ -23,7 +23,6 @@
                 android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/blue_200"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +30,7 @@
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/detailToolbar"
+                    style="@style/customToolbarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize" >
 
