@@ -6,6 +6,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.jae464.placememo.data.mapper.categoryToInt
+import com.jae464.placememo.data.mapper.intToCategory
 import com.jae464.placememo.domain.model.post.Memo
 import java.security.Timestamp
 import java.util.*
@@ -35,3 +37,30 @@ data class Region(
     val area2: String = "",
     val area3: String = "",
 )
+
+internal fun MemoEntity.toMemo(): Memo {
+    return Memo(
+        id = id,
+        title = title,
+        content = content,
+        latitude = latitude,
+        longitude = longitude,
+        category = intToCategory(category),
+        area1 = region?.area1 ?: "",
+        area2 = region?.area2 ?: "",
+        area3 = region?.area3 ?: "",
+    )
+}
+
+internal fun Memo.toMemoEntity(): MemoEntity {
+    return MemoEntity(
+        title = title,
+        content = content,
+        Date(),
+        latitude = latitude,
+        longitude = longitude,
+        category = category.ordinal,
+        region = Region(area1, area2, area3),
+        id = id
+    )
+}
