@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
 
     fun getUserInfo(uid: String) {
         viewModelScope.launch {
-            val userInfo = loginRepository.getUserInfo(uid)
+            val userInfo = loginRepository.getUserInfoByUid(uid)
             Log.d("LoginViewModel", userInfo.toString())
             _user.postValue(userInfo)
         }

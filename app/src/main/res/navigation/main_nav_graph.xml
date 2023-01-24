@@ -91,7 +91,11 @@
         android:id="@+id/friend_list"
         android:name="com.jae464.placememo.presentation.friend.FriendListFragment"
         android:label="친구목록"
-        tools:layout="@layout/fragment_friend_list"/>
+        tools:layout="@layout/fragment_friend_list">
+        <action
+            android:id="@+id/action_friend_list_to_friend_add"
+            app:destination="@id/friend_add" />
+    </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.jae464.placememo.presentation.search.SearchFragment"
@@ -100,6 +104,16 @@
         <action
             android:id="@+id/action_search_to_detail_memo"
             app:destination="@id/detail_memo" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/friend_add"
+        android:name="com.jae464.placememo.presentation.friend.FriendAddFragment"
+        android:label="친구추가"
+        tools:layout="@layout/fragment_friend_add">
+        <action
+            android:id="@+id/action_friend_add_to_friend_list"
+            app:destination="@id/friend_list" />
     </fragment>
 
 </navigation>

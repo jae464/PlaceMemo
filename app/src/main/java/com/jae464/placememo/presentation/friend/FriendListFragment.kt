@@ -29,5 +29,14 @@ class FriendListFragment : BaseFragment<FragmentFriendListBinding>(R.layout.frag
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
         binding.friendListToolbar.setupWithNavController(findNavController(), appBarConfiguration)
         binding.friendListToolbar.inflateMenu(R.menu.friend_list_toolbar_menu)
+
+        binding.friendListToolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.add_friend -> {
+                    findNavController().navigate(R.id.action_friend_list_to_friend_add)
+                }
+            }
+            true
+        }
     }
 }
