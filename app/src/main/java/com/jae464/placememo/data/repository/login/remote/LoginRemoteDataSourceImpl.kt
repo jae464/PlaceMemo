@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.jae464.placememo.data.model.UserEntity
@@ -21,8 +22,9 @@ class LoginRemoteDataSourceImpl @Inject constructor(
 ) : LoginRemoteDataSource {
 
     private val storage = Firebase.storage
+    val TAG = "LoginRemoteDataSourceImpl"
 
-    override suspend fun getUserInfoWithUid(uid: String): UserEntity? {
+    override suspend fun getUserInfoByUid(uid: String): UserEntity? {
         var userInfo: UserEntity? = null
         val userRef = firestore.collection("users")
             .document(uid)
@@ -45,6 +47,29 @@ class LoginRemoteDataSourceImpl @Inject constructor(
 
         Log.d("LoginRemoteDataSourceImpl", "$userInfo")
         return userInfo
+    }
+
+    override suspend fun getUserInfoByNickname(nickname: String): UserEntity? {
+        val userRef = firestore.collection("users")
+        val query = userRef.whereEqualTo("nickname", nickname)
+        var userEntity: UserEntity? = null
+
+        query.get()
+            .addOnSuccessListener {
+                // 가입할 때 닉네임 중복 확인하므로 하나여야만 한다.
+                if (it.documents.size != 1) {
+                    Log.e(TAG, "발견된 닉네임이 없거나 2개 이상입니다.")
+                    return@addOnSuccessListener
+                }
+
+                userEntity = it.documents[0].toObject<UserEntity>()
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "닉네임으로 유저 정보를 가져오는데 실패했습니다.")
+            }
+            .await()
+
+        return userEntity
     }
 
     override suspend fun setUserInfo(user: UserEntity) {
@@ -72,11 +97,9 @@ class LoginRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateUserProfileImage(uid: String, image: Bitmap) {
-        // TODO uid 에 해당되는 유저 가져오기
         val userDoc = firestore.collection("users")
             .document(uid)
 
-        // TODO 해당 User 의 profileImage 속성 값에 프로필 이미지 링크 저장
         val profilesRef = storage.reference.child("profiles")
         val baos = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos)

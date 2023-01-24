@@ -21,7 +21,7 @@ class MyPageViewModel @Inject constructor(
 
     fun getUser(uid: String) {
         viewModelScope.launch {
-            val user = loginRepository.getUserInfo(uid)
+            val user = loginRepository.getUserInfoByUid(uid)
             Log.d("MyPageViewModel", user.toString())
             _user.postValue(user)
         }
