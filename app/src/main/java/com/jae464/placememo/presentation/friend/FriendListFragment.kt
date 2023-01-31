@@ -19,10 +19,14 @@ class FriendListFragment : BaseFragment<FragmentFriendListBinding>(R.layout.frag
 
     val TAG = "FreindListFragment"
 
+    private var friendListAdapter = FriendListAdapter()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAppBar()
 
+        binding.friendListRecyclerView.adapter = friendListAdapter
+        friendListAdapter.submitList(userList)
     }
 
     private fun initAppBar() {

@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f4f4f4"
+        android:background="#FFFFFF"
         tools:context=".presentation.mypage.MyPageFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -67,8 +67,8 @@
 
                 <ImageView
                     android:id="@+id/userProfileImageView"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_margin="24dp"
                     android:background="@drawable/bg_profile_image"
                     android:clipToOutline="true"
