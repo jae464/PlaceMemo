@@ -1,11 +1,13 @@
 package com.jae464.data.repository.memo.local
 
 import com.jae464.data.db.MemoDao
+import com.jae464.data.manager.ImageManager
 import com.jae464.data.model.MemoEntity
 import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(
-    private val memoDao: MemoDao
+    private val memoDao: MemoDao,
+    private val imageManager: ImageManager
 ): MemoLocalDataSource {
     override suspend fun getMemo(id: Long): MemoEntity {
         return memoDao.getMemo(id)

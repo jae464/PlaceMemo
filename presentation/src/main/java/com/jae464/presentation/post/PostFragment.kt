@@ -3,6 +3,7 @@ package com.jae464.presentation.post
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,12 +17,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.databinding.FragmentPostBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 import com.jae464.presentation.R
 import com.jae464.presentation.indexToCategory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
@@ -33,7 +42,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
     private var category = com.jae464.domain.model.post.Category.OTHER
-    private var imageUrlList = mutableListOf<Uri>()
+
+    private var imagePathList = mutableListOf<String>()
+    private var imageViewList = mutableListOf<Bitmap?>()
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -48,8 +59,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         ActivityResultContracts.StartActivityForResult()
     ) {
         val image = it.data?.data ?: return@registerForActivityResult
-        imageUrlList.add(image)
-
+        imagePathList.add(image.toString())
+        setImages(image)
 //        Log.d(TAG, image.toString())
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 ////            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
@@ -96,7 +107,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val content = binding.contentEditText.text.toString()
                     // 저장
                     if (args.memoId == -1L) {
-                        viewModel.saveMemo(0, title, content, latitude, longitude, category, imageUrlList)
+                        viewModel.saveMemo(0, title, content, latitude, longitude, category, imagePathList)
                     }
                     else {
                         viewModel.updateMemo(title, content, category)
@@ -136,9 +147,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
-        viewModel.imageList.observe(viewLifecycleOwner) {
-            imageAdapter.submitList(it.toMutableList())
-        }
+//        viewModel.imageList.observe(viewLifecycleOwner) {
+//            imageAdapter.submitList(it.toMutableList())
+//        }
 
         viewModel.address.observe(viewLifecycleOwner) {
             binding.locationTextView.text = viewModel.getAddressName(it)
@@ -199,4 +210,37 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         getImageLauncher.launch(intent)
     }
 
+    private fun setImages(imageUris: Uri) {
+        Glide.with(requireContext())
+            .asBitmap()
+            .load(imageUris)
+            .listener(object: RequestListener<Bitmap> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Bitmap>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "Image Load Error")
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Bitmap?,
+                    model: Any?,
+                    target: Target<Bitmap>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val newImageViewList = imageViewList + listOf(resource)
+                        imageAdapter.submitList(newImageViewList)
+                        imageViewList = newImageViewList.toMutableList()
+                    }
+                    return true
+                }
+            })
+            .override(512,512)
+            .submit()
+    }
 }
