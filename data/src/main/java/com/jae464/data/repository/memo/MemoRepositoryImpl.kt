@@ -2,6 +2,7 @@ package com.jae464.data.repository.memo
 
 import com.jae464.data.dto.toMemo
 import com.jae464.data.dto.toMemoDTO
+import com.jae464.data.manager.ImageManager
 import com.jae464.data.model.toMemo
 import com.jae464.data.model.toMemoEntity
 import com.jae464.data.repository.memo.local.MemoLocalDataSource
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 class MemoRepositoryImpl @Inject constructor(
     private val memoLocalDataSource: MemoLocalDataSource,
-    private val memoRemoteDataSource: MemoRemoteDataSource
+    private val memoRemoteDataSource: MemoRemoteDataSource,
+    private val imageManager: ImageManager
 ): MemoRepository {
 //    override suspend fun getMemo(id: Long): Memo = memoEntityToMemo(memoLocalDataSource.getMemo(id))
 override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).toMemo()
@@ -110,16 +112,14 @@ override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).t
         memoRemoteDataSource.deleteMemo(userId, memoId)
     }
 
-    override fun saveImage(imagePathList: List<String>, memoId: Long) {
+    override fun saveImages(memoId: Long, imagePathList: List<String>) {
+        imageManager.saveImage(imagePathList[0])
+    }
+
+    override suspend fun saveImagesOnRemote(memoId: Long, imagePathList: List<String>) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveImageOnRemote(
-        imagePathList: List<String>,
-        imageUriList: List<String>
-    ) {
-        TODO("Not yet implemented")
-    }
 
 //    override fun saveImage(imageList: List<Bitmap>, memoId: Long) {
 //        ImageManager.saveImage(imageList, memoId)

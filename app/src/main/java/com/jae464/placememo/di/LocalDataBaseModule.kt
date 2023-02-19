@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.jae464.data.db.MemoDao
 import com.jae464.data.db.MemoDatabase
+import com.jae464.data.manager.ImageManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +32,11 @@ class LocalDataBaseModule {
     fun provideMemoDao(memoDatabase: MemoDatabase): MemoDao {
         return memoDatabase.memoDao()
     }
+
+    @Provides
+    @Singleton
+    fun provideImageManager(
+        @ApplicationContext context: Context
+    ): ImageManager = ImageManager(context)
 
 }

@@ -12,5 +12,5 @@ interface LoginRepository {
     suspend fun getUserInfoByNickname(nickname: String): User?
 
     suspend fun checkNicknameAvailable(nickname: String): Boolean
-//    suspend fun updateUserProfileImage(uid: String, image: Bitmap)
+    suspend fun updateUserProfileImage(uid: String, imagePath: String)
 }

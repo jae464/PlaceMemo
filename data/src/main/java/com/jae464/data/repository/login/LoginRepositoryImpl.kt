@@ -34,6 +34,10 @@ class LoginRepositoryImpl @Inject constructor(
         return loginRemoteDataSource.checkNicknameAvailable(nickname)
     }
 
+    override suspend fun updateUserProfileImage(uid: String, imagePath: String) {
+        TODO("Not yet implemented")
+    }
+
 //    override suspend fun updateUserProfileImage(uid: String, image: Bitmap) {
 //        loginRemoteDataSource.updateUserProfileImage(uid, image)
 //    }
