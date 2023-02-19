@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
@@ -12,11 +12,11 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 def googleAPIKey = properties.getProperty('google_api_key')
+
 android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.jae464.placememo"
         minSdk 23
         targetSdk 31
         versionCode 1
@@ -49,9 +49,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data')
     implementation project(path: ':domain')
-    implementation project(path: ':presentation')
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
@@ -119,5 +117,4 @@ dependencies {
     // Glide
     kapt "android.arch.lifecycle:compiler:1.0.0"
     kapt 'com.github.bumptech.glide:compiler:4.14.2'
-
 }
