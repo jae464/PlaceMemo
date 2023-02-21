@@ -57,7 +57,7 @@
                 android:id="@+id/loginViewGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:visibility="invisible"
                 app:constraint_referenced_ids="logoutButton, userProfileImageView, user_nickname,
                         user_nickname, user_email, edit_profile_button" />
 
@@ -65,7 +65,7 @@
                 android:id="@+id/logoutViewGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:constraint_referenced_ids="loginButton, loginTextView" />
 
             <ImageView
@@ -159,9 +159,10 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginButton"
                 style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:backgroundTint="@color/black"
                 android:text="로그인"
                 android:textColor="@color/white"
                 android:textSize="16sp"

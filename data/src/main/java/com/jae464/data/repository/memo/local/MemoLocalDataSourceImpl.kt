@@ -41,4 +41,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
         memoDao.deleteMemo(id)
     }
 
+    override suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>) {
+        imagePathList.forEach {imagePath ->
+            imageManager.saveImage(memoId, imagePath)
+        }
+    }
+
 }

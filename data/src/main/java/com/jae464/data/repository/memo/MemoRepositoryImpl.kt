@@ -15,7 +15,6 @@ import javax.inject.Inject
 class MemoRepositoryImpl @Inject constructor(
     private val memoLocalDataSource: MemoLocalDataSource,
     private val memoRemoteDataSource: MemoRemoteDataSource,
-    private val imageManager: ImageManager
 ): MemoRepository {
 //    override suspend fun getMemo(id: Long): Memo = memoEntityToMemo(memoLocalDataSource.getMemo(id))
 override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).toMemo()
@@ -112,8 +111,8 @@ override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).t
         memoRemoteDataSource.deleteMemo(userId, memoId)
     }
 
-    override fun saveImages(memoId: Long, imagePathList: List<String>) {
-        imageManager.saveImage(imagePathList[0])
+    override suspend fun saveImages(memoId: Long, imagePathList: List<String>) {
+        memoLocalDataSource.saveMemoImages(memoId, imagePathList)
     }
 
     override suspend fun saveImagesOnRemote(memoId: Long, imagePathList: List<String>) {

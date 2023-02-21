@@ -32,7 +32,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         viewModel.getAllMemo()
 
         // Firebase 메모 불러오기 테스트
-        viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
+        // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
     private fun initAppBar() {
