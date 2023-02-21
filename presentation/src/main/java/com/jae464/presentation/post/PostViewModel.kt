@@ -102,9 +102,13 @@ class PostViewModel @Inject constructor(
     }
 
     private fun saveImage(memoId: Long, imageUriList: List<String>) {
-        Log.d(TAG, "saveImage function")
+
         if (imageUriList.isEmpty()) return
-        repository.saveImages(memoId, imageUriList)
+        viewModelScope.launch {
+            Log.d(TAG, "이미지 저장 시작")
+            repository.saveImages(memoId, imageUriList)
+            Log.d(TAG, "이미지 저장 완료")
+        }
 
         // 네트워크 연결되어 있을 시 FireBase Store 에 저장
         saveImageOnRemote(imageUriList)

@@ -24,7 +24,7 @@ interface MemoRepository {
 //    fun saveImage(imageList: List<Bitmap>, memoId: Long)
 //    suspend fun saveImageOnRemote(imageList: List<Bitmap>, imageUriList: List<String>)
 
-    fun saveImages(memoId: Long, imagePathList: List<String>)
+    suspend fun saveImages(memoId: Long, imagePathList: List<String>)
     suspend fun saveImagesOnRemote(memoId: Long, imagePathList: List<String>)
 
 }
