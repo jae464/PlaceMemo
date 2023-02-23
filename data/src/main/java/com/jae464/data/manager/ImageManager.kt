@@ -70,6 +70,27 @@ class ImageManager @Inject constructor(
 
     }
 
+    fun getImagePathList(memoId: Long): List<String> {
+        val dirPath = context.filesDir
+
+        // 메모 이미지 저장 경로 출력 테스트
+        Log.d(TAG, dirPath.toString())
+
+        val filePath = File("$dirPath/images/$memoId")
+        Log.d(TAG, filePath.toString())
+
+        val fileList = filePath.listFiles()
+        fileList ?: return emptyList()
+        Log.d(TAG, fileList.toString())
+        val filePathList = fileList.map {
+            it.path
+        }
+
+
+        return filePathList
+
+    }
+
     companion object {
         private const val DIR_NAME = "images"
     }

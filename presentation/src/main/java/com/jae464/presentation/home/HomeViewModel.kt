@@ -39,4 +39,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getMemoImagePathList(memoId: Long): List<String> {
+        return repository.getImagePathList(memoId)
+    }
+
 }

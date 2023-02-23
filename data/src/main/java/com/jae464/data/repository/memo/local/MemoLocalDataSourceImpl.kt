@@ -47,4 +47,9 @@ class MemoLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override fun getImagePathList(memoId: Long): List<String> {
+        return imageManager.getImagePathList(memoId)
+
+    }
+
 }

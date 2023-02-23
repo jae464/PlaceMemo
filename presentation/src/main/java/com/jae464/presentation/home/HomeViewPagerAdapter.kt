@@ -5,15 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jae464.presentation.databinding.ItemMemoPreviewImageBinding
+import com.jae464.presentation.extension.setImage
 
-class HomeViewPagerAdapter(private val listData: List<Bitmap>): RecyclerView.Adapter<HomeViewPagerAdapter.ItemViewHolder>() {
+class HomeViewPagerAdapter(private val listData: List<String>): RecyclerView.Adapter<HomeViewPagerAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(
         private val binding: ItemMemoPreviewImageBinding,
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(bitmap: Bitmap) {
-            binding.homePreviewImageView.setImageBitmap(bitmap)
+        fun bind(filePath: String) {
+//            binding.homePreviewImageView.setImageBitmap(bitmap)
+            binding.homePreviewImageView.setImage(filePath)
         }
     }
 

@@ -12,4 +12,5 @@ interface MemoLocalDataSource {
     suspend fun getMemoByContent(content: String): List<MemoEntity>
     suspend fun deleteMemo(id: Long)
     suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>)
+    fun getImagePathList(memoId: Long): List<String>
 }
