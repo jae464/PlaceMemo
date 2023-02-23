@@ -119,6 +119,10 @@ override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).t
         TODO("Not yet implemented")
     }
 
+    override fun getImagePathList(memoId: Long): List<String> {
+        return memoLocalDataSource.getImagePathList(memoId)
+    }
+
 
 //    override fun saveImage(imageList: List<Bitmap>, memoId: Long) {
 //        ImageManager.saveImage(imageList, memoId)

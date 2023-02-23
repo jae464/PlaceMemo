@@ -258,16 +258,17 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private fun displayMemoPreview(memo: com.jae464.domain.model.post.Memo) {
         currentMarker?.remove()
 
-//        val imageList = ImageManager.loadMemoImage(memo.id)
+        val imageList = viewModel.getMemoImagePathList(memo.id)
+        Log.d(TAG, imageList.toString())
 
         binding.memoPreview.memo = memo
         binding.memoPreview.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
 
-//        viewPagerAdapter = HomeViewPagerAdapter(imageList ?: emptyList())
-//        binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
-//        binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
+        viewPagerAdapter = HomeViewPagerAdapter(imageList)
+        binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
+        binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
 //
-//        binding.memoPreview.memoCardView.visibility = View.VISIBLE
+        binding.memoPreview.memoCardView.visibility = View.VISIBLE
         binding.currentLocationButton.visibility = View.GONE
         binding.postButton.visibility = View.GONE
     }
