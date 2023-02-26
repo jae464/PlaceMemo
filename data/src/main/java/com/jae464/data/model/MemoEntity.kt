@@ -24,6 +24,8 @@ data class MemoEntity(
     val category: Int,
     @Embedded
     val region: Region? = null,
+    @SerializedName("imagePathList")
+    val imagePathList: List<String>?,
     @SerializedName("id")
     @PrimaryKey(autoGenerate = true) val id: Long=0,
 )
@@ -45,6 +47,7 @@ internal fun MemoEntity.toMemo(): Memo {
         area1 = region?.area1 ?: "",
         area2 = region?.area2 ?: "",
         area3 = region?.area3 ?: "",
+        imageUriList = imagePathList
     )
 }
 
@@ -57,6 +60,7 @@ internal fun Memo.toMemoEntity(): MemoEntity {
         longitude = longitude,
         category = category.ordinal,
         region = Region(area1, area2, area3),
+        imagePathList = imageUriList,
         id = id
     )
 }

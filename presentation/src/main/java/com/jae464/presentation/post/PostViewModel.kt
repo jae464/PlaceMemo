@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.jae464.domain.model.post.Category
+import com.jae464.domain.model.post.Memo
 import com.jae464.domain.model.post.Region
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -38,27 +40,27 @@ class PostViewModel @Inject constructor(
     private val _isDone = MutableLiveData<Boolean>()
     val isDone: LiveData<Boolean> get() = _isDone
 
-    private val imagePathList = mutableListOf<String>()
+//    private val imagePathList = mutableListOf<String>()
 
     @SuppressLint("SimpleDateFormat")
-    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double, category: com.jae464.domain.model.post.Category, imageUriList: List<String>) {
+    fun saveMemo(id: Long, title: String, content: String, latitude: Double, longitude: Double, category: Category, imageUriList: List<String>) {
         viewModelScope.launch {
             val region = _address.value
 
-            for (i in imageUriList.indices) {
-                Log.d(TAG, i.toString())
-                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-                val imageFileName = "${user?.uid}_${timeStamp}_${i}.jpg"
-                imagePathList.add(imageFileName)
-            }
+//            for (i in imageUriList.indices) {
+//                Log.d(TAG, i.toString())
+//                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//                val imageFileName = "${user?.uid}_${timeStamp}_${i}.jpg"
+//                imagePathList.add(imageFileName)
+//            }
 
-            val memo = com.jae464.domain.model.post.Memo(
+            val memo = Memo(
                 id, title, content, latitude, longitude,
                 category,
                 region?.area1 ?: "",
                 region?.area2 ?: "",
                 region?.area3 ?: "",
-//                imagePathList
+                imageUriList
             )
 
             memoId = repository.saveMemo(memo)
@@ -77,11 +79,11 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun updateMemo(title: String, content: String, category: com.jae464.domain.model.post.Category) {
+    fun updateMemo(title: String, content: String, category: Category, imageUriList: List<String>) {
         val beforeMemo = memo.value ?: return
         val newMemo = com.jae464.domain.model.post.Memo(
             beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
-            category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imagePathList
+            category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageUriList
         )
 
         Log.d(TAG, newMemo.toString())
@@ -89,7 +91,7 @@ class PostViewModel @Inject constructor(
         viewModelScope.launch {
             // Local Room update
             repository.updateMemo(newMemo)
-            saveImage(newMemo.id, imagePathList)
+            saveImage(newMemo.id, imageUriList)
 
             // Remote Firebase update
             if (user != null) {
@@ -130,18 +132,16 @@ class PostViewModel @Inject constructor(
             val memo = repository.getMemo(memoId)
             _memo.postValue(memo)
 
-            memo.imageUriList?.forEach {
-                imagePathList.add(it)
-            }
+//            memo.imageUriList?.forEach {
+//                imagePathList.add(it)
+//            }
         }
     }
     private fun saveImageOnRemote(saveImageList: List<String>) {
         viewModelScope.launch {
-            Log.d(TAG, imagePathList.toString())
+//            Log.d(TAG, imagePathList.toString())
 //            repository.saveImageOnRemote(saveImageList, imageFileNameList)
         }
     }
-
-
 
 }

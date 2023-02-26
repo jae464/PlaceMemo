@@ -110,7 +110,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                         viewModel.saveMemo(0, title, content, latitude, longitude, category, imagePathList)
                     }
                     else {
-                        viewModel.updateMemo(title, content, category)
+                        viewModel.updateMemo(title, content, category, imagePathList)
                     }
                 }
             }

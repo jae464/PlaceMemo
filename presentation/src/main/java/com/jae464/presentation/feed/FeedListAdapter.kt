@@ -1,5 +1,6 @@
 package com.jae464.presentation.feed
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,11 +10,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jae464.presentation.databinding.ItemMemoListViewBinding
 import com.jae464.presentation.databinding.ItemMemoPreviewBinding
+import com.jae464.presentation.home.HomeViewPagerAdapter
 import com.jae464.presentation.regionToString
+import java.io.File
 
-class FeedListAdapter(private val onClick: (Long) -> (Unit), private val viewType: Int = 0)
+class FeedListAdapter(private val context: Context, private val onClick: (Long) -> (Unit), private val viewType: Int = 0)
     : ListAdapter<com.jae464.domain.model.post.Memo, FeedListAdapter.FeedViewHolder>(diff) {
 
+    private val TAG = "FeedListAdapter"
     /**
     * ViewType 을 여러개 적용하기 위해
      * sealed class 인 FeedViewHolder를 만들고
@@ -41,17 +45,26 @@ class FeedListAdapter(private val onClick: (Long) -> (Unit), private val viewTyp
             binding.memoCardView.setOnClickListener {
                 onClick(memo.id)
             }
-//            val imageList = ImageManager.loadMemoImage(memo.id)
-//            if (imageList != null) {
-//                val viewPagerAdapter = HomeViewPagerAdapter(imageList)
-//                binding.thumbnailViewPager.adapter = viewPagerAdapter
-//                binding.dotIndicator.attachTo(binding.thumbnailViewPager)
-//            }
+
+            val imageUriList = memo.imageUriList ?: emptyList()
+            val imagePathList = imageUriList.map {uri ->
+                val dirPath = "${context.filesDir}/images"
+                val filePath = "$dirPath/${memo.id}/${uri.substringAfterLast("/")}"
+                filePath
+            }
+
+            Log.d(TAG, imagePathList.toString())
+
+            if (imagePathList.isNotEmpty()) {
+                val viewPagerAdapter = HomeViewPagerAdapter(imagePathList)
+                binding.thumbnailViewPager.adapter = viewPagerAdapter
+                binding.dotIndicator.attachTo(binding.thumbnailViewPager)
+            }
         }
     }
 
     inner class FeedListViewHolder(
-        private val binding: ItemMemoListViewBinding
+        private val binding: ItemMemoListViewBinding,
     ): FeedViewHolder(binding) {
 
         override fun bind(memo: com.jae464.domain.model.post.Memo) {

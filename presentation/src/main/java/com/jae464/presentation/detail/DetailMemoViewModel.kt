@@ -44,4 +44,8 @@ class DetailMemoViewModel @Inject constructor(
         }
     }
 
+    fun getMemoImagePathList(memoId: Long): List<String> {
+        return memoRepository.getImagePathList(memoId)
+    }
+
 }
