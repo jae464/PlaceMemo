@@ -14,3 +14,9 @@ internal fun UserEntity.toUser(): User {
         uid, email, nickname, imageUrl
     )
 }
+
+internal fun User.toUserEntity(): UserEntity {
+    return UserEntity(
+        uid, email, nickname, imageUrl
+    )
+}

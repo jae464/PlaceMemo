@@ -5,3 +5,7 @@ data class Region(
     val area2: String,
     val area3: String
 )
+
+fun Region.toAddressFormat(): String {
+    return "$area1 $area2 $area3"
+}

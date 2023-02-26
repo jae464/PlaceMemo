@@ -20,8 +20,9 @@ import javax.inject.Inject
 class ImageManager @Inject constructor(
     private val context: Context
 ) {
+
     private val TAG = "ImageManager"
-    // 100 x 100 으로 DownSampling 하여 저장
+
     fun saveImage(memoId: Long, imagePath: String) {
         Log.d(TAG, "SAVE IMAGE START")
         Glide.with(context)
@@ -71,19 +72,15 @@ class ImageManager @Inject constructor(
     }
 
     fun getImagePathList(memoId: Long): List<String> {
-        val dirPath = context.filesDir
-
-        // 메모 이미지 저장 경로 출력 테스트
-        Log.d(TAG, dirPath.toString())
-
-        val filePath = File("$dirPath/images/$memoId")
+        val dirPath = "${context.filesDir}/images"
+        val filePath = File("$dirPath/$memoId")
         Log.d(TAG, filePath.toString())
 
         val fileList = filePath.listFiles()
         fileList ?: return emptyList()
         Log.d(TAG, fileList.toString())
-        val filePathList = fileList.map {
-            it.path
+        val filePathList = fileList.map {file ->
+            file.path
         }
 
 

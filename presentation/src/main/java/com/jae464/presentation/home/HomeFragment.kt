@@ -1,9 +1,17 @@
 package com.jae464.presentation.home
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -14,12 +22,17 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.jae464.domain.model.post.Memo
+import com.jae464.presentation.R
 import com.jae464.presentation.base.BaseMapFragment
 import com.jae464.presentation.databinding.FragmentHomeBinding
-import dagger.hilt.android.AndroidEntryPoint
-import com.jae464.presentation.R
+import com.jae464.presentation.databinding.ItemMemoMarkerBinding
 import com.jae464.presentation.login.LoginActivity
+import com.jae464.presentation.markerIconList
 import com.jae464.presentation.regionToString
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
+
 
 @AndroidEntryPoint
 class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home),
@@ -39,6 +52,18 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         Log.d(TAG,"onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
+
+        // Coroutine Test
+//        CoroutineScope(Dispatchers.Main).launch {
+//            delay(1000)
+//            CoroutineScope(Dispatchers.Main).launch {
+//                coroutineFun1()
+//            }
+//            CoroutineScope(Dispatchers.Main).launch {
+//                coroutineFun2()
+//            }
+//
+//        }
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -187,18 +212,41 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         Log.d(tag, "initObserver")
-        viewModel.memoList.observe(viewLifecycleOwner) {
+        viewModel.memoList.observe(viewLifecycleOwner) {memoList ->
             map.clear()
-            it.forEach { memo ->
+            memoList.forEach { memo ->
+
+                // TODO 썸네일 가져오는 로직 추후 수정 필요
+                val imagePathList = viewModel.getMemoImagePathList(memo.id)
+
+                val thumbnailImage = if (imagePathList.isEmpty()) null else imagePathList[0]
+                val thumbnailImageBitmap = thumbnailImage.let {path ->
+                    BitmapFactory.decodeFile(path)
+                }
+
+                // TODO Glide 로 이미지 비동기로 로드하는거 필요
+
+                val thumbnailMarkerView = ItemMemoMarkerBinding.inflate(LayoutInflater.from(context), null, false).apply {
+                    if(thumbnailImageBitmap == null) {
+                        cvThumbnail.setImageResource(R.drawable.ic_sample_profile)
+                    }
+                    else {
+                        cvThumbnail.setImageBitmap(thumbnailImageBitmap)
+                    }
+                }
+
+                val thumbnailBitmap = createDrawableFromView(requireContext(), thumbnailMarkerView.root)
+
                 Log.d(TAG, memo.title)
-                val resourceId = com.jae464.presentation.markerIconList[memo.category.ordinal] ?: R.drawable.marker
-//                val icon = ImageManager.changeColor(0, resourceId, requireContext())
+                val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
+
                 val memoMarker = map.addMarker(
                     MarkerOptions()
                         .position(LatLng(memo.latitude, memo.longitude))
 //                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .icon(BitmapDescriptorFactory.fromResource(resourceId))
-                )
+                        .icon(BitmapDescriptorFactory.fromBitmap((thumbnailBitmap!!)))
+
+                    )
                 memoMarker?.tag = memo
             }
         }
@@ -226,7 +274,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             return false
         }
 
-        val memo = marker.tag as com.jae464.domain.model.post.Memo
+        val memo = marker.tag as Memo
         currentMemoId = memo.id
         val cameraUpdate =
             CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 16F)
@@ -267,7 +315,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         viewPagerAdapter = HomeViewPagerAdapter(imageList)
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
         binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
-//
+
         binding.memoPreview.memoCardView.visibility = View.VISIBLE
         binding.currentLocationButton.visibility = View.GONE
         binding.postButton.visibility = View.GONE
@@ -290,6 +338,41 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             R.id.action_home_to_post,
             bundle
         )
+    }
+
+//    suspend fun coroutineFun1() {
+//        for (i in 0..10) {
+//            Log.d("coroutineFun1", i.toString())
+//            delay(1000)
+//        }
+//    }
+//
+//    suspend fun coroutineFun2() {
+//        for (i in 0..10) {
+//            Log.d("coroutineFun2", i.toString())
+//            delay(1000)
+//        }
+//    }
+
+    // View를 Bitmap으로 변환
+    private fun createDrawableFromView(context: Context, view: View): Bitmap? {
+        val displayMetrics = DisplayMetrics()
+//        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        view.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels)
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+        view.buildDrawingCache()
+        val bitmap =
+            Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
     }
 }
 

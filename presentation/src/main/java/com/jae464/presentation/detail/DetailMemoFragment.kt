@@ -96,6 +96,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
 
     private fun initView() {
 //        val imageList = ImageManager.loadMemoImage(memoId = args.memoId)
+
 //        // imageList 가 없을 경우 chip 제거
 //        if (imageList == null) {
 //            binding.chipTypeViewMode.visibility = View.INVISIBLE

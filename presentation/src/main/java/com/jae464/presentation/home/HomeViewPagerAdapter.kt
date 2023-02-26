@@ -14,7 +14,6 @@ class HomeViewPagerAdapter(private val listData: List<String>): RecyclerView.Ada
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(filePath: String) {
-//            binding.homePreviewImageView.setImageBitmap(bitmap)
             binding.homePreviewImageView.setImage(filePath)
         }
     }

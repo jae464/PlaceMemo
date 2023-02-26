@@ -21,7 +21,7 @@ class LoginRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserInfoByUid(uid: String): User? {
-        return userEntityToUser(loginRemoteDataSource.getUserInfoByUid(uid))
+        return loginRemoteDataSource.getUserInfoByUid(uid)?.toUser()
     }
 
     override suspend fun getUserInfoByNickname(nickname: String): User? {

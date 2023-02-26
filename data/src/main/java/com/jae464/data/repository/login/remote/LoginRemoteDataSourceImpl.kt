@@ -35,7 +35,7 @@ class LoginRemoteDataSourceImpl @Inject constructor(
                 }
             }
             .addOnFailureListener {
-
+                Log.d(TAG, "유저 정보를 가져오는데 실패했습니다.")
             }
             .await()
 

@@ -71,7 +71,6 @@ class MemoRemoteDataSourceImpl @Inject constructor(
 
         Log.d("MemoRemoteDataSourceImpl", memoDoc.documents[0].id)
 
-        // 삭제
         firestore.collection("memos")
             .document(memoDoc.documents[0].id)
             .delete()
