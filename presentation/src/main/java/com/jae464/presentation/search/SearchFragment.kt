@@ -19,11 +19,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
     private val TAG = "SearchFragment"
     private val viewModel: SearchViewModel by viewModels()
-    private val feedListAdapter = FeedListAdapter(this::goToDetailPage)
+    private lateinit var feedListAdapter: FeedListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+        feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage)
         binding.memoRecyclerView.adapter = feedListAdapter
 
         initAppBar()
@@ -33,7 +34,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
     private fun initAppBar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
-
     }
 
     private fun initListener() {

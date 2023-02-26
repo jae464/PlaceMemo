@@ -69,6 +69,8 @@ class MemoRemoteDataSourceImpl @Inject constructor(
             .get()
             .await()
 
+        if (memoDoc.isEmpty) return
+
         Log.d("MemoRemoteDataSourceImpl", memoDoc.documents[0].id)
 
         firestore.collection("memos")

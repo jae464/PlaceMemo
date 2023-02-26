@@ -18,12 +18,14 @@ import com.jae464.presentation.R
 class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
     private val TAG: String = "FeedFragment"
-    private var feedListAdapter = FeedListAdapter(this::goToDetailPage)
-    private var listAdapter = FeedListAdapter(this::goToDetailPage, 1)
+    private var feedListAdapter: FeedListAdapter? = null
+    private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage)
+        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 1)
         binding.feedRecyclerView.adapter = feedListAdapter
 
         initObserver()
@@ -47,13 +49,13 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
             if (it.isEmpty()) {
                 binding.emptyMessageTextView.visibility = View.VISIBLE
-                feedListAdapter.submitList(emptyList())
-                listAdapter.submitList(emptyList())
+                feedListAdapter?.submitList(emptyList())
+                listAdapter?.submitList(emptyList())
                 return@observe
             }
             binding.emptyMessageTextView.visibility = View.INVISIBLE
-            feedListAdapter.submitList(it.toMutableList())
-            listAdapter.submitList(it.toMutableList())
+            feedListAdapter?.submitList(it.toMutableList())
+            listAdapter?.submitList(it.toMutableList())
 
         }
     }
@@ -93,7 +95,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView")
-        feedListAdapter.clearData()
-        listAdapter.clearData()
+        feedListAdapter?.clearData()
+        listAdapter?.clearData()
     }
 }

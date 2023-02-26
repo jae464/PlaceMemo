@@ -81,11 +81,11 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
             map.clear()
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
-            val resourceId = com.jae464.presentation.markerIconList[memo.category.ordinal] ?: R.drawable.marker
+
             map.addMarker(
                 MarkerOptions()
                     .position(LatLng(memo.latitude, memo.longitude))
-                    .icon(BitmapDescriptorFactory.fromResource(resourceId))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
         }
 
@@ -95,14 +95,14 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     }
 
     private fun initView() {
-//        val imageList = ImageManager.loadMemoImage(memoId = args.memoId)
+        val imagePathList = viewModel.getMemoImagePathList(args.memoId)
 
-//        // imageList 가 없을 경우 chip 제거
-//        if (imageList == null) {
-//            binding.chipTypeViewMode.visibility = View.INVISIBLE
-//            return
-//        }
-//        viewPagerAdapter = HomeViewPagerAdapter(imageList)
+        if (imagePathList.isEmpty()) {
+            binding.chipTypeViewMode.visibility = View.INVISIBLE
+            return
+        }
+
+        viewPagerAdapter = HomeViewPagerAdapter(imagePathList)
         binding.memoPhotoViewpager.adapter = viewPagerAdapter
         binding.dotIndicator.attachTo(binding.memoPhotoViewpager)
 
