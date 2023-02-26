@@ -117,4 +117,7 @@ dependencies {
     // Glide
     kapt "android.arch.lifecycle:compiler:1.0.0"
     kapt 'com.github.bumptech.glide:compiler:4.14.2'
+
+    //Circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cv_thumbnail"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            app:civ_border_width="4dp"
+            app:civ_border_color="@color/teal_200"
+            android:src="@drawable/ic_sample_profile"
+            tools:src="@drawable/ic_sample_profile" />
+
+    </FrameLayout>
+</layout>

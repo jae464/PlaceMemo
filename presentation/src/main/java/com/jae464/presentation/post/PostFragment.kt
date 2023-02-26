@@ -60,7 +60,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     ) {
         val image = it.data?.data ?: return@registerForActivityResult
         imagePathList.add(image.toString())
-        setImages(image)
+        setImageView(image)
 //        Log.d(TAG, image.toString())
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 ////            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
@@ -99,13 +99,13 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         binding.postToolBar.title = "게시글 업로드"
         binding.postToolBar.inflateMenu(R.menu.post_toolbar_menu)
 
-        // insert, update 경우 분리하기
         binding.postToolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.save -> {
+
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
-                    // 저장
+
                     if (args.memoId == -1L) {
                         viewModel.saveMemo(0, title, content, latitude, longitude, category, imagePathList)
                     }
@@ -210,10 +210,10 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         getImageLauncher.launch(intent)
     }
 
-    private fun setImages(imageUris: Uri) {
+    private fun setImageView(imageUri: Uri) {
         Glide.with(requireContext())
             .asBitmap()
-            .load(imageUris)
+            .load(imageUri)
             .listener(object: RequestListener<Bitmap> {
                 override fun onLoadFailed(
                     e: GlideException?,

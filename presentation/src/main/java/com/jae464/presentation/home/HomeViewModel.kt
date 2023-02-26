@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jae464.domain.model.post.toAddressFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,8 +28,8 @@ class HomeViewModel @Inject constructor(
 
     fun getAddressName(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            val addressName = addressRepository.getAddress(longitude, latitude)
-            _currentAddress.postValue(addressRepository.addressToString(addressName))
+            val region = addressRepository.getAddress(longitude, latitude)
+            _currentAddress.postValue(region?.toAddressFormat())
         }
     }
 

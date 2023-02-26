@@ -8,33 +8,6 @@ import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import java.util.*
 
-fun memoToMemoEntity(memo: Memo): MemoEntity {
-    return MemoEntity(
-        memo.title,
-        memo.content,
-        Date(),
-        memo.latitude,
-        memo.longitude,
-        memo.category.ordinal,
-        Region(memo.area1, memo.area2, memo.area3),
-        memo.id
-    )
-}
-
-fun memoEntityToMemo(memoEntity: MemoEntity): Memo {
-    return Memo(
-        memoEntity.id,
-        memoEntity.title,
-        memoEntity.content,
-        memoEntity.latitude,
-        memoEntity.longitude,
-        intToCategory(memoEntity.category),
-        memoEntity.region?.area1.toString(),
-        memoEntity.region?.area2.toString(),
-        memoEntity.region?.area3.toString()
-    )
-}
-
 fun userToUserEntity(user: User): UserEntity {
     return UserEntity(
         user.uid,

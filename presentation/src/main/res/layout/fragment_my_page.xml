@@ -57,7 +57,7 @@
                 android:id="@+id/loginViewGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:constraint_referenced_ids="logoutButton, userProfileImageView, user_nickname,
                         user_nickname, user_email, edit_profile_button" />
 
@@ -65,7 +65,7 @@
                 android:id="@+id/logoutViewGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:constraint_referenced_ids="loginButton, loginTextView" />
 
             <ImageView
