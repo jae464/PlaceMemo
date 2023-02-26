@@ -22,6 +22,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.presentation.R
 
@@ -29,6 +30,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
+    private lateinit var  locationManager: LocationManager
     lateinit var map: GoogleMap
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
@@ -56,6 +58,7 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         binding.lifecycleOwner = viewLifecycleOwner
         (childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment)
             .getMapAsync(this)
+        locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return binding.root
     }
 
@@ -75,6 +78,12 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
         else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, object: LocationListener {
+                override fun onLocationChanged(location: Location) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude),16f), 1000, null)
+                }
+
+            })
             return
         }
     }
@@ -92,11 +101,6 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
     }
 
     fun getLocation(): Location? {
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val locationListener = LocationListener {
-            Log.d("BaseMapFragment", "Location Changed to $it")
-//            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude),16f), 100, null)
-        }
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -107,18 +111,32 @@ abstract class BaseMapFragment<T: ViewDataBinding>(@LayoutRes val layoutRes: Int
         ) {
             return null
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5f, locationListener)
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        println("${location?.latitude} ${location?.longitude}")
-        return location
+
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     }
 
+    fun setCurrentLocation() {
+        val locationListener = LocationListener {location ->
+            Log.d("BaseMapFragment", "Location Changed to $location")
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude),16f), 1000, null)
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5f, locationListener)
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
 
-//    override fun onLocationChanged(p0: Location) {
-//        println("Location Changed to $p0")
-//    }
 }
