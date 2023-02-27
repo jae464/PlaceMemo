@@ -1,7 +1,10 @@
 package com.jae464.data.repository.memo.local
 
+import android.util.Log
 import com.jae464.data.db.MemoDao
 import com.jae464.data.manager.ImageManager
+import com.jae464.data.model.FolderEntity
+import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
 import javax.inject.Inject
 
@@ -9,11 +12,18 @@ class MemoLocalDataSourceImpl @Inject constructor(
     private val memoDao: MemoDao,
     private val imageManager: ImageManager
 ): MemoLocalDataSource {
+    private val TAG = "MemoLocalDataSourceImpl"
     override suspend fun getMemo(id: Long): MemoEntity {
         return memoDao.getMemo(id)
     }
 
     override suspend fun getAllMemo(): List<MemoEntity> {
+        // TODO START TEST CODE (create folder, get folder with memos)
+        val folderId = memoDao.insertFolder(FolderEntity(0,"전체"))
+        Log.d(TAG, "폴더 생성 완료 : id = $folderId")
+        val folderWithMemos = memoDao.getFoldersWithMemos()
+        Log.d(TAG, folderWithMemos.toString())
+        // TODO END TEST CODE (create folder, get folder with memos)
         return memoDao.getAllMemo()
     }
 
@@ -45,6 +55,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
         imagePathList.forEach {imagePath ->
             imageManager.saveImage(memoId, imagePath)
         }
+    }
+
+    override suspend fun getFoldersWithMemos(): List<FolderWithMemos> {
+        return memoDao.getFoldersWithMemos()
     }
 
     override fun getImagePathList(memoId: Long): List<String> {

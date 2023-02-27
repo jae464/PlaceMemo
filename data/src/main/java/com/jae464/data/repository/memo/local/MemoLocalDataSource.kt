@@ -1,5 +1,6 @@
 package com.jae464.data.repository.memo.local
 
+import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
 
 interface MemoLocalDataSource {
@@ -12,5 +13,6 @@ interface MemoLocalDataSource {
     suspend fun getMemoByContent(content: String): List<MemoEntity>
     suspend fun deleteMemo(id: Long)
     suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>)
+    suspend fun getFoldersWithMemos(): List<FolderWithMemos>
     fun getImagePathList(memoId: Long): List<String>
 }

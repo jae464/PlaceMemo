@@ -1,5 +1,6 @@
 package com.jae464.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -10,24 +11,27 @@ import java.util.*
 
 @Entity(tableName = "memo")
 data class MemoEntity(
-    @SerializedName("title")
+    @ColumnInfo(name = "title")
     val title: String,
-    @SerializedName("content")
+    @ColumnInfo(name = "content")
     val content: String,
-    @SerializedName("createdAt")
+    @ColumnInfo(name = "created_at")
     val createdAt: Date,
-    @SerializedName("latitude")
+    @ColumnInfo(name = "latitude")
     val latitude: Double,
-    @SerializedName("longitude")
+    @ColumnInfo(name = "longitude")
     val longitude: Double,
-    @SerializedName("category")
+    @ColumnInfo(name = "category")
     val category: Int,
     @Embedded
     val region: Region? = null,
-    @SerializedName("imagePathList")
+    @ColumnInfo(name = "image_path_list")
     val imagePathList: List<String>?,
-    @SerializedName("id")
-    @PrimaryKey(autoGenerate = true) val id: Long=0,
+    @ColumnInfo(name = "folder_id")
+    val folderId: Long = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "memo_id")
+    val id: Long = 0L,
 )
 
 data class Region(
