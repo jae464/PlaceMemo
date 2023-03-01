@@ -19,10 +19,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getAllMemo(): List<MemoEntity> {
         // TODO START TEST CODE (create folder, get folder with memos)
-        val folderId = memoDao.insertFolder(FolderEntity(0L,"전체"))
-        Log.d(TAG, "폴더 생성 완료 : id = $folderId")
-        val folderWithMemos = memoDao.getFoldersWithMemos()
-        Log.d(TAG, folderWithMemos.toString())
+//        val folderId = memoDao.insertFolder(FolderEntity(0L,"전체"))
+//        Log.d(TAG, "폴더 생성 완료 : id = $folderId")
+//        val folderWithMemos = memoDao.getFoldersWithMemos()
+//        Log.d(TAG, folderWithMemos.toString())
         // TODO END TEST CODE (create folder, get folder with memos)
         return memoDao.getAllMemo()
     }
