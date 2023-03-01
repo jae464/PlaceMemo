@@ -1,8 +1,10 @@
 package com.jae464.placememo.di
 
 import com.jae464.data.repository.address.AddressRepositoryImpl
+import com.jae464.data.repository.folder.FolderRepositoryImpl
 import com.jae464.data.repository.login.LoginRepositoryImpl
 import com.jae464.data.repository.memo.MemoRepositoryImpl
+import com.jae464.domain.repository.FolderRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -26,5 +28,10 @@ interface RepositoryModule {
     fun bindLoginRepository(
         loginRepositoryImpl: LoginRepositoryImpl
     ): com.jae464.domain.repository.LoginRepository
+
+    @Binds
+    fun bindFolderRepository(
+        folderRepositoryImpl: FolderRepositoryImpl
+    ): FolderRepository
 
 }
