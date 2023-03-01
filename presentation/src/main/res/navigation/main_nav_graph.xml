@@ -9,11 +9,7 @@
         android:id="@+id/feed"
         android:name="com.jae464.presentation.feed.FeedFragment"
         android:label="피드"
-        tools:layout="@layout/fragment_feed">
-        <action
-            android:id="@+id/action_feed_to_detail_memo"
-            app:destination="@id/detail_memo" />
-    </fragment>
+        tools:layout="@layout/fragment_feed"/>
 
     <fragment
         android:id="@+id/mypage"
@@ -115,5 +111,10 @@
             android:id="@+id/action_friend_add_to_friend_list"
             app:destination="@id/friend_list" />
     </fragment>
+
+    <fragment
+        android:id="@+id/feed_folder"
+        android:name="com.jae464.presentation.feed.FeedFolderFragment"
+        android:label="FeedFolderFragment" />
 
 </navigation>
