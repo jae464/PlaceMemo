@@ -61,21 +61,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         val image = it.data?.data ?: return@registerForActivityResult
         imagePathList.add(image.toString())
         setImageView(image)
-//        Log.d(TAG, image.toString())
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-////            val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, image ?: return@registerForActivityResult))
-//            val bitmap =
-//                resizeBitmapFromUri(image, requireContext())
-//                    ?: return@registerForActivityResult
-//            println("변형된 bitmap 사이즈 : ${bitmap.density}")
-//            viewModel.setImageList(bitmap)
-//        } else {
-//            val bitmap = MediaStore.Images.Media.getBitmap(
-//                requireContext().contentResolver,
-//                image ?: return@registerForActivityResult
-//            )
-//            viewModel.setImageList(bitmap)
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -147,9 +132,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
-//        viewModel.imageList.observe(viewLifecycleOwner) {
-//            imageAdapter.submitList(it.toMutableList())
-//        }
 
         viewModel.address.observe(viewLifecycleOwner) {
             binding.locationTextView.text = viewModel.getAddressName(it)
@@ -160,12 +142,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             binding.titleEditText.setText(it.title)
             binding.contentEditText.setText(it.content)
             binding.locationTextView.text = "${it.area1} ${it.area2} ${it.area3}"
-
-//            val imageBitmapList = ImageManager.loadMemoImage(it.id)
-
-//            imageBitmapList?.forEach { bitmap ->
-//                viewModel.setImageList(bitmap)
-//            }
         }
 
         viewModel.isDone.observe(viewLifecycleOwner) {
@@ -204,9 +180,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     private fun loadImage() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         getImageLauncher.launch(intent)
     }
 
