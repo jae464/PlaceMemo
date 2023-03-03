@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -16,6 +18,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -32,6 +39,7 @@ import com.jae464.presentation.markerIconList
 import com.jae464.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import java.io.FileOutputStream
 
 
 @AndroidEntryPoint
@@ -63,16 +71,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             setMaxZoomPreference(16.0f)
         }
 
-        setUserLocation()
-
-        val seoul = LatLng(37.554891, 126.970814)
-        val location = getLocation()
-
-        val defaultLatLng: LatLng = if (location == null) {
-            seoul
-        } else {
-            LatLng(location.latitude, location.longitude)
-        }
+        setCurrentLocation()
 
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment = mapFragment.also {
@@ -80,7 +79,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             SupportMapFragment.newInstance(mapOptions)
         }
 
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 36F))
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 36F))
 
         initObserver()
         initListener()
@@ -92,7 +91,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val appBarConfiguration =
             AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-
+//        binding.homeToolBar.setLogo(R.drawable.logo)
+        setLogo()
         if (user == null) {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
         } else {
@@ -360,6 +360,37 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         return bitmap
+    }
+
+    private fun setLogo() {
+        Glide.with(requireContext())
+            .load(R.drawable.logo)
+            .listener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "Image Load Error")
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.homeToolBar.setLogo(resource)
+                    }
+                    return true
+                }
+            })
+            .override(64,64)
+            .submit()
     }
 }
 

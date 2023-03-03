@@ -20,7 +20,8 @@ class AddressRepositoryImpl @Inject constructor(
                 null
             }
             else {
-                response.body()?.results?.get(0)?.region?.toRegion()
+                if (response.body()?.results?.isEmpty() == true) null
+                else response.body()?.results?.get(0)?.region?.toRegion()
             }
         }
     }
