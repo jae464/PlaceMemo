@@ -78,7 +78,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
             .getMapAsync(this)
         locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        // 에뮬레이터용 초기위치 업데이트
         checkPermission()
 
         locationManager.requestLocationUpdates(
@@ -112,23 +111,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         }
     }
 
-    fun getLocation() {
-
-        checkPermission()
-//        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                Log.d("BaseMapFragment", location.toString())
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            location.latitude,
-                            location.longitude
-                        ), 16f
-                    ), 1000, null
-                )
-            }
-    }
 
     fun setCurrentLocation() {
 
