@@ -142,8 +142,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.chipGroupType.setOnCheckedStateChangeListener { group, checkedIds ->
-            Log.d("HomeFragment", checkedIds.toString())
-            // 모든 칩이 체크 해제되어 있는 경우 전체에 다시 체크함
+
             Log.d(TAG, checkedIds.toString())
             if (checkedIds.isEmpty()) {
                 binding.chipTypeAll.isChecked = true
@@ -327,24 +326,9 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         )
     }
 
-//    suspend fun coroutineFun1() {
-//        for (i in 0..10) {
-//            Log.d("coroutineFun1", i.toString())
-//            delay(1000)
-//        }
-//    }
-//
-//    suspend fun coroutineFun2() {
-//        for (i in 0..10) {
-//            Log.d("coroutineFun2", i.toString())
-//            delay(1000)
-//        }
-//    }
-
     // View를 Bitmap으로 변환
     private fun createDrawableFromView(context: Context, view: View): Bitmap? {
         val displayMetrics = DisplayMetrics()
-//        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         view.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
