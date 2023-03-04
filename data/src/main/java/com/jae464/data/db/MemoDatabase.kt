@@ -16,4 +16,5 @@ import com.jae464.data.model.MemoEntity
 @TypeConverters(RoomConverters::class)
 abstract class MemoDatabase: RoomDatabase() {
     abstract fun memoDao(): MemoDao
+    abstract fun folderDao(): FolderDao
 }

@@ -32,7 +32,4 @@ interface MemoDao {
    @Query("SELECT * FROM folder")
    suspend fun getFoldersWithMemos(): List<FolderWithMemos>
 
-   @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertFolder(folder: FolderEntity): Long
-
 }

@@ -2,6 +2,7 @@ package com.jae464.placememo.di
 
 import android.content.Context
 import androidx.room.Room
+import com.jae464.data.db.FolderDao
 import com.jae464.data.db.MemoDao
 import com.jae464.data.db.MemoDatabase
 import com.jae464.data.manager.ImageManager
@@ -31,6 +32,12 @@ class LocalDataBaseModule {
     @Singleton
     fun provideMemoDao(memoDatabase: MemoDatabase): MemoDao {
         return memoDatabase.memoDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFolderDao(memoDatabase: MemoDatabase): FolderDao {
+        return memoDatabase.folderDao()
     }
 
     @Provides
