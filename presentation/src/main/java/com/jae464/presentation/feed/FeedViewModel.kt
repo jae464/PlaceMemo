@@ -24,11 +24,49 @@ class FeedViewModel @Inject constructor(
     private val _memo = MutableLiveData<com.jae464.domain.model.post.Memo?>()
     val memo: LiveData<com.jae464.domain.model.post.Memo?> get() = _memo
 
-    val folderList = folderRepository.getAllFolder().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+//    private val _folderList = MutableStateFlow<List<Folder>>(emptyList())
+//    val folderList = _folderList.asStateFlow()
+//    lateinit var folderList: StateFlow<List<Folder>>
+
+//    init {
+//        viewModelScope.launch {
+//            _folderList.value = folderRepository.getAllFolder().first()
+//            _folderList.value = folderRepository.getAllFolder().map { folderList ->
+//                folderList.map {folder ->
+//                    folder.copy(
+//                        memoCount = folderRepository.getMemoCountByFolder(folder.id)
+//                    )
+//                }
+//            }
+//                .first()
+//        }
+//    }
+
+//    init {
+//        viewModelScope.launch {
+//            folderList = folderRepository.getAllFolder()
+//                .map { folderList ->
+//                    {
+//                        folderList.map {folder ->
+//                            folder.copy(
+//                                memoCount = folderRepository.getMemoCountByFolder(folder.id)
+//                            )
+//                        }
+//                    }
+//                }
+//                .stateIn(
+//                    viewModelScope,
+//                    SharingStarted.WhileSubscribed(5000),
+//                    emptyList()
+//                )
+//        }
+//    }
+    val folderList = folderRepository.getAllFolder()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     fun getAllMemo() {
         viewModelScope.launch {

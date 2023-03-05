@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jae464.data.model.FolderEntity
+import com.jae464.data.model.FolderMemoXRef
 import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
 
 @Database(
-    entities = [MemoEntity::class, FolderEntity::class],
+    entities = [MemoEntity::class, FolderEntity::class, FolderMemoXRef::class],
     version = 1,
     exportSchema = false
 )

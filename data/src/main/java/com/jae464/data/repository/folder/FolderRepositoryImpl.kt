@@ -59,4 +59,8 @@ class FolderRepositoryImpl @Inject constructor(
     override suspend fun isExistFolderName(folderName: String): Boolean {
         return folderDao.isExistFolderName(folderName)
     }
+
+    override suspend fun getMemoCountByFolder(folderId: Long): Int {
+        return folderDao.getMemoCountByFolder(folderId)
+    }
 }
