@@ -70,12 +70,7 @@ class AddFolderDialog: DialogFragment() {
 
     private fun initListener() {
         binding.btnAdd.setOnClickListener {
-//            viewModel.createFolder(Folder(name = binding.etFolderName.text.toString(), memoCount = 0))
-//            viewModel.checkFolderNameAvailable(Folder(name = binding.etFolderName.text.toString(), memoCount = 0))
-
             viewModel.checkFolderNameAvailable(binding.etFolderName.text.toString())
-//            viewModel.folderName = binding.etFolderName.text.toString()
-//            dismiss()
         }
     }
 }
