@@ -13,4 +13,6 @@ interface FolderRepository {
     fun getFolderByName(folderName: String): Flow<Folder?>
 
     suspend fun isExistFolderName(folderName: String): Boolean
+
+    suspend fun getMemoCountByFolder(folderId: Long): Int
 }
