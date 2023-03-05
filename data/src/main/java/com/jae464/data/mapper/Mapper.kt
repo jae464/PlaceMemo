@@ -1,8 +1,10 @@
 package com.jae464.data.mapper
 
+import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.MemoEntity
 import com.jae464.data.model.Region
 import com.jae464.data.model.UserEntity
+import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.model.login.User
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
@@ -46,4 +48,12 @@ fun intToCategory(index: Int): Category {
         4 -> Category.OTHER
         else -> Category.OTHER
     }
+}
+
+fun folderEntityToFolder(folderEntity: FolderEntity): Folder {
+    return Folder(
+        id = folderEntity.folderId,
+        name = folderEntity.folderName,
+        memoCount = 0
+    )
 }
