@@ -74,5 +74,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
 
+    // Paging3
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    testImplementation "androidx.paging:paging-common:$paging_version"
+
     implementation project(path: ':domain')
 }
