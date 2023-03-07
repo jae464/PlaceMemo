@@ -123,4 +123,9 @@ dependencies {
 
     // FusedLocationClient
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    // Paging3
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    testImplementation "androidx.paging:paging-common:$paging_version"
+
 }

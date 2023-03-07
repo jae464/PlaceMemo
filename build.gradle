@@ -10,6 +10,7 @@ buildscript {
     ext.retrofit_version = '2.9.0'
     ext.okhttp_version = '4.10.0'
     ext.google_service_version = '4.3.13'
+    ext.paging_version = '3.1.1'
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
