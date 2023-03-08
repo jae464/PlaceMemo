@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import com.jae464.presentation.regionToString
 import java.io.File
 
 class FeedListAdapter(private val context: Context, private val onClick: (Long) -> (Unit), private val viewType: Int = 0)
-    : ListAdapter<com.jae464.domain.model.post.Memo, FeedListAdapter.FeedViewHolder>(diff) {
+    : PagingDataAdapter<com.jae464.domain.model.post.Memo, FeedListAdapter.FeedViewHolder>(diff) {
 
     private val TAG = "FeedListAdapter"
     /**
@@ -91,7 +92,9 @@ class FeedListAdapter(private val context: Context, private val onClick: (Long) 
     }
 
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
-        holder.bind(currentList[position])
+        val item = getItem(position)
+        item?.let { holder.bind(item) }
+
     }
 
     companion object {

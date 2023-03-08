@@ -1,5 +1,6 @@
 package com.jae464.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.FolderWithMemos
@@ -20,13 +21,13 @@ interface MemoDao {
    suspend fun getMemo(id: Long): MemoEntity
 
    @Query("SELECT * FROM memo")
-   suspend fun getAllMemo(): List<MemoEntity>
+   fun getAllMemo(): PagingSource<Long, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE category = :category")
-   suspend fun getMemoByCategory(category: Int): List<MemoEntity>
+   fun getMemoByCategory(category: Int): PagingSource<Long, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
-   suspend fun getMemoByTitle(title: String): List<MemoEntity>
+   fun getMemoByTitle(title: String): PagingSource<Long, MemoEntity>
 
    @Transaction
    @Query("SELECT * FROM folder")

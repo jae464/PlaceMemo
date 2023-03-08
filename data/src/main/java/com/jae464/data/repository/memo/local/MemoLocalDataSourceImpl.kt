@@ -1,11 +1,15 @@
 package com.jae464.data.repository.memo.local
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.jae464.data.db.MemoDao
 import com.jae464.data.manager.ImageManager
 import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(
@@ -17,14 +21,17 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemo(id)
     }
 
-    override suspend fun getAllMemo(): List<MemoEntity> {
-        // TODO START TEST CODE (create folder, get folder with memos)
-//        val folderId = memoDao.insertFolder(FolderEntity(0L,"전체"))
-//        Log.d(TAG, "폴더 생성 완료 : id = $folderId")
-//        val folderWithMemos = memoDao.getFoldersWithMemos()
-//        Log.d(TAG, folderWithMemos.toString())
-        // TODO END TEST CODE (create folder, get folder with memos)
-        return memoDao.getAllMemo()
+    override suspend fun getAllMemo(): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                memoDao.getAllMemo()
+            }
+        ).flow
     }
 
     override suspend fun saveMemo(memo: MemoEntity): Long {
@@ -35,16 +42,44 @@ class MemoLocalDataSourceImpl @Inject constructor(
         memoDao.updateMemo(memo)
     }
 
-    override suspend fun getMemoByCategory(category: Int): List<MemoEntity> {
-        return memoDao.getMemoByCategory(category)
+    override suspend fun getMemoByCategory(category: Int): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                memoDao.getMemoByCategory(category)
+            }
+        ).flow
     }
 
-    override suspend fun getMemoByTitle(title: String): List<MemoEntity> {
-        return memoDao.getMemoByTitle(title)
+    override suspend fun getMemoByTitle(title: String): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                memoDao.getMemoByTitle(title)
+            }
+        ).flow
     }
 
-    override suspend fun getMemoByContent(content: String): List<MemoEntity> {
-        TODO("Not yet implemented")
+    override suspend fun getMemoByContent(content: String): Flow<PagingData<MemoEntity>> {
+        // TODO getMemoByContent 로 수정 필요
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                memoDao.getMemoByTitle(content)
+            }
+        ).flow
     }
 
     override suspend fun deleteMemo(id: Long) {
