@@ -1,5 +1,7 @@
 package com.jae464.data.repository.memo
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.jae464.data.dto.toMemo
 import com.jae464.data.dto.toMemoDTO
 import com.jae464.data.manager.ImageManager
@@ -9,15 +11,18 @@ import com.jae464.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.data.repository.memo.remote.MemoRemoteDataSource
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.repository.MemoRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 import javax.inject.Inject
 
 class MemoRepositoryImpl @Inject constructor(
     private val memoLocalDataSource: MemoLocalDataSource,
     private val memoRemoteDataSource: MemoRemoteDataSource,
-): MemoRepository {
+) : MemoRepository {
 
-override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).toMemo()
+    override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).toMemo()
 
     override suspend fun saveMemo(memo: Memo): Long {
         return memoLocalDataSource.saveMemo(memo.toMemoEntity())
@@ -35,12 +40,17 @@ override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).t
         return memoRemoteDataSource.insertMemo(memo.toMemoDTO(userId))
     }
 
-    override suspend fun getAllMemo(): List<Memo> {
-        val memoList = mutableListOf<Memo>()
-        memoLocalDataSource.getAllMemo().forEach { memoEntity ->
-            memoList.add(memoEntity.toMemo())
+    override fun getAllMemo(): Flow<PagingData<Memo>> {
+        return flow {
+            memoLocalDataSource.getAllMemo().map {
+                it.map { memoEntity -> memoEntity.toMemo() }
+            }
         }
-        return memoList
+//        val memoList = mutableListOf<Memo>()
+//        memoLocalDataSource.getAllMemo().forEach { memoEntity ->
+//            memoList.add(memoEntity.toMemo())
+//        }
+//        return memoList
     }
 
     override suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo> {
@@ -51,24 +61,34 @@ override suspend fun getMemo(id: Long): Memo = memoLocalDataSource.getMemo(id).t
         return memoList
     }
 
-    override suspend fun getMemoByCategory(category: Int): List<Memo> {
-        val memoList = mutableListOf<Memo>()
-        memoLocalDataSource.getMemoByCategory(category).forEach {
-//            memoList.add(memoEntityToMemo(it))
-            memoList.add(it.toMemo())
+    override fun getMemoByCategory(category: Int): Flow<PagingData<Memo>> {
+        return flow {
+            memoLocalDataSource.getMemoByCategory(category).map {
+                it.map { memoEntity -> memoEntity.toMemo() }
+            }
         }
-        return memoList
+//        val memoList = mutableListOf<Memo>()
+//        memoLocalDataSource.getMemoByCategory(category).forEach {
+////            memoList.add(memoEntityToMemo(it))
+//            memoList.add(it.toMemo())
+//        }
+//        return memoList
     }
 
-    override suspend fun getMemoByTitle(title: String): List<Memo> {
-        val memoList = mutableListOf<Memo>()
-        memoLocalDataSource.getMemoByTitle(title).forEach { memoEntity ->
-            memoList.add(memoEntity.toMemo())
+    override fun getMemoByTitle(title: String): Flow<PagingData<Memo>> {
+        return flow {
+            memoLocalDataSource.getMemoByTitle(title).map {
+                it.map { memoEntity -> memoEntity.toMemo() }
+            }
         }
-        return memoList
+//        val memoList = mutableListOf<Memo>()
+//        memoLocalDataSource.getMemoByTitle(title).forEach { memoEntity ->
+//            memoList.add(memoEntity.toMemo())
+//        }
+//        return memoList
     }
 
-    override suspend fun getMemoByContent(content: String): List<Memo> {
+    override fun getMemoByContent(content: String): Flow<PagingData<Memo>> {
         TODO("Not yet implemented")
     }
 

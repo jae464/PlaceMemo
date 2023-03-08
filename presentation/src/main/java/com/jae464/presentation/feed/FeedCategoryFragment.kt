@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -13,6 +16,8 @@ import com.jae464.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.R
 import com.jae464.presentation.databinding.FragmentFeedCategoryBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.fragment_feed_category) {
@@ -30,8 +35,10 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
 
         initObserver()
         initAppBar()
-        initListener()
-        viewModel.getAllMemo()
+//        initListener()
+
+
+
 
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -43,47 +50,55 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
     }
 
     private fun initObserver() {
-        viewModel.memoList.observe(viewLifecycleOwner) {
-            Log.d("FeedFragment","memoList Observer")
-            println(it)
-
-            if (it.isEmpty()) {
-                binding.emptyMessageTextView.visibility = View.VISIBLE
-                feedListAdapter?.submitList(emptyList())
-                listAdapter?.submitList(emptyList())
-                return@observe
-            }
-            binding.emptyMessageTextView.visibility = View.INVISIBLE
-            feedListAdapter?.submitList(it.toMutableList())
-            listAdapter?.submitList(it.toMutableList())
-
-        }
-    }
-
-    private fun initListener() {
-        binding.chipTypeFeedType.setOnCheckedStateChangeListener { group, checkedIds ->
-            Log.d(TAG, checkedIds.toString())
-
-            when (checkedIds[0]) {
-                R.id.chip_type_card_view -> {
-                    binding.feedRecyclerView.adapter = feedListAdapter
-                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
-                    viewModel.getAllMemo()
-                }
-                R.id.chip_type_grid_view -> {
-                    binding.feedRecyclerView.adapter = feedListAdapter
-                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                    viewModel.getAllMemo()
-                }
-                R.id.chip_type_list_view -> {
-                    binding.feedRecyclerView.adapter = listAdapter
-                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    viewModel.getAllMemo()
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.memoList.collectLatest { memo ->
+                    Log.d("FeedFolderFragment", memo.toString())
+                    listAdapter?.submitData(memo)
                 }
             }
         }
+//        viewModel.memoList.observe(viewLifecycleOwner) {
+//            Log.d("FeedFragment","memoList Observer")
+//            println(it)
+//
+//            if (it.isEmpty()) {
+//                binding.emptyMessageTextView.visibility = View.VISIBLE
+//                feedListAdapter?.submitList(emptyList())
+//                listAdapter?.submitList(emptyList())
+//                return@observe
+//            }
+//            binding.emptyMessageTextView.visibility = View.INVISIBLE
+//            feedListAdapter?.submitList(it.toMutableList())
+//            listAdapter?.submitList(it.toMutableList())
+//
+//        }
     }
+
+//    private fun initListener() {
+//        binding.chipTypeFeedType.setOnCheckedStateChangeListener { group, checkedIds ->
+//            Log.d(TAG, checkedIds.toString())
+//
+//            when (checkedIds[0]) {
+//                R.id.chip_type_card_view -> {
+//                    binding.feedRecyclerView.adapter = feedListAdapter
+//                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+//                    viewModel.getAllMemo()
+//                }
+//                R.id.chip_type_grid_view -> {
+//                    binding.feedRecyclerView.adapter = feedListAdapter
+//                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+//                    viewModel.getAllMemo()
+//                }
+//                R.id.chip_type_list_view -> {
+//                    binding.feedRecyclerView.adapter = listAdapter
+//                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//                    viewModel.getAllMemo()
+//
+//                }
+//            }
+//        }
+//    }
 
     private fun goToDetailPage(memoId: Long) {
 //        val action = FeedCategoryFragmentDirections.actionFeedToDetailMemo(memoId)
