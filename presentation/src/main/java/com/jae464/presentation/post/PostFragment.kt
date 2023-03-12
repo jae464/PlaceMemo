@@ -13,6 +13,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,6 +25,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.jae464.domain.model.post.Category
 import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.databinding.FragmentPostBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +34,7 @@ import com.jae464.presentation.R
 import com.jae464.presentation.indexToCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -41,7 +46,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
-    private var category = com.jae464.domain.model.post.Category.OTHER
+    private var category = Category.OTHER
 
     private var imagePathList = mutableListOf<String>()
     private var imageViewList = mutableListOf<Bitmap?>()
@@ -91,10 +96,17 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     val title = binding.titleEditText.text.toString()
                     val content = binding.contentEditText.text.toString()
 
-                    if (args.memoId == -1L) {
-                        viewModel.saveMemo(0, title, content, latitude, longitude, category, imagePathList)
-                    }
-                    else {
+                    if (args.memoId == -1) {
+                        viewModel.saveMemo(
+                            0,
+                            title,
+                            content,
+                            latitude,
+                            longitude,
+                            category,
+                            imagePathList
+                        )
+                    } else {
                         viewModel.updateMemo(title, content, category, imagePathList)
                     }
                 }
@@ -111,7 +123,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         println("argument memoId : ${args.memoId}")
         when (args.memoId) {
             // 새 메모 업로드
-            -1L -> {
+            -1 -> {
                 latitude = arguments?.getDouble("latitude")!!
                 longitude = arguments?.getDouble("longitude")!!
                 viewModel.getAddress(latitude, longitude)
@@ -121,7 +133,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 viewModel.getMemo(args.memoId)
             }
         }
-
     }
 
     private fun initListener() {
@@ -137,11 +148,16 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             binding.locationTextView.text = viewModel.getAddressName(it)
         }
 
-        // 메모 수정인 경우 해당 memoId 의 메모를 가져와서 세팅해줌
-        viewModel.memo.observe(viewLifecycleOwner) { it ->
-            binding.titleEditText.setText(it.title)
-            binding.contentEditText.setText(it.content)
-            binding.locationTextView.text = "${it.area1} ${it.area2} ${it.area3}"
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.memo.collectLatest { memo ->
+                    memo ?: return@collectLatest
+                    binding.titleEditText.setText(memo.title)
+                    binding.contentEditText.setText(memo.content)
+                    binding.locationTextView.text = "${memo.area1} ${memo.area2} ${memo.area3}"
+
+                }
+            }
         }
 
         viewModel.isDone.observe(viewLifecycleOwner) {
@@ -189,7 +205,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         Glide.with(requireContext())
             .asBitmap()
             .load(imageUri)
-            .listener(object: RequestListener<Bitmap> {
+            .listener(object : RequestListener<Bitmap> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -215,7 +231,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     return true
                 }
             })
-            .override(512,512)
+            .override(512, 512)
             .submit()
     }
 }

@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,6 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.home.HomeViewPagerAdapter
 import com.jae464.presentation.regionToString
 import com.jae464.presentation.R
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fragment_detail_memo) {
@@ -29,6 +34,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     private val viewModel: DetailMemoViewModel by viewModels()
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
     private lateinit var mapFragment: SupportMapFragment
+    val TAG = "DetailMemoFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,7 +44,6 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         initView()
         initObserver()
         initListener()
-        viewModel.getMemo(args.memoId)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -77,16 +82,41 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     }
 
     private fun initObserver() {
-        viewModel.memo.observe(viewLifecycleOwner) { memo ->
-            binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
-            map.clear()
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
+//        viewModel.memo.observe(viewLifecycleOwner) { memo ->
+//            binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
+//            map.clear()
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
+//
+//            map.addMarker(
+//                MarkerOptions()
+//                    .position(LatLng(memo.latitude, memo.longitude))
+//                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+//            )
+//        }
 
-            map.addMarker(
-                MarkerOptions()
-                    .position(LatLng(memo.latitude, memo.longitude))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-            )
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.memo.collectLatest { memo ->
+                    Log.d(TAG, memo.toString())
+                    if (memo != null) {
+                        binding.memo = memo
+                        map.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    memo.latitude,
+                                    memo.longitude
+                                ), 36F
+                            )
+                        )
+
+                        map.addMarker(
+                            MarkerOptions()
+                                .position(LatLng(memo.latitude, memo.longitude))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        )
+                    }
+                }
+            }
         }
 
         viewModel.isDone.observe(viewLifecycleOwner) {

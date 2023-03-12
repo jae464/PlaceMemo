@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jae464.presentation.base.BaseFragment
@@ -53,8 +54,12 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memoList.collectLatest { memo ->
-                    Log.d("FeedFolderFragment", memo.toString())
+                    Log.d("FeedCategoryFragment", memo.toString())
+                    memo.map {
+                        Log.d("FeedCategoryFragment", it.toString())
+                    }
                     listAdapter?.submitData(memo)
+                    feedListAdapter?.submitData(memo)
                 }
             }
         }
@@ -100,7 +105,7 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
 //        }
 //    }
 
-    private fun goToDetailPage(memoId: Long) {
+    private fun goToDetailPage(memoId: Int) {
 //        val action = FeedCategoryFragmentDirections.actionFeedToDetailMemo(memoId)
 //        findNavController().navigate(
 //            action

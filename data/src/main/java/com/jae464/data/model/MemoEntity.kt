@@ -31,7 +31,7 @@ data class MemoEntity(
     val folderId: Long = 0,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "memo_id")
-    val id: Long = 0L,
+    val id: Int = 0,
 )
 
 data class Region(

@@ -14,7 +14,6 @@ class FriendViewModel @Inject constructor(
     fun getUserByNickname(nickname: String) {
         viewModelScope.launch {
             val user = loginRepository.getUserInfoByNickname(nickname)
-
         }
     }
 }

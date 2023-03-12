@@ -41,7 +41,7 @@
             app:destination="@id/detail_memo">
             <argument
                 android:name="memoId"
-                app:argType="long" />
+                app:argType="integer" />
         </action>
     </fragment>
     <fragment
@@ -51,8 +51,8 @@
         tools:layout="@layout/fragment_post">
         <argument
             android:name="memoId"
-            app:argType="long"
-            android:defaultValue="-1L"/>
+            app:argType="integer"
+            android:defaultValue="-1"/>
         <argument
             android:name="ShowBottomNavigationView"
             android:defaultValue="false" />
@@ -64,7 +64,7 @@
         tools:layout="@layout/fragment_detail_memo">
         <argument
             android:name="memoId"
-            app:argType="long" />
+            app:argType="integer" />
         <argument
             android:name="ShowBottomNavigationView"
             android:defaultValue="false"  />
@@ -73,7 +73,7 @@
             app:destination="@id/post">
             <argument
                 android:name="memoId"
-                app:argType="long" />
+                app:argType="integer" />
         </action>
     </fragment>
 
