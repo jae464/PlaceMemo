@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.repository.FolderRepository
@@ -19,50 +20,9 @@ class FeedViewModel @Inject constructor(
     private val folderRepository: FolderRepository
 ) : ViewModel() {
 
-//    private val _memoList: MutableLiveData<List<com.jae464.domain.model.post.Memo>> by lazy { MutableLiveData<List<com.jae464.domain.model.post.Memo>>() }
-//    val memoList: LiveData<List<com.jae464.domain.model.post.Memo>> = _memoList
-//
-//    private val _memo = MutableLiveData<com.jae464.domain.model.post.Memo?>()
-//    val memo: LiveData<com.jae464.domain.model.post.Memo?> get() = _memo
+    val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
-    val memoList = repository.getAllMemo().cachedIn(viewModelScope)
-//    private val _folderList = MutableStateFlow<List<Folder>>(emptyList())
-//    val folderList = _folderList.asStateFlow()
-//    lateinit var folderList: StateFlow<List<Folder>>
-
-//    init {
-//        viewModelScope.launch {
-//            _folderList.value = folderRepository.getAllFolder().first()
-//            _folderList.value = folderRepository.getAllFolder().map { folderList ->
-//                folderList.map {folder ->
-//                    folder.copy(
-//                        memoCount = folderRepository.getMemoCountByFolder(folder.id)
-//                    )
-//                }
-//            }
-//                .first()
-//        }
-//    }
-
-//    init {
-//        viewModelScope.launch {
-//            folderList = folderRepository.getAllFolder()
-//                .map { folderList ->
-//                    {
-//                        folderList.map {folder ->
-//                            folder.copy(
-//                                memoCount = folderRepository.getMemoCountByFolder(folder.id)
-//                            )
-//                        }
-//                    }
-//                }
-//                .stateIn(
-//                    viewModelScope,
-//                    SharingStarted.WhileSubscribed(5000),
-//                    emptyList()
-//                )
-//        }
-//    }
     val folderList = folderRepository.getAllFolder()
         .stateIn(
             viewModelScope,
@@ -70,11 +30,6 @@ class FeedViewModel @Inject constructor(
             emptyList()
         )
 
-//    fun getAllMemo() {
-//        viewModelScope.launch {
-//            _memoList.postValue(repository.getAllMemo())
-//        }
-//    }
 
     fun getAllMemoByUser(uid: String) {
         viewModelScope.launch {

@@ -15,9 +15,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.paging.map
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -29,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.presentation.R
 import com.jae464.presentation.base.BaseMapFragment
@@ -39,6 +44,7 @@ import com.jae464.presentation.markerIconList
 import com.jae464.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import java.io.FileOutputStream
 
 
@@ -52,12 +58,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
-    private var currentMemoId = -1L
+    private var currentMemoId = -1
     private var user = FirebaseAuth.getInstance().currentUser
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG,"onViewCreated")
+        Log.d(TAG, "onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
 
@@ -79,19 +85,16 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             SupportMapFragment.newInstance(mapOptions)
         }
 
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 36F))
-
         initObserver()
         initListener()
         initAppBar()
-        viewModel.getAllMemo()
+        viewModel.getMemoByCategory(Category.ALL)
     }
 
     private fun initAppBar() {
         val appBarConfiguration =
             AppBarConfiguration(findNavController().graph, binding.drawerLayout)
         binding.homeToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-//        binding.homeToolBar.setLogo(R.drawable.logo)
         setLogo()
         if (user == null) {
             binding.drawerNavigationView.inflateMenu(R.menu.drawer_menu_not_login)
@@ -157,22 +160,22 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             checkedIds.forEach {
                 when (it) {
                     R.id.chip_type_all -> {
-                        viewModel.getAllMemo()
+                        viewModel.getMemoByCategory(Category.ALL)
                     }
                     R.id.chip_type_food -> {
-                        viewModel.getMemoByCategory(com.jae464.domain.model.post.Category.RESTAURANT)
+                        viewModel.getMemoByCategory(Category.RESTAURANT)
                     }
                     R.id.chip_type_tourist -> {
-                        viewModel.getMemoByCategory(com.jae464.domain.model.post.Category.TOURIST)
+                        viewModel.getMemoByCategory(Category.TOURIST)
                     }
                     R.id.chip_type_cafe -> {
-                        viewModel.getMemoByCategory(com.jae464.domain.model.post.Category.CAFE)
+                        viewModel.getMemoByCategory(Category.CAFE)
                     }
                     R.id.chip_type_hotel -> {
-                        viewModel.getMemoByCategory(com.jae464.domain.model.post.Category.HOTEL)
+                        viewModel.getMemoByCategory(Category.HOTEL)
                     }
                     R.id.chip_type_other -> {
-                        viewModel.getMemoByCategory(com.jae464.domain.model.post.Category.OTHER)
+                        viewModel.getMemoByCategory(Category.OTHER)
                     }
                 }
             }
@@ -184,7 +187,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.drawerNavigationView.setNavigationItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.login -> {
                     val intent = Intent(context, LoginActivity::class.java)
                     startActivity(intent)
@@ -198,44 +201,54 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         Log.d(tag, "initObserver")
-        viewModel.memoList.observe(viewLifecycleOwner) {memoList ->
-            map.clear()
-            memoList.forEach { memo ->
 
-                // TODO 썸네일 가져오는 로직 추후 수정 필요
-                val imagePathList = viewModel.getMemoImagePathList(memo.id)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.filteredMemoList.collectLatest { memoList ->
+                    Log.d(TAG, memoList.toString())
+                    map.clear()
+                    memoList.map { memo ->
+                        Log.d(TAG, memo.toString())
+                        // TODO 썸네일 가져오는 로직 추후 수정 필요
+                        val imagePathList = memo.imageUriList ?: emptyList()
+                        val thumbnailImage = if (imagePathList.isEmpty()) null else imagePathList[0]
 
-                val thumbnailImage = if (imagePathList.isEmpty()) null else imagePathList[0]
-                val thumbnailImageBitmap = thumbnailImage.let {path ->
-                    BitmapFactory.decodeFile(path)
-                }
+                        val thumbnailImageBitmap = thumbnailImage.let { path ->
+                            BitmapFactory.decodeFile("${context?.filesDir}/images/${path?.substringAfterLast("/")}.jpg")
+                        }
 
-                // TODO Glide 로 이미지 비동기로 로드하는거 필요
+                        // TODO Glide 로 이미지 비동기로 로드하는거 필요
 
-                val thumbnailMarkerView = ItemMemoMarkerBinding.inflate(LayoutInflater.from(context), null, false).apply {
-                    if(thumbnailImageBitmap == null) {
-                        cvThumbnail.setImageResource(R.drawable.ic_sample_profile)
-                    }
-                    else {
-                        cvThumbnail.setImageBitmap(thumbnailImageBitmap)
-                    }
-                }
+                        val thumbnailMarkerView =
+                            ItemMemoMarkerBinding.inflate(LayoutInflater.from(context), null, false)
+                                .apply {
+                                    if (thumbnailImageBitmap == null) {
+                                        cvThumbnail.setImageResource(R.drawable.ic_sample_profile)
+                                    } else {
+                                        cvThumbnail.setImageBitmap(thumbnailImageBitmap)
+                                    }
+                                }
 
-                val thumbnailBitmap = createDrawableFromView(requireContext(), thumbnailMarkerView.root)
+                        val thumbnailBitmap = createDrawableFromView(requireContext(), thumbnailMarkerView.root)
 
-                Log.d(TAG, memo.title)
-                val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
+                        Log.d(TAG, memo.title)
+                        val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
 
-                val memoMarker = map.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(memo.latitude, memo.longitude))
+                        val memoMarker = map.addMarker(
+                            MarkerOptions()
+                                .position(LatLng(memo.latitude, memo.longitude))
 //                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .icon(BitmapDescriptorFactory.fromBitmap((thumbnailBitmap!!)))
+                                .icon(BitmapDescriptorFactory.fromBitmap((thumbnailBitmap!!)))
 
-                    )
-                memoMarker?.tag = memo
+                        )
+                        memoMarker?.tag = memo
+                    }
+
+                }
             }
         }
+
+
 
         viewModel.currentAddress.observe(viewLifecycleOwner) {
             currentMarker?.snippet = it
@@ -289,14 +302,18 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         binding.postButton.visibility = View.VISIBLE
     }
 
-    private fun displayMemoPreview(memo: com.jae464.domain.model.post.Memo) {
+    private fun displayMemoPreview(memo: Memo) {
         currentMarker?.remove()
 
-        val imageList = viewModel.getMemoImagePathList(memo.id)
+//        val imageList = viewModel.getMemoImagePathList(memo.id)
+        val imageList = memo.imageUriList?.map {
+            "${context?.filesDir}/images/${it.substringAfterLast("/")}.jpg"
+        } ?: emptyList()
         Log.d(TAG, imageList.toString())
 
         binding.memoPreview.memo = memo
-        binding.memoPreview.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
+        binding.memoPreview.locationTextView.text =
+            regionToString(memo.area1, memo.area2, memo.area3)
 
         viewPagerAdapter = HomeViewPagerAdapter(imageList)
         binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
@@ -349,7 +366,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private fun setLogo() {
         Glide.with(requireContext())
             .load(R.drawable.logo)
-            .listener(object: RequestListener<Drawable> {
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -373,7 +390,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     return true
                 }
             })
-            .override(64,64)
+            .override(64, 64)
             .submit()
     }
 }

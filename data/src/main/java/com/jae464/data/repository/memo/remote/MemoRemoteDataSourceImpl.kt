@@ -18,7 +18,7 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     private val TAG = "MemoRemoteDataSourceImpl"
     private val storage = Firebase.storage
 
-    override suspend fun getMemo(id: Long) {
+    override suspend fun getMemo(id: Int) {
 
     }
 
@@ -61,7 +61,7 @@ class MemoRemoteDataSourceImpl @Inject constructor(
 
     }
 
-    override suspend fun deleteMemo(userId: String, memoId: Long) {
+    override suspend fun deleteMemo(userId: String, memoId: Int) {
 
         val memoDoc = firestore.collection("memos")
             .whereEqualTo("userId", userId)

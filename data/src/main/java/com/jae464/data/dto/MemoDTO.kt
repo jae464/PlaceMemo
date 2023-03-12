@@ -7,7 +7,7 @@ import com.jae464.domain.model.post.Memo
 import java.util.*
 
 data class MemoDTO(
-    val memoId: Long = -1L,
+    val memoId: Int = -1,
     val userId: String = "", // Firebase Store 에 저장된 user의 uid
     val title: String = "",
     val content: String = "",

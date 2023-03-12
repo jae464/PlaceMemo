@@ -6,10 +6,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.jae464.data.db.MemoDao
 import com.jae464.data.manager.ImageManager
-import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
+import com.jae464.data.model.toMemo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(
@@ -17,11 +18,18 @@ class MemoLocalDataSourceImpl @Inject constructor(
     private val imageManager: ImageManager
 ): MemoLocalDataSource {
     private val TAG = "MemoLocalDataSourceImpl"
-    override suspend fun getMemo(id: Long): MemoEntity {
+    override fun getMemo(id: Int): Flow<MemoEntity> {
+        memoDao.getMemo(id).map {
+            Log.d(TAG, it.toString())
+        }
         return memoDao.getMemo(id)
     }
 
-    override suspend fun getAllMemo(): Flow<PagingData<MemoEntity>> {
+    override fun getAllMemo(): Flow<List<MemoEntity>> {
+        return memoDao.getAllMemo()
+    }
+
+    override fun getAllMemoWithPage(): Flow<PagingData<MemoEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -29,12 +37,12 @@ class MemoLocalDataSourceImpl @Inject constructor(
                 initialLoadSize = 10
             ),
             pagingSourceFactory = {
-                memoDao.getAllMemo()
+                memoDao.getAllMemoWithPage()
             }
         ).flow
     }
 
-    override suspend fun saveMemo(memo: MemoEntity): Long {
+    override suspend fun saveMemo(memo: MemoEntity) {
         return memoDao.insertMemo(memo)
     }
 
@@ -42,53 +50,25 @@ class MemoLocalDataSourceImpl @Inject constructor(
         memoDao.updateMemo(memo)
     }
 
-    override suspend fun getMemoByCategory(category: Int): Flow<PagingData<MemoEntity>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-                initialLoadSize = 10
-            ),
-            pagingSourceFactory = {
-                memoDao.getMemoByCategory(category)
-            }
-        ).flow
+    override fun getMemoByCategory(category: Int): Flow<List<MemoEntity>> {
+        return memoDao.getMemoByCategory(category)
     }
 
-    override suspend fun getMemoByTitle(title: String): Flow<PagingData<MemoEntity>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-                initialLoadSize = 10
-            ),
-            pagingSourceFactory = {
-                memoDao.getMemoByTitle(title)
-            }
-        ).flow
+    override fun getMemoByTitle(title: String): Flow<List<MemoEntity>> {
+        return memoDao.getMemoByTitle(title)
     }
 
-    override suspend fun getMemoByContent(content: String): Flow<PagingData<MemoEntity>> {
-        // TODO getMemoByContent 로 수정 필요
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-                initialLoadSize = 10
-            ),
-            pagingSourceFactory = {
-                memoDao.getMemoByTitle(content)
-            }
-        ).flow
+    override fun getMemoByContent(content: String): Flow<List<MemoEntity>> {
+        return memoDao.getMemoByTitle(content)
     }
 
-    override suspend fun deleteMemo(id: Long) {
+    override suspend fun deleteMemo(id: Int) {
         memoDao.deleteMemo(id)
     }
 
-    override suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>) {
+    override suspend fun saveMemoImages(imagePathList: List<String>) {
         imagePathList.forEach {imagePath ->
-            imageManager.saveImage(memoId, imagePath)
+            imageManager.saveImage(imagePath)
         }
     }
 
@@ -96,7 +76,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getFoldersWithMemos()
     }
 
-    override fun getImagePathList(memoId: Long): List<String> {
+    override fun getImagePathList(memoId: Int): List<String> {
         return imageManager.getImagePathList(memoId)
 
     }

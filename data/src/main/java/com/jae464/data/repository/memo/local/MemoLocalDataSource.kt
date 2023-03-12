@@ -6,15 +6,16 @@ import com.jae464.data.model.MemoEntity
 import kotlinx.coroutines.flow.Flow
 
 interface MemoLocalDataSource {
-    suspend fun getMemo(id: Long): MemoEntity
-    fun getAllMemo(): Flow<PagingData<MemoEntity>>
-    suspend fun saveMemo(memo: MemoEntity): Long
+    fun getMemo(id: Int): Flow<MemoEntity>
+    fun getAllMemo(): Flow<List<MemoEntity>>
+    fun getAllMemoWithPage(): Flow<PagingData<MemoEntity>>
+    suspend fun saveMemo(memo: MemoEntity)
     suspend fun updateMemo(memo: MemoEntity)
-    fun getMemoByCategory(category: Int): Flow<PagingData<MemoEntity>>
-    fun getMemoByTitle(title: String): Flow<PagingData<MemoEntity>>
-    fun getMemoByContent(content: String): Flow<PagingData<MemoEntity>>
-    suspend fun deleteMemo(id: Long)
-    suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>)
+    fun getMemoByCategory(category: Int): Flow<List<MemoEntity>>
+    fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
+    fun getMemoByContent(content: String): Flow<List<MemoEntity>>
+    suspend fun deleteMemo(id: Int)
+    suspend fun saveMemoImages(imagePathList: List<String>)
     suspend fun getFoldersWithMemos(): List<FolderWithMemos>
-    fun getImagePathList(memoId: Long): List<String>
+    fun getImagePathList(memoId: Int): List<String>
 }

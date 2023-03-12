@@ -1,7 +1,7 @@
 package com.jae464.domain.model.post
 
 data class Memo (
-    val id: Long,
+    val id: Int,
     val title: String,
     val content: String,
     val latitude: Double,

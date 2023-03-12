@@ -6,4 +6,5 @@ enum class Category {
     CAFE,
     HOTEL,
     OTHER,
+    ALL
 }

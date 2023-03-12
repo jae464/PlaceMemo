@@ -23,19 +23,18 @@ class ImageManager @Inject constructor(
 
     private val TAG = "ImageManager"
 
-    fun saveImage(memoId: Long, imagePath: String) {
+    fun saveImage(imagePath: String) {
         Log.d(TAG, "SAVE IMAGE START")
         Glide.with(context)
             .asBitmap()
             .load(imagePath.toUri())
-            .listener(ImageRequestListener(imagePath, memoId))
+            .listener(ImageRequestListener(imagePath))
             .override(100,100)
             .submit()
     }
 
     inner class ImageRequestListener(
         private val imagePath: String,
-        private val memoId: Long
     ): RequestListener<Bitmap> {
         override fun onLoadFailed(
             e: GlideException?,
@@ -55,8 +54,8 @@ class ImageManager @Inject constructor(
             isFirstResource: Boolean
         ): Boolean {
             CoroutineScope(Dispatchers.IO).launch {
-                val dirPath = File(context.filesDir, "$DIR_NAME/$memoId").apply { mkdirs() }
-                val filePath = File("${dirPath}/${imagePath.substringAfterLast("/")}")
+                val dirPath = File(context.filesDir, DIR_NAME).apply { mkdirs() }
+                val filePath = File("${dirPath}/${imagePath.substringAfterLast("/")}.jpg")
                 Log.d(TAG, "이미지 저장 경로 : $filePath")
                 withContext(Dispatchers.IO) {
                     FileOutputStream(filePath).use { out ->
@@ -71,7 +70,7 @@ class ImageManager @Inject constructor(
 
     }
 
-    fun getImagePathList(memoId: Long): List<String> {
+    fun getImagePathList(memoId: Int): List<String> {
         val dirPath = "${context.filesDir}/images"
         val filePath = File("$dirPath/$memoId")
         Log.d(TAG, filePath.toString())

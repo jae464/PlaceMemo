@@ -36,6 +36,7 @@ fun categoryToInt(category: Category): Int {
         Category.CAFE -> 2
         Category.HOTEL -> 3
         Category.OTHER -> 4
+        Category.ALL -> 5
     }
 }
 

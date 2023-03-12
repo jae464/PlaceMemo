@@ -5,29 +5,34 @@ import androidx.room.*
 import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
+import com.jae464.domain.model.post.Memo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MemoDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertMemo(memo: MemoEntity): Long
+   suspend fun insertMemo(memo: MemoEntity)
 
    @Update
    suspend fun updateMemo(memo: MemoEntity)
 
    @Query("DELETE FROM memo WHERE memo_id = :id")
-   fun deleteMemo(id: Long)
+   fun deleteMemo(id: Int)
 
    @Query("SELECT * FROM memo WHERE memo_id = :id")
-   suspend fun getMemo(id: Long): MemoEntity
+   fun getMemo(id: Int): Flow<MemoEntity>
 
    @Query("SELECT * FROM memo")
-   fun getAllMemo(): PagingSource<Long, MemoEntity>
+   fun getAllMemo(): Flow<List<MemoEntity>>
+
+   @Query("SELECT * FROM memo")
+   fun getAllMemoWithPage(): PagingSource<Int, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE category = :category")
-   fun getMemoByCategory(category: Int): PagingSource<Long, MemoEntity>
+   fun getMemoByCategory(category: Int): Flow<List<MemoEntity>>
 
    @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
-   fun getMemoByTitle(title: String): PagingSource<Long, MemoEntity>
+   fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
 
    @Transaction
    @Query("SELECT * FROM folder")
