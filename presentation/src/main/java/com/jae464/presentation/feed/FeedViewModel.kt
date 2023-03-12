@@ -21,7 +21,7 @@ class FeedViewModel @Inject constructor(
 ) : ViewModel() {
 
     val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+//        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
     val folderList = folderRepository.getAllFolder()
         .stateIn(

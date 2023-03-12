@@ -59,9 +59,8 @@ class MemoRepositoryImpl @Inject constructor(
     }
 
     override fun getAllMemoWithPage(): Flow<PagingData<Memo>> {
-        return memoLocalDataSource.getAllMemoWithPage().map {
-            it.map { memoEntity ->
-                Log.d("MemoRepositoryImpl", memoEntity.toString())
+        return memoLocalDataSource.getAllMemoWithPage().map { pagingData ->
+            pagingData.map { memoEntity ->
                 memoEntity.toMemo()
             }
         }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.fragment_feed_category) {
 
-    private val TAG: String = "FeedFragment"
+    private val TAG: String = "FeedCategoryFragment"
     private var feedListAdapter: FeedListAdapter? = null
     private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedViewModel by viewModels()
@@ -32,10 +32,9 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
         super.onViewCreated(view, savedInstanceState)
         feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage)
         listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 1)
-        binding.feedRecyclerView.adapter = feedListAdapter
+        binding.feedRecyclerView.adapter = listAdapter
 
         initObserver()
-        initAppBar()
 //        initListener()
 
 
@@ -45,19 +44,10 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
-    private fun initAppBar() {
-//        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
-//        binding.postToolBar.setupWithNavController(findNavController(), appBarConfiguration)
-    }
-
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memoList.collectLatest { memo ->
-                    Log.d("FeedCategoryFragment", memo.toString())
-                    memo.map {
-                        Log.d("FeedCategoryFragment", it.toString())
-                    }
                     listAdapter?.submitData(memo)
                     feedListAdapter?.submitData(memo)
                 }
