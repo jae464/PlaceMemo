@@ -26,6 +26,7 @@ class FeedViewModel @Inject constructor(
     val memoList = viewType
         .filter { it.isNotEmpty() }
         .flatMapLatest { viewType ->
+            Log.d("FeedViewModel", "GetAllMemoWithPage")
             repository.getAllMemoWithPage().cachedIn(viewModelScope)
         }
 
