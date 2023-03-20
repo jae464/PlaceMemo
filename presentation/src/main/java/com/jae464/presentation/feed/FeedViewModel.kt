@@ -10,6 +10,7 @@ import androidx.paging.cachedIn
 import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.repository.FolderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +21,15 @@ class FeedViewModel @Inject constructor(
     private val folderRepository: FolderRepository
 ) : ViewModel() {
 
-    val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
+    val viewType = MutableStateFlow("card")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val memoList = viewType
+        .filter { it.isNotEmpty() }
+        .flatMapLatest { viewType ->
+            repository.getAllMemoWithPage().cachedIn(viewModelScope)
+        }
+
+//    val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
 //        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
     val folderList = folderRepository.getAllFolder()
@@ -37,11 +46,6 @@ class FeedViewModel @Inject constructor(
             Log.d("FeedViewModel", "remote memo : $remoteMemo")
         }
     }
-
-//    fun clearMemo() {
-//        _memoList.postValue(emptyList())
-//    }
-
 
     override fun onCleared() {
         super.onCleared()

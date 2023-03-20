@@ -44,9 +44,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     private fun initListener() {
         binding.searchEditText.setOnEditorActionListener { textView, i, keyEvent ->
             Log.d(TAG, textView.text.toString())
-            //TODO 검색어랑 일치하는 메모 가져오기
+
             viewModel.getMemoByTitle(textView.text.toString())
-            // TODO 메모 업데이트 후 EditText 에 Text 지우기, 키보드 내리기
+
 
             ViewCompat.getWindowInsetsController(binding.root)?.hide(
                 WindowInsetsCompat.Type.ime()
@@ -57,16 +57,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     private fun initObserver() {
-//        viewModel.memoList.observe(viewLifecycleOwner) {
-//            Log.d(TAG, it.toString())
-//            feedListAdapter.submitList(emptyList())
-//            if (it.isEmpty()) {
-//                binding.emptyMessageTextView.visibility = View.VISIBLE
-//                return@observe
-//            }
-//            binding.emptyMessageTextView.visibility = View.INVISIBLE
-//            feedListAdapter.submitList(it.toMutableList())
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -76,6 +66,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 }
             }
         }
+
     }
 
     private fun goToDetailPage(memoId: Int) {

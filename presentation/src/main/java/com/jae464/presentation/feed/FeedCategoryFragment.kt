@@ -30,15 +30,12 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage)
+        feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 0)
         listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 1)
-        binding.feedRecyclerView.adapter = listAdapter
+        binding.feedRecyclerView.adapter = feedListAdapter
 
         initObserver()
-//        initListener()
-
-
-
+        initListener()
 
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -47,53 +44,37 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.memoList.collectLatest { memo ->
-                    listAdapter?.submitData(memo)
-                    feedListAdapter?.submitData(memo)
+                viewModel.memoList.collectLatest { pagingData ->
+                    feedListAdapter?.submitData(pagingData)
+                    listAdapter?.submitData(pagingData)
                 }
             }
         }
-//        viewModel.memoList.observe(viewLifecycleOwner) {
-//            Log.d("FeedFragment","memoList Observer")
-//            println(it)
-//
-//            if (it.isEmpty()) {
-//                binding.emptyMessageTextView.visibility = View.VISIBLE
-//                feedListAdapter?.submitList(emptyList())
-//                listAdapter?.submitList(emptyList())
-//                return@observe
-//            }
-//            binding.emptyMessageTextView.visibility = View.INVISIBLE
-//            feedListAdapter?.submitList(it.toMutableList())
-//            listAdapter?.submitList(it.toMutableList())
-//
-//        }
     }
 
-//    private fun initListener() {
-//        binding.chipTypeFeedType.setOnCheckedStateChangeListener { group, checkedIds ->
-//            Log.d(TAG, checkedIds.toString())
-//
-//            when (checkedIds[0]) {
-//                R.id.chip_type_card_view -> {
-//                    binding.feedRecyclerView.adapter = feedListAdapter
-//                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
-//                    viewModel.getAllMemo()
-//                }
-//                R.id.chip_type_grid_view -> {
-//                    binding.feedRecyclerView.adapter = feedListAdapter
-//                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-//                    viewModel.getAllMemo()
-//                }
-//                R.id.chip_type_list_view -> {
-//                    binding.feedRecyclerView.adapter = listAdapter
-//                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-//                    viewModel.getAllMemo()
-//
-//                }
-//            }
-//        }
-//    }
+    private fun initListener() {
+        binding.chipTypeFeedType.setOnCheckedStateChangeListener { group, checkedIds ->
+            Log.d(TAG, checkedIds.toString())
+
+            when (checkedIds[0]) {
+                R.id.chip_type_card_view -> {
+                    viewModel.viewType.value = "card"
+                    binding.feedRecyclerView.adapter = feedListAdapter
+                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                }
+                R.id.chip_type_grid_view -> {
+                    viewModel.viewType.value = "card"
+                    binding.feedRecyclerView.adapter = feedListAdapter
+                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                }
+                R.id.chip_type_list_view -> {
+                    viewModel.viewType.value = "list"
+                    binding.feedRecyclerView.adapter = listAdapter
+                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                }
+            }
+        }
+    }
 
     private fun goToDetailPage(memoId: Int) {
 //        val action = FeedCategoryFragmentDirections.actionFeedToDetailMemo(memoId)
@@ -105,7 +86,5 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView")
-        feedListAdapter?.clearData()
-        listAdapter?.clearData()
     }
 }
