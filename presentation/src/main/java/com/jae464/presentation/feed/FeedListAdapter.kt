@@ -26,22 +26,16 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
      * 각각 FeedGridViewHolder와 FeedListViewHolder 는 FeedViewHolder 의
      * bind 함수를 override 하여 작성
     * */
-    fun clearData() {
-        notifyDataSetChanged()
-    }
-
     sealed class FeedViewHolder(binding: ViewDataBinding):
         RecyclerView.ViewHolder(binding.root) {
-            abstract fun bind(memo: com.jae464.domain.model.post.Memo)
+            abstract fun bind(memo: Memo)
         }
-
 
     inner class FeedGridViewHolder(
         private val binding: ItemMemoPreviewBinding
     ): FeedViewHolder(binding) {
 
-        override fun bind(memo: com.jae464.domain.model.post.Memo) {
-            println("FeedListAdapter")
+        override fun bind(memo: Memo) {
             binding.memo = memo
             binding.locationTextView.text = regionToString(memo.area1, memo.area2, memo.area3)
             binding.memoCardView.setOnClickListener {
@@ -51,7 +45,7 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
             val imageUriList = memo.imageUriList ?: emptyList()
             val imagePathList = imageUriList.map {uri ->
                 val dirPath = "${context.filesDir}/images"
-                val filePath = "$dirPath/${memo.id}/${uri.substringAfterLast("/")}"
+                val filePath = "$dirPath/${uri.substringAfterLast("/")}.jpg"
                 filePath
             }
 
@@ -69,7 +63,7 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
         private val binding: ItemMemoListViewBinding,
     ): FeedViewHolder(binding) {
 
-        override fun bind(memo: com.jae464.domain.model.post.Memo) {
+        override fun bind(memo: Memo) {
             Log.d("FeedListAdapter", "bind")
             binding.memo = memo
             binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
@@ -80,20 +74,26 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
+        Log.d("onCreateViewHolder", "왜안돼 ㅠㅠ")
         when (this.viewType) {
             0 -> {
+                Log.d("onCreateViewHolder", "CardViewType")
                 val binding = ItemMemoPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                Log.d("onCreateViewHolder", binding.toString())
                 return FeedGridViewHolder(binding)
             }
             else -> {
                 val binding = ItemMemoListViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                Log.d("onCreateViewHolder", binding.toString())
                 return FeedListViewHolder(binding)
             }
         }
     }
 
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
+        Log.d(TAG, "onBindViewHolder")
         val item = getItem(position)
+        Log.d(TAG, item.toString())
         item?.let { holder.bind(item) }
     }
 
