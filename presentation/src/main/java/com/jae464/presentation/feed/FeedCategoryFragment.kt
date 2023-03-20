@@ -24,15 +24,16 @@ import kotlinx.coroutines.launch
 class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.fragment_feed_category) {
 
     private val TAG: String = "FeedCategoryFragment"
-    private var feedListAdapter: FeedListAdapter? = null
+//    private var feedListAdapter: FeedListAdapter? = null
     private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        feedListAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 0)
-        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, 1)
-        binding.feedRecyclerView.adapter = feedListAdapter
+
+        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, CARD_VIEW_TYPE)
+        binding.feedRecyclerView.adapter = listAdapter
+        binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         initObserver()
         initListener()
@@ -45,7 +46,21 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memoList.collectLatest { pagingData ->
-                    feedListAdapter?.submitData(pagingData)
+                    when (viewModel.viewType.value) {
+                        "card" -> {
+                            listAdapter = FeedListAdapter(requireContext(), this@FeedCategoryFragment::goToDetailPage, CARD_VIEW_TYPE)
+                            binding.feedRecyclerView.adapter = listAdapter
+                            binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+                        }
+
+                        "list" -> {
+                            listAdapter = FeedListAdapter(requireContext(), this@FeedCategoryFragment::goToDetailPage, LIST_VIEW_TYPE)
+                            binding.feedRecyclerView.adapter = listAdapter
+                            binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                        }
+
+                    }
                     listAdapter?.submitData(pagingData)
                 }
             }
@@ -59,18 +74,12 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
             when (checkedIds[0]) {
                 R.id.chip_type_card_view -> {
                     viewModel.viewType.value = "card"
-                    binding.feedRecyclerView.adapter = feedListAdapter
-                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 }
                 R.id.chip_type_grid_view -> {
                     viewModel.viewType.value = "card"
-                    binding.feedRecyclerView.adapter = feedListAdapter
-                    binding.feedRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                 }
                 R.id.chip_type_list_view -> {
                     viewModel.viewType.value = "list"
-                    binding.feedRecyclerView.adapter = listAdapter
-                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 }
             }
         }
@@ -86,5 +95,10 @@ class FeedCategoryFragment : BaseFragment<FragmentFeedCategoryBinding>(R.layout.
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d(TAG, "onDestroyView")
+    }
+
+    companion object {
+        const val CARD_VIEW_TYPE = 0
+        const val LIST_VIEW_TYPE = 1
     }
 }
