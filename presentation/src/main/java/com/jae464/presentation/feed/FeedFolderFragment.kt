@@ -19,11 +19,13 @@ import kotlinx.coroutines.launch
 class FeedFolderFragment :
     BaseFragment<FragmentFeedFolderBinding>(R.layout.fragment_feed_folder) {
 
-    private val folderListAdapter = FolderListAdapter()
+    private lateinit var folderListAdapter: FolderListAdapter
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        folderListAdapter = FolderListAdapter(requireContext(), parentFragmentManager)
         initView()
         initListener()
         initObserver()
