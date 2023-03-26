@@ -24,7 +24,6 @@ class FolderListAdapter(private val context: Context, private val supportFragmen
         fun bind(folder: Folder) {
             binding.folder = folder
             binding.ivFolderEdit.setOnClickListener {
-                Toast.makeText(context, "팝업 메뉴 버튼 클릭", Toast.LENGTH_SHORT).show()
                 val popupMenu = PopupMenu(context, binding.ivFolderEdit)
                 popupMenu.menuInflater.inflate(R.menu.folder_menu, popupMenu.menu)
 
@@ -38,7 +37,7 @@ class FolderListAdapter(private val context: Context, private val supportFragmen
                         R.id.delete -> {
                             Log.d(TAG, menuItem.itemId.toString())
                             // TODO 폴더 삭제 다이얼로그 띄우기
-                            DeleteFolderDialog(folder.id).show(supportFragmentManager, "TEST")
+                            DeleteFolderDialog(folder.id).show(supportFragmentManager, "delete_folder")
 
                             true
                         }
