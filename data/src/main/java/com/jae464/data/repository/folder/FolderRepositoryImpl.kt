@@ -23,16 +23,6 @@ class FolderRepositoryImpl @Inject constructor(
     }
 
     override fun getAllFolder(): Flow<List<Folder>> {
-        Log.d("FolderRepositoryImpl", "try get all folder")
-//        return flow {
-//            folderDao.getAllFolder().collect {
-//                val folderList: MutableList<Folder> = mutableListOf()
-//                it.forEach { folderEntity ->
-//                    folderList.add(folderEntityToFolder(folderEntity))
-//                }
-//                emit(folderList)
-//            }
-//        }
         return folderDao.getAllFolder().map { list ->
             Log.d("FolderRepositoryImpl", list.toString())
             list.map {
@@ -44,16 +34,10 @@ class FolderRepositoryImpl @Inject constructor(
 
     override fun getFolderByName(folderName: String): Flow<Folder?> {
         return folderDao.getFolderByName(folderName).map {
-//            Log.d("FolderRepositoryImpl", it.toString())
             folderEntityToFolder(it)
         }.catch {
             emit(Folder(0,"",0))
         }
-//        return flow {
-//            folderDao.getFolderByName(folderName).collect {
-//                emit(folderEntityToFolder(it))
-//            }
-//        }
     }
 
     override suspend fun isExistFolderName(folderName: String): Boolean {
