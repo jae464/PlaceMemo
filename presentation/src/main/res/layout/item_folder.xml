@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="title"
             type="String" />
@@ -23,17 +24,17 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:src="@drawable/baseline_folder_24"
-            app:tint="@color/blue_200"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/blue_200" />
 
         <TextView
             android:id="@+id/tv_folder_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{folder == null ? title : folder.name}"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:text="@{folder == null ? title : folder.name}"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/iv_folder"
@@ -45,14 +46,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:textSize="16sp"
-            android:padding="0dp"
             android:gravity="bottom"
+            android:padding="0dp"
             android:text="@{folder == null ? `0` : `0`}"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/tv_folder_title"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="0"
-            />
+            tools:text="0" />
+
+        <ImageView
+            android:id="@+id/iv_folder_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/ic_baseline_menu_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            app:visibility="@{folder == null ? false : true}" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
