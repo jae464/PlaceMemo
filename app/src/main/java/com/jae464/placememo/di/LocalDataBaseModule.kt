@@ -25,6 +25,7 @@ class LocalDataBaseModule {
             MemoDatabase::class.java, "Memo.db"
         )
             .allowMainThreadQueries()
+            .addCallback(MemoDatabase.callback)
             .build()
     }
 
