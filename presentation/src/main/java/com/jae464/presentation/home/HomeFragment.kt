@@ -201,6 +201,13 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     //
     private fun initObserver() {
         Log.d(tag, "initObserver")
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.memoList.collectLatest { memos ->
+                    viewModel.filteredMemoList.value = memos
+                }
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -209,6 +216,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     map.clear()
                     memoList.map { memo ->
                         Log.d(TAG, memo.toString())
+
                         // TODO 썸네일 가져오는 로직 추후 수정 필요
                         val imagePathList = memo.imageUriList ?: emptyList()
                         val thumbnailImage = if (imagePathList.isEmpty()) null else imagePathList[0]
@@ -218,7 +226,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                         }
 
                         // TODO Glide 로 이미지 비동기로 로드하는거 필요
-
                         val thumbnailMarkerView =
                             ItemMemoMarkerBinding.inflate(LayoutInflater.from(context), null, false)
                                 .apply {
@@ -232,12 +239,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                         val thumbnailBitmap = createDrawableFromView(requireContext(), thumbnailMarkerView.root)
 
                         Log.d(TAG, memo.title)
-                        val resourceId = markerIconList[memo.category.ordinal] ?: R.drawable.marker
 
                         val memoMarker = map.addMarker(
                             MarkerOptions()
                                 .position(LatLng(memo.latitude, memo.longitude))
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                 .icon(BitmapDescriptorFactory.fromBitmap((thumbnailBitmap!!)))
 
                         )
@@ -305,11 +310,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private fun displayMemoPreview(memo: Memo) {
         currentMarker?.remove()
 
-//        val imageList = viewModel.getMemoImagePathList(memo.id)
         val imageList = memo.imageUriList?.map {
             "${context?.filesDir}/images/${it.substringAfterLast("/")}.jpg"
         } ?: emptyList()
-        Log.d(TAG, imageList.toString())
+
 
         binding.memoPreview.memo = memo
         binding.memoPreview.locationTextView.text =
@@ -331,7 +335,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     override fun onInfoWindowClick(p0: Marker) {
         currentMarker ?: return
-        Log.d(TAG, currentMarker.toString())
+
         val bundle = Bundle().apply {
             putDouble("latitude", currentMarker!!.position.latitude)
             putDouble("longitude", currentMarker!!.position.longitude)

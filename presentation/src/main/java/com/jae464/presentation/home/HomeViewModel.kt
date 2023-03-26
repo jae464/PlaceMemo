@@ -20,13 +20,11 @@ class HomeViewModel @Inject constructor(
     private val memoRepository: com.jae464.domain.repository.MemoRepository,
     private val addressRepository: com.jae464.domain.repository.AddressRepository
 ) : ViewModel() {
-//    private val _memoList: MutableLiveData<List<com.jae464.domain.model.post.Memo>> by lazy { MutableLiveData<List<com.jae464.domain.model.post.Memo>>() }
-//    val memoList: LiveData<List<com.jae464.domain.model.post.Memo>> = _memoList
 
     private val _currentAddress: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val currentAddress: LiveData<String> = _currentAddress
 
-    private val memoList = memoRepository.getAllMemo().stateIn(
+    val memoList = memoRepository.getAllMemo().stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         emptyList()
@@ -42,21 +40,14 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getMemoByCategory(category: Category) {
-        viewModelScope.launch {
-            memoList.collectLatest {
-                if (category == Category.ALL) {
-                    filteredMemoList.value = it
-                } else {
-                    filteredMemoList.value = it.filter { memo ->
-                        memo.category == category
-                    }
-                }
-            }
+        if (category == Category.ALL) {
+            filteredMemoList.value = memoList.value
+            return
         }
-    }
 
-    fun getMemoImagePathList(memoId: Int): List<String> {
-        return memoRepository.getImagePathList(memoId)
+        filteredMemoList.value = memoList.value.filter { memo ->
+            memo.category == category
+        }
     }
 
 }
