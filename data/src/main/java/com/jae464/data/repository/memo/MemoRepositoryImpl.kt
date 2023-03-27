@@ -23,15 +23,7 @@ class MemoRepositoryImpl @Inject constructor(
 ) : MemoRepository {
 
     override fun getMemo(id: Int): Flow<Memo> {
-        Log.d("MemoRepositoryImpl", id.toString())
-//        return flow {
-//            memoLocalDataSource.getMemo(id).map {
-//                Log.d("MemoRepositoryImpl", it.toString())
-//                it.toMemo()
-//            }
-//        }
         return memoLocalDataSource.getMemo(id).map {
-//            Log.d("MemoRepositoryImpl", it.toString())
             it.toMemo()
         }
     }
@@ -64,12 +56,6 @@ class MemoRepositoryImpl @Inject constructor(
                 memoEntity.toMemo()
             }
         }
-
-//        val memoList = mutableListOf<Memo>()
-//        memoLocalDataSource.getAllMemo().forEach { memoEntity ->
-//            memoList.add(memoEntity.toMemo())
-//        }
-//        return memoList
     }
 
     override suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo> {
@@ -86,23 +72,12 @@ class MemoRepositoryImpl @Inject constructor(
                 it.map { memoEntity -> memoEntity.toMemo() }
             }
         }
-//        val memoList = mutableListOf<Memo>()
-//        memoLocalDataSource.getMemoByCategory(category).forEach {
-////            memoList.add(memoEntityToMemo(it))
-//            memoList.add(it.toMemo())
-//        }
-//        return memoList
     }
 
     override fun getMemoByTitle(title: String): Flow<List<Memo>> {
         return memoLocalDataSource.getMemoByTitle(title).map {
             it.map { memoEntity -> memoEntity.toMemo() }
         }
-//        val memoList = mutableListOf<Memo>()
-//        memoLocalDataSource.getMemoByTitle(title).forEach { memoEntity ->
-//            memoList.add(memoEntity.toMemo())
-//        }
-//        return memoList
     }
 
     override fun getMemoByContent(content: String): Flow<List<Memo>> {
