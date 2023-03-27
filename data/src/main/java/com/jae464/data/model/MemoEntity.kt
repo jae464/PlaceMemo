@@ -21,8 +21,8 @@ data class MemoEntity(
     val latitude: Double,
     @ColumnInfo(name = "longitude")
     val longitude: Double,
-    @ColumnInfo(name = "category")
-    val category: Int,
+    @ColumnInfo(name = "category_id")
+    val categoryId: Long = 0,
     @Embedded
     val region: Region? = null,
     @ColumnInfo(name = "image_path_list")
@@ -47,7 +47,6 @@ internal fun MemoEntity.toMemo(): Memo {
         content = content,
         latitude = latitude,
         longitude = longitude,
-        category = intToCategory(category),
         area1 = region?.area1 ?: "",
         area2 = region?.area2 ?: "",
         area3 = region?.area3 ?: "",
@@ -62,7 +61,6 @@ internal fun Memo.toMemoEntity(): MemoEntity {
         Date(),
         latitude = latitude,
         longitude = longitude,
-        category = category.ordinal,
         region = Region(area1, area2, area3),
         imagePathList = imageUriList,
         id = id

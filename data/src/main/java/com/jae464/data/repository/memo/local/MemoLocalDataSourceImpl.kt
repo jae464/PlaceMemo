@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.jae464.data.db.CategoryDao
 import com.jae464.data.db.MemoDao
 import com.jae464.data.manager.ImageManager
 import com.jae464.data.model.FolderWithMemos
@@ -15,9 +16,12 @@ import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(
     private val memoDao: MemoDao,
+    private val categoryDao: CategoryDao,
     private val imageManager: ImageManager
 ): MemoLocalDataSource {
+
     private val TAG = "MemoLocalDataSourceImpl"
+
     override fun getMemo(id: Int): Flow<MemoEntity> {
         memoDao.getMemo(id).map {
             Log.d(TAG, it.toString())
@@ -78,7 +82,6 @@ class MemoLocalDataSourceImpl @Inject constructor(
 
     override fun getImagePathList(memoId: Int): List<String> {
         return imageManager.getImagePathList(memoId)
-
     }
 
 }
