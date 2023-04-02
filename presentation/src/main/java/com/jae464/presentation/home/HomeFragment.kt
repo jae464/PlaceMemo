@@ -88,7 +88,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         initObserver()
         initListener()
         initAppBar()
-        viewModel.getMemoByCategory(Category.ALL)
+        viewModel.getMemoByCategory("all")
     }
 
     private fun initAppBar() {
@@ -159,24 +159,24 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
             checkedIds.forEach {
                 when (it) {
-                    R.id.chip_type_all -> {
-                        viewModel.getMemoByCategory(Category.ALL)
-                    }
-                    R.id.chip_type_food -> {
-                        viewModel.getMemoByCategory(Category.RESTAURANT)
-                    }
-                    R.id.chip_type_tourist -> {
-                        viewModel.getMemoByCategory(Category.TOURIST)
-                    }
-                    R.id.chip_type_cafe -> {
-                        viewModel.getMemoByCategory(Category.CAFE)
-                    }
-                    R.id.chip_type_hotel -> {
-                        viewModel.getMemoByCategory(Category.HOTEL)
-                    }
-                    R.id.chip_type_other -> {
-                        viewModel.getMemoByCategory(Category.OTHER)
-                    }
+//                    R.id.chip_type_all -> {
+//                        viewModel.getMemoByCategory(Category.ALL)
+//                    }
+//                    R.id.chip_type_food -> {
+//                        viewModel.getMemoByCategory(Category.RESTAURANT)
+//                    }
+//                    R.id.chip_type_tourist -> {
+//                        viewModel.getMemoByCategory(Category.TOURIST)
+//                    }
+//                    R.id.chip_type_cafe -> {
+//                        viewModel.getMemoByCategory(Category.CAFE)
+//                    }
+//                    R.id.chip_type_hotel -> {
+//                        viewModel.getMemoByCategory(Category.HOTEL)
+//                    }
+//                    R.id.chip_type_other -> {
+//                        viewModel.getMemoByCategory(Category.OTHER)
+//                    }
                 }
             }
         }

@@ -3,12 +3,14 @@ package com.jae464.data.repository.memo
 import android.util.Log
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.jae464.data.db.CategoryDao
 import com.jae464.data.dto.toMemo
 import com.jae464.data.dto.toMemoDTO
 import com.jae464.data.model.toMemo
 import com.jae464.data.model.toMemoEntity
 import com.jae464.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.data.repository.memo.remote.MemoRemoteDataSource
+import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.repository.MemoRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +22,28 @@ import javax.inject.Inject
 class MemoRepositoryImpl @Inject constructor(
     private val memoLocalDataSource: MemoLocalDataSource,
     private val memoRemoteDataSource: MemoRemoteDataSource,
+    private val categoryDao: CategoryDao
 ) : MemoRepository {
 
     override fun getMemo(id: Int): Flow<Memo> {
         return memoLocalDataSource.getMemo(id).map {
-            it.toMemo()
+            val categoryEntity = categoryDao.getCategoryById(categoryId = it.categoryId)
+            val category = Category(categoryEntity.id, categoryEntity.name)
+
+            Log.d("MemoRepositoryImpl", "getMemo : Category -> $category")
+//            it.toMemo()
+            Memo(
+                it.id,
+                it.title,
+                it.content,
+                it.latitude,
+                it.longitude,
+                category,
+                it.region?.area1 ?: "",
+                it.region?.area2 ?: "",
+                it.region?.area3 ?: "",
+                it.imagePathList
+            )
         }
     }
 
@@ -66,7 +85,7 @@ class MemoRepositoryImpl @Inject constructor(
         return memoList
     }
 
-    override fun getMemoByCategory(category: Int): Flow<List<Memo>> {
+    override fun getMemoByCategory(category: Long): Flow<List<Memo>> {
         return flow {
             memoLocalDataSource.getMemoByCategory(category).map {
                 it.map { memoEntity -> memoEntity.toMemo() }

@@ -4,8 +4,8 @@ import com.jae464.domain.model.post.Category
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    suspend fun insertCategory()
+    suspend fun insertCategory(category: Category)
     fun getAllCategory(): Flow<List<Category>>
-    suspend fun deleteCategory()
-
+    suspend fun deleteCategory(categoryId: Long)
+    suspend fun getCategoryById(categoryId: Long): Category
 }

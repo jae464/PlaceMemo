@@ -20,6 +20,7 @@ import java.util.concurrent.Executors
 abstract class MemoDatabase: RoomDatabase() {
     abstract fun memoDao(): MemoDao
     abstract fun folderDao(): FolderDao
+    abstract fun categoryDao(): CategoryDao
 
     companion object {
         val callback = object: Callback() {

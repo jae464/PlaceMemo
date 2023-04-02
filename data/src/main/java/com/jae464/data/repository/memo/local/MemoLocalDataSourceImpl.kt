@@ -23,9 +23,6 @@ class MemoLocalDataSourceImpl @Inject constructor(
     private val TAG = "MemoLocalDataSourceImpl"
 
     override fun getMemo(id: Int): Flow<MemoEntity> {
-        memoDao.getMemo(id).map {
-            Log.d(TAG, it.toString())
-        }
         return memoDao.getMemo(id)
     }
 
@@ -54,8 +51,8 @@ class MemoLocalDataSourceImpl @Inject constructor(
         memoDao.updateMemo(memo)
     }
 
-    override fun getMemoByCategory(category: Int): Flow<List<MemoEntity>> {
-        return memoDao.getMemoByCategory(category)
+    override fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>> {
+        return memoDao.getMemoByCategory(categoryId)
     }
 
     override fun getMemoByTitle(title: String): Flow<List<MemoEntity>> {
