@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
-import com.jae464.data.mapper.intToCategory
+import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import java.util.*
 
@@ -47,6 +46,7 @@ internal fun MemoEntity.toMemo(): Memo {
         content = content,
         latitude = latitude,
         longitude = longitude,
+        category = Category(0, "기타"),
         area1 = region?.area1 ?: "",
         area2 = region?.area2 ?: "",
         area3 = region?.area3 ?: "",
@@ -61,6 +61,7 @@ internal fun Memo.toMemoEntity(): MemoEntity {
         Date(),
         latitude = latitude,
         longitude = longitude,
+        categoryId = category.id,
         region = Region(area1, area2, area3),
         imagePathList = imageUriList,
         id = id

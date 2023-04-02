@@ -33,6 +33,8 @@ import com.jae464.presentation.R
 
 abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: Int) : Fragment(),
     OnMapReadyCallback {
+
+    private val TAG = "BaseMapFragment"
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
@@ -48,7 +50,8 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 Log.d("BaseMapFragment", locationResult.toString())
@@ -59,9 +62,9 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         ) { isGranted ->
             if (isGranted) {
                 setCurrentLocation()
-            }
-            else {
-                Toast.makeText(requireContext(), "현위치 사용을 위해서는 권한 설정이 필요합니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "현위치 사용을 위해서는 권한 설정이 필요합니다.", Toast.LENGTH_SHORT)
+                    .show()
                 return@registerForActivityResult
             }
         }
@@ -117,11 +120,13 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            Log.d(TAG, "위치 권한이 없는 상태입니다.")
             map.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
@@ -132,9 +137,16 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
             return
         }
 
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
-                Log.d("BaseMapFragment", location.toString())
+                location ?: return@addOnSuccessListener
+//                Log.d("BaseMapFragment", location.toString())
                 map.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(
@@ -145,11 +157,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
                 )
             }
 
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
 
     }
 

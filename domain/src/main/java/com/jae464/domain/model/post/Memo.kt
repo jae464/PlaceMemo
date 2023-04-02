@@ -6,6 +6,7 @@ data class Memo (
     val content: String,
     val latitude: Double,
     val longitude: Double,
+    val category: Category,
     val area1: String = "",
     val area2: String = "",
     val area3: String = "",

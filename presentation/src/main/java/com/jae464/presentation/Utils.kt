@@ -14,13 +14,13 @@ fun categoryToString(code: Int): String =
         else -> ""
     }
 
-fun indexToCategory(index: Int): com.jae464.domain.model.post.Category =
-    when(index) {
-        0 -> com.jae464.domain.model.post.Category.RESTAURANT
-        1 -> com.jae464.domain.model.post.Category.TOURIST
-        2 -> com.jae464.domain.model.post.Category.CAFE
-        3 -> com.jae464.domain.model.post.Category.HOTEL
-        4 -> com.jae464.domain.model.post.Category.OTHER
-        else -> com.jae464.domain.model.post.Category.OTHER
-    }
+//fun indexToCategory(index: Int): com.jae464.domain.model.post.Category =
+//    when(index) {
+//        0 -> com.jae464.domain.model.post.Category.RESTAURANT
+//        1 -> com.jae464.domain.model.post.Category.TOURIST
+//        2 -> com.jae464.domain.model.post.Category.CAFE
+//        3 -> com.jae464.domain.model.post.Category.HOTEL
+//        4 -> com.jae464.domain.model.post.Category.OTHER
+//        else -> com.jae464.domain.model.post.Category.OTHER
+//    }
 

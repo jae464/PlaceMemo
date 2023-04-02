@@ -31,7 +31,6 @@ import com.jae464.presentation.databinding.FragmentPostBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 import com.jae464.presentation.R
-import com.jae464.presentation.indexToCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -46,7 +45,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var latitude by Delegates.notNull<Double>()
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
-    private var category = Category.OTHER
+    private lateinit var category: Category
 
     private var imagePathList = mutableListOf<String>()
     private var imageViewList = mutableListOf<Bitmap?>()
@@ -80,7 +79,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         initData()
         initListener()
         initObserver()
-        initSpinner()
+//        initSpinner()
     }
 
     private fun initAppBar() {
@@ -160,6 +159,14 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categorys.collectLatest {categories ->
+                    initSpinner(categories)
+                }
+            }
+        }
+
         viewModel.isDone.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().popBackStack()
@@ -167,25 +174,22 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
     }
 
-    private fun initSpinner() {
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.category_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.categorySpinner.adapter = adapter
-        }
+    private fun initSpinner(categories: List<Category>) {
+
+        val categoryNames = categories.map { category -> category.name }
+        val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, categoryNames)
+        binding.categorySpinner.adapter = adapter
         binding.categorySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p0 != null) {
+                        Log.d(TAG, p0.getItemAtPosition(p2).toString())
                         Toast.makeText(
                             requireContext(),
                             p0.getItemAtPosition(p2).toString(),
                             Toast.LENGTH_SHORT
                         ).show()
-                        category = indexToCategory(p2)
+                        category = categories[p2]
                     }
                 }
 

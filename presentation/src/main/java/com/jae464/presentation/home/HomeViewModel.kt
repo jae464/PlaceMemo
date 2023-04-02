@@ -39,14 +39,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMemoByCategory(category: Category) {
-        if (category == Category.ALL) {
+    fun getMemoByCategory(category: String) {
+        if (category == "all") {
             filteredMemoList.value = memoList.value
             return
         }
 
         filteredMemoList.value = memoList.value.filter { memo ->
-            memo.category == category
+            memo.category.name == category
         }
     }
 

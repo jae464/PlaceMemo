@@ -5,12 +5,14 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.PagingData
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.model.post.Region
 import com.jae464.domain.repository.AddressRepository
+import com.jae464.domain.repository.CategoryRepository
 import com.jae464.domain.repository.LoginRepository
 import com.jae464.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +30,7 @@ class PostViewModel @Inject constructor(
     private val memoRepository: MemoRepository,
     private val addressmemoRepository: AddressRepository,
     private val loginmemoRepository: LoginRepository,
+    private val categoryRepository: CategoryRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -40,11 +43,17 @@ class PostViewModel @Inject constructor(
 
     val memo = MutableStateFlow<Memo?>(null)
 
-//    val memo = memoRepository.getMemo(savedStateHandle.get<Int>("memoId") ?: -1)
-//        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val categorys = categoryRepository.getAllCategory().stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList()
+    )
+
 
     init {
         Log.d(TAG, savedStateHandle.get<Int>("memoId").toString())
+
+        // 새 메모가 아닌 경우 navigation argument 로 메모 아이디를 넘겨받은 후 메모 업데이트
         if (savedStateHandle.get<Int>("memoId") != -1) {
             viewModelScope.launch {
                 memoRepository.getMemo(savedStateHandle.get<Int>("memoId") ?: 0).collectLatest {
@@ -53,11 +62,20 @@ class PostViewModel @Inject constructor(
             }
         }
     }
+
     private val _isDone = MutableLiveData<Boolean>()
     val isDone: LiveData<Boolean> get() = _isDone
 
     @SuppressLint("SimpleDateFormat")
-    fun saveMemo(id: Int, title: String, content: String, latitude: Double, longitude: Double, category: Category, imageUriList: List<String>) {
+    fun saveMemo(
+        id: Int,
+        title: String,
+        content: String,
+        latitude: Double,
+        longitude: Double,
+        category: Category,
+        imageUriList: List<String>
+    ) {
         viewModelScope.launch {
             val region = _address.value
 
@@ -144,11 +162,13 @@ class PostViewModel @Inject constructor(
 ////            }
 //        }
     }
+
     private fun saveImageOnRemote(saveImageList: List<String>) {
         viewModelScope.launch {
 //            Log.d(TAG, imagePathList.toString())
 //            memoRepository.saveImageOnRemote(saveImageList, imageFileNameList)
         }
     }
+
 
 }
