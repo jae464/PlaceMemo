@@ -33,7 +33,7 @@ class FeedFolderFragment :
 
     private fun initListener() {
         binding.fabAddFolder.setOnClickListener {
-            AddFolderDialog().show(activity?.supportFragmentManager!!, "add_folder")
+            AddFolderDialog().show(requireActivity().supportFragmentManager, "add_folder")
         }
     }
 

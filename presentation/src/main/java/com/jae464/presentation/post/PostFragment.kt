@@ -176,7 +176,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private fun initSpinner(categories: List<Category>) {
 
-        val categoryNames = categories.map { category -> category.name }
+        val categoryNames = categories.map { category -> category.name }.toMutableList()
+        categoryNames.add("새로운 카테고리")
         val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, categoryNames)
         binding.categorySpinner.adapter = adapter
         binding.categorySpinner.onItemSelectedListener =
@@ -184,12 +185,27 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p0 != null) {
                         Log.d(TAG, p0.getItemAtPosition(p2).toString())
-                        Toast.makeText(
-                            requireContext(),
-                            p0.getItemAtPosition(p2).toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        category = categories[p2]
+                        if (p2 < categories.size) {
+                            Toast.makeText(
+                                requireContext(),
+                                p0.getItemAtPosition(p2).toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            category = categories[p2]
+                        }
+                        else {
+                            CategoryAddDialog(
+                                onClickAddButton = { name ->
+                                    viewModel.addCategory(name)
+                                },
+                                onClickCancelButton = {
+                                    binding.categorySpinner.setSelection(0)
+                                }
+                            ).show(
+                                requireActivity().supportFragmentManager,
+                                "add_category"
+                            )
+                        }
                     }
                 }
 
