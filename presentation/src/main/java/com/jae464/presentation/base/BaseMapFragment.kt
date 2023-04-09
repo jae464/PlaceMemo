@@ -38,12 +38,17 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
+    // Location Manager & FusedLocation Client
     private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private val locationRequest =
         LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L).build()
+
     private lateinit var locationCallback: LocationCallback
+
     lateinit var map: GoogleMap
+
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -52,11 +57,13 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
 
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 Log.d("BaseMapFragment", locationResult.toString())
             }
         }
+
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
@@ -77,8 +84,10 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
     ): View? {
         _binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
         (childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment)
             .getMapAsync(this)
+
         locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         checkPermission()
