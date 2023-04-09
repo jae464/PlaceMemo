@@ -170,5 +170,11 @@ class PostViewModel @Inject constructor(
         }
     }
 
+    fun addCategory(name: String) {
+        viewModelScope.launch {
+            categoryRepository.insertCategory(Category(0, name))
+        }
+    }
+
 
 }
