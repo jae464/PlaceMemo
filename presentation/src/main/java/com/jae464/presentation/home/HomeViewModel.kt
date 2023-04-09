@@ -10,6 +10,8 @@ import androidx.paging.map
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.model.post.toAddressFormat
+import com.jae464.domain.repository.AddressRepository
+import com.jae464.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val memoRepository: com.jae464.domain.repository.MemoRepository,
-    private val addressRepository: com.jae464.domain.repository.AddressRepository
+    private val memoRepository: MemoRepository,
+    private val addressRepository: AddressRepository
 ) : ViewModel() {
 
     private val _currentAddress: MutableLiveData<String> by lazy { MutableLiveData<String>() }
