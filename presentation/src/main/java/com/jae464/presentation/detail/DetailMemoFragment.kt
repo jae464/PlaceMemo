@@ -41,7 +41,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         Log.d("DetailMemoFragment", "view created")
         binding.viewModel = viewModel
         initAppBar()
-        initView()
+//        initView()
         initObserver()
         initListener()
     }
@@ -82,17 +82,6 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     }
 
     private fun initObserver() {
-//        viewModel.memo.observe(viewLifecycleOwner) { memo ->
-//            binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
-//            map.clear()
-//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 36F))
-//
-//            map.addMarker(
-//                MarkerOptions()
-//                    .position(LatLng(memo.latitude, memo.longitude))
-//                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-//            )
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -114,6 +103,9 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
                                 .position(LatLng(memo.latitude, memo.longitude))
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         )
+
+                        // ViewPager 초기화
+                        initView(memo.imageUriList ?: emptyList())
                     }
                 }
             }
@@ -124,12 +116,15 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         }
     }
 
-    private fun initView() {
-        val imagePathList = viewModel.getMemoImagePathList(args.memoId)
+    private fun initView(imageUriList: List<String>) {
 
-        if (imagePathList.isEmpty()) {
+        if (imageUriList.isEmpty()) {
             binding.chipTypeViewMode.visibility = View.INVISIBLE
             return
+        }
+
+        val imagePathList = imageUriList.map {uri ->
+            "${context?.filesDir}/images/${uri.substringAfterLast("/")}.jpg"
         }
 
         viewPagerAdapter = HomeViewPagerAdapter(imagePathList)
