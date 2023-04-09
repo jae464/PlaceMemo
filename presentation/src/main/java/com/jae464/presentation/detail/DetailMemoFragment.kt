@@ -89,6 +89,7 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
                     Log.d(TAG, memo.toString())
                     if (memo != null) {
                         binding.memo = memo
+                        binding.memoLocation.text = "${memo.area1} ${memo.area2} ${memo.area3}"
                         map.moveCamera(
                             CameraUpdateFactory.newLatLngZoom(
                                 LatLng(
@@ -117,7 +118,6 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
     }
 
     private fun initView(imageUriList: List<String>) {
-
         if (imageUriList.isEmpty()) {
             binding.chipTypeViewMode.visibility = View.INVISIBLE
             return
