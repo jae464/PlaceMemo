@@ -54,6 +54,21 @@ internal fun MemoEntity.toMemo(): Memo {
     )
 }
 
+internal fun MemoEntity.toMemo(category: Category): Memo {
+    return Memo(
+        id = id,
+        title = title,
+        content = content,
+        latitude = latitude,
+        longitude = longitude,
+        category = category,
+        area1 = region?.area1 ?: "",
+        area2 = region?.area2 ?: "",
+        area3 = region?.area3 ?: "",
+        imageUriList = imagePathList
+    )
+}
+
 internal fun Memo.toMemoEntity(): MemoEntity {
     return MemoEntity(
         title = title,
