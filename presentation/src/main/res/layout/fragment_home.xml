@@ -51,80 +51,28 @@
                 app:layout_constraintTop_toBottomOf="@id/appBarLayout"
                 tools:layout_editor_absoluteX="-35dp" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_type"
-                style="@style/Widget.Material3.ChipGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginTop="14dp"
-                app:checkedChip="@id/chip_type_all"
-                app:layout_constraintStart_toStartOf="parent"
+            <HorizontalScrollView
+                android:id="@+id/hsv_chip_group"
+                android:scrollbars="none"
                 app:layout_constraintTop_toTopOf="@id/mapFragment"
-                app:singleLine="true"
-                app:singleSelection="true">
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_all"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_type"
+                    style="@style/Widget.Material3.ChipGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="전체"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginTop="14dp"
+                    app:singleLine="true"
+                    app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_food"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="음식점"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
+                </com.google.android.material.chip.ChipGroup>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_tourist"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="관광지"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
+            </HorizontalScrollView>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_cafe"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="카페"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_hotel"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="호텔"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_type_other"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="기타"
-                    android:textColor="@color/black"
-                    app:chipBackgroundColor="@color/bg_chip" />
-
-            </com.google.android.material.chip.ChipGroup>
 
             <ImageView
                 android:id="@+id/currentLocationButton"

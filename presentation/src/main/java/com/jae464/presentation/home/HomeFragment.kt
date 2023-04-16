@@ -3,6 +3,7 @@ package com.jae464.presentation.home
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -14,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
@@ -88,7 +91,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         initObserver()
         initListener()
         initAppBar()
-        viewModel.getMemoByCategory("all")
+        viewModel.getAllMemo()
     }
 
     private fun initAppBar() {
@@ -144,48 +147,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             )
         }
 
-        binding.chipGroupType.setOnCheckedStateChangeListener { group, checkedIds ->
-
-            Log.d(TAG, checkedIds.toString())
-            if (checkedIds.isEmpty()) {
-                binding.chipTypeAll.isChecked = true
-                return@setOnCheckedStateChangeListener
-            }
-
-            if (checkedIds.size > 1 && checkedIds.contains(R.id.chip_type_all)) {
-                binding.chipTypeAll.isChecked = false
-                return@setOnCheckedStateChangeListener
-            }
-
-            checkedIds.forEach {
-                when (it) {
-//                    R.id.chip_type_all -> {
-//                        viewModel.getMemoByCategory(Category.ALL)
-//                    }
-//                    R.id.chip_type_food -> {
-//                        viewModel.getMemoByCategory(Category.RESTAURANT)
-//                    }
-//                    R.id.chip_type_tourist -> {
-//                        viewModel.getMemoByCategory(Category.TOURIST)
-//                    }
-//                    R.id.chip_type_cafe -> {
-//                        viewModel.getMemoByCategory(Category.CAFE)
-//                    }
-//                    R.id.chip_type_hotel -> {
-//                        viewModel.getMemoByCategory(Category.HOTEL)
-//                    }
-//                    R.id.chip_type_other -> {
-//                        viewModel.getMemoByCategory(Category.OTHER)
-//                    }
-                }
-            }
-        }
-
-        binding.chipTypeAll.setOnClickListener {
-            clearChipGroup()
-            binding.chipTypeAll.isChecked = true
-        }
-
         binding.drawerNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.login -> {
@@ -198,9 +159,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
     }
 
-    //
     private fun initObserver() {
-        Log.d(tag, "initObserver")
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memoList.collectLatest { memos ->
@@ -212,7 +171,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filteredMemoList.collectLatest { memoList ->
-                    Log.d(TAG, memoList.toString())
                     map.clear()
                     memoList.map { memo ->
                         Log.d(TAG, memo.toString())
@@ -253,6 +211,35 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.categories.collectLatest {categories ->
+                    binding.chipGroupType.removeAllViews()
+                    addDefaultChip()
+                    categories.forEach {category ->
+                        binding.chipGroupType.addView(
+                            Chip(
+                                requireContext(),
+                                null,
+                                com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice
+                            ).apply {
+                                text = category.name
+                                isCheckable = true
+                                checkedIcon = null
+                                chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.blue_200))
+                                chipStrokeWidth = 4f
+                                setChipBackgroundColorResource(R.color.bg_chip)
+                                setOnClickListener {
+                                    Log.d(TAG, category.name)
+                                    viewModel.getMemoByCategory(category)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
 
 
         viewModel.currentAddress.observe(viewLifecycleOwner) {
@@ -264,10 +251,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun clearChipGroup() {
-        binding.chipTypeFood.isChecked = false
-        binding.chipTypeCafe.isChecked = false
-        binding.chipTypeHotel.isChecked = false
-        binding.chipTypeOther.isChecked = false
+//        binding.chipTypeFood.isChecked = false
+//        binding.chipTypeCafe.isChecked = false
+//        binding.chipTypeHotel.isChecked = false
+//        binding.chipTypeOther.isChecked = false
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -347,7 +334,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         )
     }
 
-    // View를 Bitmap으로 변환
     private fun createDrawableFromView(context: Context, view: View): Bitmap? {
         val displayMetrics = DisplayMetrics()
 
@@ -389,13 +375,38 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     isFirstResource: Boolean
                 ): Boolean {
                     CoroutineScope(Dispatchers.Main).launch {
-                        binding.homeToolBar.setLogo(resource)
+                        binding.homeToolBar.logo = resource
                     }
                     return true
                 }
             })
             .override(64, 64)
             .submit()
+    }
+
+    private fun addDefaultChip() {
+        binding.chipGroupType.addView(
+            Chip(
+                requireContext(),
+                null,
+                com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice
+            ).apply {
+                text = "전체"
+                isCheckable = true
+                checkedIcon = null
+                chipStrokeColor = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.blue_200
+                    )
+                )
+                chipStrokeWidth = 4f
+                setChipBackgroundColorResource(R.color.bg_chip)
+                setOnClickListener {
+                    viewModel.getAllMemo()
+                }
+            }
+        )
     }
 }
 
