@@ -11,6 +11,7 @@ import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.model.post.toAddressFormat
 import com.jae464.domain.repository.AddressRepository
+import com.jae464.domain.repository.CategoryRepository
 import com.jae464.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -20,11 +21,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val memoRepository: MemoRepository,
-    private val addressRepository: AddressRepository
+    private val addressRepository: AddressRepository,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
     private val _currentAddress: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val currentAddress: LiveData<String> = _currentAddress
+
+    val filteredMemoList = MutableStateFlow<List<Memo>>(emptyList())
 
     val memoList = memoRepository.getAllMemo().stateIn(
         viewModelScope,
@@ -32,7 +36,15 @@ class HomeViewModel @Inject constructor(
         emptyList()
     )
 
-    val filteredMemoList = MutableStateFlow<List<Memo>>(emptyList())
+    val categories = categoryRepository.getAllCategory().stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList()
+    )
+
+    fun getAllMemo() {
+       filteredMemoList.value = memoList.value
+    }
 
     fun getAddressName(latitude: Double, longitude: Double) {
         viewModelScope.launch {
@@ -41,14 +53,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMemoByCategory(category: String) {
-        if (category == "all") {
-            filteredMemoList.value = memoList.value
-            return
-        }
-
+    fun getMemoByCategory(category: Category) {
         filteredMemoList.value = memoList.value.filter { memo ->
-            memo.category.name == category
+            memo.category == category
         }
     }
 
