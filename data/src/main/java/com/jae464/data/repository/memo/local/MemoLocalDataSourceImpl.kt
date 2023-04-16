@@ -18,7 +18,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
     private val memoDao: MemoDao,
     private val categoryDao: CategoryDao,
     private val imageManager: ImageManager
-): MemoLocalDataSource {
+) : MemoLocalDataSource {
 
     private val TAG = "MemoLocalDataSourceImpl"
 
@@ -55,6 +55,19 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemoByCategory(categoryId)
     }
 
+    override fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                memoDao.getMemoByCategoryWithPage(categoryId)
+            }
+        ).flow
+    }
+
     override fun getMemoByTitle(title: String): Flow<List<MemoEntity>> {
         return memoDao.getMemoByTitle(title)
     }
@@ -68,7 +81,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun saveMemoImages(imagePathList: List<String>) {
-        imagePathList.forEach {imagePath ->
+        imagePathList.forEach { imagePath ->
             imageManager.saveImage(imagePath)
         }
     }

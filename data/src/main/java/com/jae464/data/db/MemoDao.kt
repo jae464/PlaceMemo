@@ -31,6 +31,9 @@ interface MemoDao {
    @Query("SELECT * FROM memo WHERE category_id = :categoryId")
    fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>
 
+   @Query("SELECT * FROM memo WHERE category_id = :categoryId")
+   fun getMemoByCategoryWithPage(categoryId: Long): PagingSource<Int, MemoEntity>
+
    @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
    fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
 
