@@ -26,24 +26,10 @@ class MemoRepositoryImpl @Inject constructor(
 ) : MemoRepository {
 
     override fun getMemo(id: Int): Flow<Memo> {
-        return memoLocalDataSource.getMemo(id).map {
-            val categoryEntity = categoryDao.getCategoryById(categoryId = it.categoryId)
+        return memoLocalDataSource.getMemo(id).map { memoEntity ->
+            val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
             val category = Category(categoryEntity.id, categoryEntity.name)
-
-            Log.d("MemoRepositoryImpl", "getMemo : Category -> $category")
-//            it.toMemo()
-            Memo(
-                it.id,
-                it.title,
-                it.content,
-                it.latitude,
-                it.longitude,
-                category,
-                it.region?.area1 ?: "",
-                it.region?.area2 ?: "",
-                it.region?.area3 ?: "",
-                it.imagePathList
-            )
+            memoEntity.toMemo(category)
         }
     }
 
@@ -60,8 +46,12 @@ class MemoRepositoryImpl @Inject constructor(
     }
 
     override fun getAllMemo(): Flow<List<Memo>> {
-        return memoLocalDataSource.getAllMemo().map { list ->
-            list.map { it.toMemo() }
+        return memoLocalDataSource.getAllMemo().map { memoEntities ->
+            memoEntities.map { memoEntity ->
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                memoEntity.toMemo(category)
+            }
         }
     }
 
@@ -72,7 +62,9 @@ class MemoRepositoryImpl @Inject constructor(
     override fun getAllMemoWithPage(): Flow<PagingData<Memo>> {
         return memoLocalDataSource.getAllMemoWithPage().map { pagingData ->
             pagingData.map { memoEntity ->
-                memoEntity.toMemo()
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                memoEntity.toMemo(category)
             }
         }
     }
@@ -86,9 +78,21 @@ class MemoRepositoryImpl @Inject constructor(
     }
 
     override fun getMemoByCategory(category: Long): Flow<List<Memo>> {
-        return flow {
-            memoLocalDataSource.getMemoByCategory(category).map {
-                it.map { memoEntity -> memoEntity.toMemo() }
+        return memoLocalDataSource.getMemoByCategory(category).map { memoEntities ->
+            memoEntities.map { memoEntity ->
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                memoEntity.toMemo(category)
+            }
+        }
+    }
+
+    override fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<Memo>> {
+        return memoLocalDataSource.getMemoByCategoryWithPage(categoryId).map { pagingData ->
+            pagingData.map { memoEntity ->
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                memoEntity.toMemo(category)
             }
         }
     }
