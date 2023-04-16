@@ -18,6 +18,7 @@ interface MemoRepository {
     suspend fun getAllMemoByUserOnRemote(uid: String): List<Memo>
 
     fun getMemoByCategory(category: Long) : Flow<List<Memo>>
+    fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<Memo>>
     fun getMemoByTitle(title: String): Flow<List<Memo>>
     fun getMemoByContent(content: String): Flow<List<Memo>>
 

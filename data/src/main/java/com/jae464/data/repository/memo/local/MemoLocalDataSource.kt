@@ -12,6 +12,7 @@ interface MemoLocalDataSource {
     suspend fun saveMemo(memo: MemoEntity)
     suspend fun updateMemo(memo: MemoEntity)
     fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>
+    fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<MemoEntity>>
     fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
     fun getMemoByContent(content: String): Flow<List<MemoEntity>>
     suspend fun deleteMemo(id: Int)
