@@ -25,13 +25,13 @@ interface MemoDao {
    @Query("SELECT * FROM memo")
    fun getAllMemo(): Flow<List<MemoEntity>>
 
-   @Query("SELECT * FROM memo")
+   @Query("SELECT * FROM memo ORDER BY created_at DESC")
    fun getAllMemoWithPage(): PagingSource<Int, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE category_id = :categoryId")
    fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>
 
-   @Query("SELECT * FROM memo WHERE category_id = :categoryId")
+   @Query("SELECT * FROM memo WHERE category_id = :categoryId ORDER BY created_at DESC")
    fun getMemoByCategoryWithPage(categoryId: Long): PagingSource<Int, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
