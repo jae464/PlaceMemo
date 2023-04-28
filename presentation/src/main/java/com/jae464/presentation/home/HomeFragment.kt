@@ -1,6 +1,5 @@
 package com.jae464.presentation.home
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -8,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -23,7 +21,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.paging.map
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -36,19 +33,16 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
-import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.presentation.R
 import com.jae464.presentation.base.BaseMapFragment
 import com.jae464.presentation.databinding.FragmentHomeBinding
 import com.jae464.presentation.databinding.ItemMemoMarkerBinding
 import com.jae464.presentation.login.LoginActivity
-import com.jae464.presentation.markerIconList
 import com.jae464.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import java.io.FileOutputStream
 
 
 @AndroidEntryPoint
@@ -72,10 +66,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     }
 
-    override fun onMapReady(map: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady")
-        super.onMapReady(map)
-        map.apply {
+        super.onMapReady(googleMap)
+        googleMap.apply {
             setMinZoomPreference(6.0f)
             setMaxZoomPreference(16.0f)
         }
