@@ -9,7 +9,15 @@
         android:id="@+id/feed"
         android:name="com.jae464.presentation.feed.FeedFragment"
         android:label="피드"
-        tools:layout="@layout/fragment_feed"/>
+        tools:layout="@layout/fragment_feed">
+        <action
+            android:id="@+id/action_feed_to_detail_memo"
+            app:destination="@id/detail_memo">
+            <argument
+                android:name="memoId"
+                app:argType="integer" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/mypage"

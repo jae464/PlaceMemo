@@ -4,6 +4,8 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -30,8 +32,6 @@ class FeedCategoryFragment :
     BaseFragment<FragmentFeedCategoryBinding>(R.layout.fragment_feed_category) {
 
     private val TAG: String = "FeedCategoryFragment"
-
-    //    private var feedListAdapter: FeedListAdapter? = null
     private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedCategoryViewModel by viewModels()
 
@@ -42,10 +42,43 @@ class FeedCategoryFragment :
         binding.feedRecyclerView.adapter = listAdapter
         binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        initView()
         initObserver()
         initListener()
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
+    }
+
+    private fun initView() {
+        val sortItems = resources.getStringArray(R.array.sort_array)
+        val sortSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, sortItems)
+        binding.spinnerSort.adapter = sortSpinnerAdapter
+        binding.spinnerSort.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
+                // TODO 정렬 방식 변경
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                return
+            }
+
+        }
+
+        val viewModeItems = resources.getStringArray(R.array.view_mode_array)
+        val viewModeSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, viewModeItems)
+        binding.spinnerViewMode.adapter = viewModeSpinnerAdapter
+        binding.spinnerViewMode.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
+                // TODO 뷰모드 변경
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                return
+            }
+
+        }
     }
 
     private fun initObserver() {
@@ -131,10 +164,10 @@ class FeedCategoryFragment :
     }
 
     private fun goToDetailPage(memoId: Int) {
-//        val action = FeedCategoryFragmentDirections.actionFeedToDetailMemo(memoId)
-//        findNavController().navigate(
-//            action
-//        )
+        val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
+        findNavController().navigate(
+            action
+        )
     }
 
     private fun addDefaultChip() {
