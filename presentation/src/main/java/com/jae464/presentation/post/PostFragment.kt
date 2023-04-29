@@ -178,7 +178,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
         val categoryNames = categories.map { category -> category.name }.toMutableList()
         categoryNames.add("새로운 카테고리")
-        val adapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, categoryNames)
+        val adapter = ArrayAdapter(requireContext(), R.layout.item_spinner, categoryNames)
         binding.categorySpinner.adapter = adapter
         binding.categorySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
