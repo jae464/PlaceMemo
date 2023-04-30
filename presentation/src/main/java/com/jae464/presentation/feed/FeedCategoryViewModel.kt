@@ -27,11 +27,6 @@ class FeedCategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
-    val viewType = MutableStateFlow("card")
-
-    val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
-
     private val selectedCategory = MutableStateFlow<Category?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)

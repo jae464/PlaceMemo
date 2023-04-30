@@ -19,7 +19,7 @@
         <item>오래된 순</item>
     </string-array>
     <string-array name="view_mode_array">
-        <item>리스트</item>
         <item>카드</item>
+        <item>리스트</item>
     </string-array>
 </resources>

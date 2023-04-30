@@ -38,7 +38,7 @@ class FeedCategoryFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, CARD_VIEW_TYPE)
+        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, LIST_VIEW_TYPE)
         binding.feedRecyclerView.adapter = listAdapter
         binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -70,50 +70,21 @@ class FeedCategoryFragment :
         binding.spinnerViewMode.adapter = viewModeSpinnerAdapter
         binding.spinnerViewMode.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
-                // TODO 뷰모드 변경
+                listAdapter = FeedListAdapter(requireContext(), this@FeedCategoryFragment::goToDetailPage, p2)
+                binding.feedRecyclerView.adapter = listAdapter
+                binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                viewLifecycleOwner.lifecycleScope.launch {
+                    listAdapter?.submitData(viewModel.memos.value)
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 return
             }
-
         }
     }
 
     private fun initObserver() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.memoList.collectLatest { pagingData ->
-//                    when (viewModel.viewType.value) {
-//                        "card" -> {
-//                            listAdapter = FeedListAdapter(
-//                                requireContext(),
-//                                this@FeedCategoryFragment::goToDetailPage,
-//                                CARD_VIEW_TYPE
-//                            )
-//                            binding.feedRecyclerView.adapter = listAdapter
-//                            binding.feedRecyclerView.layoutManager =
-//                                LinearLayoutManager(requireContext())
-//
-//                        }
-//
-//                        "list" -> {
-//                            listAdapter = FeedListAdapter(
-//                                requireContext(),
-//                                this@FeedCategoryFragment::goToDetailPage,
-//                                LIST_VIEW_TYPE
-//                            )
-//                            binding.feedRecyclerView.adapter = listAdapter
-//                            binding.feedRecyclerView.layoutManager =
-//                                LinearLayoutManager(requireContext())
-//                        }
-//
-//                    }
-////                    listAdapter?.submitData(pagingData)
-//                }
-//            }
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -149,7 +120,6 @@ class FeedCategoryFragment :
             }
         }
 
-        // Category Memo TEST
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memos.collectLatest {
