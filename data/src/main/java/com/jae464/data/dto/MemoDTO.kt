@@ -14,6 +14,7 @@ data class MemoDTO(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val category: String = "",
+    val folderId: Long,
     val region: Region? = null,
     val imageUrlList: List<String>? = emptyList(),
 )
@@ -26,6 +27,7 @@ fun MemoDTO.toMemo(): Memo {
         this.latitude,
         this.longitude,
         Category(0,"기타"), // 임시. 추후 수정 필요
+        folderId = folderId,
         this.region?.area1.toString(),
         this.region?.area2.toString(),
         this.region?.area3.toString(),
@@ -43,7 +45,8 @@ fun Memo.toMemoDTO(userId: String): MemoDTO {
         this.latitude,
         this.longitude,
         this.category.name,
+        folderId = folderId,
         Region(this.area1, this.area2, this.area3),
-        this.imageUriList
+        this.imageUriList,
     )
 }

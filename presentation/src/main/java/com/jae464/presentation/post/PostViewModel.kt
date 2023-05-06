@@ -82,18 +82,24 @@ class PostViewModel @Inject constructor(
         latitude: Double,
         longitude: Double,
         category: Category,
+        folderId: Long,
         imageUriList: List<String>
     ) {
         viewModelScope.launch {
             val region = _address.value
 
             val memo = Memo(
-                id, title, content, latitude, longitude,
-                category,
-                region?.area1 ?: "",
-                region?.area2 ?: "",
-                region?.area3 ?: "",
-                imageUriList
+                id = id,
+                title = title,
+                content = content,
+                latitude = latitude,
+                longitude = longitude,
+                category = category,
+                folderId = folderId,
+                area1 = region?.area1 ?: "",
+                area2 = region?.area2 ?: "",
+                area3 = region?.area3 ?: "",
+                imageUriList = imageUriList
             )
 
             memoRepository.saveMemo(memo)
@@ -112,11 +118,11 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun updateMemo(title: String, content: String, category: Category, imageUriList: List<String>) {
+    fun updateMemo(title: String, content: String, category: Category, folderId: Long, imageUriList: List<String>) {
         val beforeMemo = memo.value ?: return
         val newMemo = Memo(
             beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
-            category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageUriList
+            category, folderId, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageUriList
         )
 
         viewModelScope.launch {

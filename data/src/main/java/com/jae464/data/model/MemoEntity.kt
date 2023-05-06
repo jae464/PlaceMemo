@@ -47,6 +47,7 @@ internal fun MemoEntity.toMemo(): Memo {
         latitude = latitude,
         longitude = longitude,
         category = Category(0, "기타"),
+        folderId = folderId,
         area1 = region?.area1 ?: "",
         area2 = region?.area2 ?: "",
         area3 = region?.area3 ?: "",
@@ -62,6 +63,7 @@ internal fun MemoEntity.toMemo(category: Category): Memo {
         latitude = latitude,
         longitude = longitude,
         category = category,
+        folderId = folderId,
         area1 = region?.area1 ?: "",
         area2 = region?.area2 ?: "",
         area3 = region?.area3 ?: "",
@@ -79,6 +81,7 @@ internal fun Memo.toMemoEntity(): MemoEntity {
         categoryId = category.id,
         region = Region(area1, area2, area3),
         imagePathList = imageUriList,
+        folderId = folderId,
         id = id
     )
 }
