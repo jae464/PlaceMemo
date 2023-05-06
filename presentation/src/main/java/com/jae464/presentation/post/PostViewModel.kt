@@ -8,11 +8,13 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.model.post.Region
 import com.jae464.domain.repository.AddressRepository
 import com.jae464.domain.repository.CategoryRepository
+import com.jae464.domain.repository.FolderRepository
 import com.jae464.domain.repository.LoginRepository
 import com.jae464.domain.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,7 @@ class PostViewModel @Inject constructor(
     private val addressmemoRepository: AddressRepository,
     private val loginmemoRepository: LoginRepository,
     private val categoryRepository: CategoryRepository,
+    private val folderRepository: FolderRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,12 +46,17 @@ class PostViewModel @Inject constructor(
 
     val memo = MutableStateFlow<Memo?>(null)
 
-    val categorys = categoryRepository.getAllCategory().stateIn(
+    val categories = categoryRepository.getAllCategory().stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         emptyList()
     )
 
+    val folders = folderRepository.getAllFolder().stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList()
+    )
 
     init {
         Log.d(TAG, savedStateHandle.get<Int>("memoId").toString())
@@ -111,9 +119,8 @@ class PostViewModel @Inject constructor(
             category, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageUriList
         )
 
-        Log.d(TAG, newMemo.toString())
-
         viewModelScope.launch {
+
             // Local Room update
             memoRepository.updateMemo(newMemo)
             saveImage(imageUriList)
@@ -152,16 +159,6 @@ class PostViewModel @Inject constructor(
         return addressmemoRepository.addressToString(region)
     }
 
-    fun getMemo(memoId: Int) {
-//        viewModelScope.launch {
-//            val memo = memoRepository.getMemo(memoId)
-//            _memo.postValue(memo)
-//
-////            memo.imageUriList?.forEach {
-////                imagePathList.add(it)
-////            }
-//        }
-    }
 
     private fun saveImageOnRemote(saveImageList: List<String>) {
         viewModelScope.launch {

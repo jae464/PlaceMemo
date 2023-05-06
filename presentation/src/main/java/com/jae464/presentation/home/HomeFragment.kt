@@ -50,7 +50,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private val TAG: String = "HomeFragment"
-
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var mapFragment: SupportMapFragment
     private var currentMarker: Marker? = null

@@ -10,6 +10,7 @@ import com.jae464.data.manager.ImageManager
 import com.jae464.data.model.FolderWithMemos
 import com.jae464.data.model.MemoEntity
 import com.jae464.data.model.toMemo
+import com.jae464.domain.model.SortBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getAllMemo()
     }
 
-    override fun getAllMemoWithPage(): Flow<PagingData<MemoEntity>> {
+    override fun getAllMemoWithPage(sortBy: SortBy): Flow<PagingData<MemoEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -38,7 +39,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
                 initialLoadSize = 10
             ),
             pagingSourceFactory = {
-                memoDao.getAllMemoWithPage()
+                when(sortBy) {
+                    SortBy.DESC -> memoDao.getAllMemoWithPageSortByDesc()
+                    SortBy.ASC -> memoDao.getAllMemoWithPageSortByAsc()
+                }
             }
         ).flow
     }
@@ -55,7 +59,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemoByCategory(categoryId)
     }
 
-    override fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<MemoEntity>> {
+    override fun getMemoByCategoryWithPage(categoryId: Long, sortBy: SortBy): Flow<PagingData<MemoEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.database.collection.LLRBNode
+import com.jae464.domain.model.SortBy
 import com.jae464.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.R
@@ -56,7 +57,11 @@ class FeedCategoryFragment :
         binding.spinnerSort.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 Log.d(TAG, p0?.getItemAtPosition(p2).toString())
-                // TODO 정렬 방식 변경
+
+                when(p2) {
+                    0 -> viewModel.setSortBy(SortBy.DESC)
+                    1 -> viewModel.setSortBy(SortBy.ASC)
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {

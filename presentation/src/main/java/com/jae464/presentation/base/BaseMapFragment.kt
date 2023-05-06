@@ -56,7 +56,7 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         super.onCreate(savedInstanceState)
 
         fusedLocationClient =
-            LocationServices.getFusedLocationProviderClient(activity!!.applicationContext)
+            LocationServices.getFusedLocationProviderClient(requireContext())
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -68,7 +68,9 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
             if (isGranted) {
-                setCurrentLocation()
+                if (map != null) {
+                    setCurrentLocation()
+                }
             } else {
                 Toast.makeText(requireContext(), "현위치 사용을 위해서는 권한 설정이 필요합니다.", Toast.LENGTH_SHORT)
                     .show()
@@ -125,7 +127,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
 
 
     fun setCurrentLocation() {
-
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -136,6 +137,7 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.d(TAG, "위치 권한이 없는 상태입니다.")
+
             map.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
@@ -155,7 +157,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 location ?: return@addOnSuccessListener
-//                Log.d("BaseMapFragment", location.toString())
                 map.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(

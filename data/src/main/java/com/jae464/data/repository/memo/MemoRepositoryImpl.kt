@@ -10,6 +10,7 @@ import com.jae464.data.model.toMemo
 import com.jae464.data.model.toMemoEntity
 import com.jae464.data.repository.memo.local.MemoLocalDataSource
 import com.jae464.data.repository.memo.remote.MemoRemoteDataSource
+import com.jae464.domain.model.SortBy
 import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.repository.MemoRepository
@@ -59,8 +60,8 @@ class MemoRepositoryImpl @Inject constructor(
         return memoRemoteDataSource.insertMemo(memo.toMemoDTO(userId))
     }
 
-    override fun getAllMemoWithPage(): Flow<PagingData<Memo>> {
-        return memoLocalDataSource.getAllMemoWithPage().map { pagingData ->
+    override fun getAllMemoWithPage(sortBy: SortBy): Flow<PagingData<Memo>> {
+        return memoLocalDataSource.getAllMemoWithPage(sortBy).map { pagingData ->
             pagingData.map { memoEntity ->
                 val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
                 val category = Category(categoryEntity.id, categoryEntity.name)
@@ -87,8 +88,8 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getMemoByCategoryWithPage(categoryId: Long): Flow<PagingData<Memo>> {
-        return memoLocalDataSource.getMemoByCategoryWithPage(categoryId).map { pagingData ->
+    override fun getMemoByCategoryWithPage(categoryId: Long, sortBy: SortBy): Flow<PagingData<Memo>> {
+        return memoLocalDataSource.getMemoByCategoryWithPage(categoryId, sortBy).map { pagingData ->
             pagingData.map { memoEntity ->
                 val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
                 val category = Category(categoryEntity.id, categoryEntity.name)

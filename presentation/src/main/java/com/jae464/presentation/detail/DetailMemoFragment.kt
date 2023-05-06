@@ -46,8 +46,8 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         initListener()
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        super.onMapReady(map)
+    override fun onMapReady(googleMap: GoogleMap) {
+        super.onMapReady(googleMap)
         map.apply {
             setMinZoomPreference(6.0f)
             setMaxZoomPreference(16.0f)
@@ -57,7 +57,6 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
-
     }
 
     private fun initAppBar() {
@@ -86,10 +85,10 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memo.collectLatest { memo ->
-                    Log.d(TAG, memo.toString())
                     if (memo != null) {
                         binding.memo = memo
                         binding.memoLocation.text = "${memo.area1} ${memo.area2} ${memo.area3}"
+
                         map.moveCamera(
                             CameraUpdateFactory.newLatLngZoom(
                                 LatLng(
