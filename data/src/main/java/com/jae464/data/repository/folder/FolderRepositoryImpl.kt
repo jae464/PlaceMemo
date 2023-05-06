@@ -24,9 +24,7 @@ class FolderRepositoryImpl @Inject constructor(
 
     override fun getAllFolder(): Flow<List<Folder>> {
         return folderDao.getAllFolder().map { list ->
-            Log.d("FolderRepositoryImpl", list.toString())
             list.map {
-                Log.d("FolderRepositoryImpl", it.toString())
                 folderEntityToFolder(it)
             }
         }

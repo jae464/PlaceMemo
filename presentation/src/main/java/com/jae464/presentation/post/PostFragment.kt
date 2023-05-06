@@ -127,10 +127,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 longitude = arguments?.getDouble("longitude")!!
                 viewModel.getAddress(latitude, longitude)
             }
-            // 기존 메모 수정
-            else -> {
-                viewModel.getMemo(args.memoId)
-            }
         }
     }
 
@@ -161,8 +157,16 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.categorys.collectLatest {categories ->
+                viewModel.categories.collectLatest { categories ->
                     initSpinner(categories)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.folders.collectLatest { folders ->
+                    Log.d(TAG, folders.toString())
                 }
             }
         }
@@ -176,10 +180,12 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private fun initSpinner(categories: List<Category>) {
 
-        val categoryNames = categories.map { category -> category.name }.toMutableList()
-        categoryNames.add("새로운 카테고리")
-        val adapter = ArrayAdapter(requireContext(), R.layout.item_spinner, categoryNames)
-        binding.categorySpinner.adapter = adapter
+        val categoryNames = categories.map { category -> category.name }.toMutableList().apply {
+            add("새로운 카테고리")
+        }
+
+        val categoryAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, categoryNames)
+        binding.categorySpinner.adapter = categoryAdapter
         binding.categorySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {

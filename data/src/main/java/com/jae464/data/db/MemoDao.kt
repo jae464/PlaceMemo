@@ -26,7 +26,10 @@ interface MemoDao {
    fun getAllMemo(): Flow<List<MemoEntity>>
 
    @Query("SELECT * FROM memo ORDER BY created_at DESC")
-   fun getAllMemoWithPage(): PagingSource<Int, MemoEntity>
+   fun getAllMemoWithPageSortByDesc(): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo ORDER BY created_at ASC")
+   fun getAllMemoWithPageSortByAsc(): PagingSource<Int, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE category_id = :categoryId")
    fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>

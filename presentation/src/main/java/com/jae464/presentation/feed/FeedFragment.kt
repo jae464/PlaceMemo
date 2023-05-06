@@ -70,7 +70,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
         private const val FOLDER_PAGE = 0
         private const val CATEGORY_PAGE = 1
 
-        private val tabTitleArray = arrayOf("폴더별", "카테고리별")
+        private val tabTitleArray = arrayOf("폴더", "모든 메모")
     }
 
 }

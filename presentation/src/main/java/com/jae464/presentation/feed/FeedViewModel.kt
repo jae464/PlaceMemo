@@ -21,18 +21,6 @@ class FeedViewModel @Inject constructor(
     private val folderRepository: FolderRepository
 ) : ViewModel() {
 
-    val viewType = MutableStateFlow("card")
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val memoList = viewType
-        .filter { it.isNotEmpty() }
-        .flatMapLatest { viewType ->
-            Log.d("FeedViewModel", "GetAllMemoWithPage")
-            repository.getAllMemoWithPage().cachedIn(viewModelScope)
-        }
-
-//    val memoList = repository.getAllMemoWithPage().cachedIn(viewModelScope)
-//        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
-
     val folderList = folderRepository.getAllFolder()
         .stateIn(
             viewModelScope,
