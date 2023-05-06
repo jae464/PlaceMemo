@@ -46,6 +46,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     private var longitude by Delegates.notNull<Double>()
     private val imageAdapter = ImageListAdapter()
     private lateinit var category: Category
+    private var folderId = 0L
 
     private var imagePathList = mutableListOf<String>()
     private var imageViewList = mutableListOf<Bitmap?>()
@@ -68,10 +69,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(tag, arguments.toString())
-        if (arguments?.getDouble("latitude", 0.0) == 0.0) {
-            println("latitude 정보가 없습니다.")
-        }
         binding.imageRecyclerView.adapter = imageAdapter
         binding.postViewModel = viewModel
 
@@ -97,16 +94,23 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
                     if (args.memoId == -1) {
                         viewModel.saveMemo(
-                            0,
-                            title,
-                            content,
-                            latitude,
-                            longitude,
-                            category,
-                            imagePathList
+                            id = 0,
+                            title = title,
+                            content = content,
+                            latitude = latitude,
+                            longitude = longitude,
+                            category = category,
+                            folderId = folderId,
+                            imageUriList = imagePathList
                         )
                     } else {
-                        viewModel.updateMemo(title, content, category, imagePathList)
+                        viewModel.updateMemo(
+                            title = title,
+                            content = content,
+                            category = category,
+                            folderId = folderId,
+                            imageUriList = imagePathList
+                        )
                     }
                 }
             }
@@ -123,6 +127,11 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         when (args.memoId) {
             // 새 메모 업로드
             -1 -> {
+                if (arguments?.getDouble("latitude") == null
+                    || arguments?.getDouble("longitude") == null) {
+                    findNavController().popBackStack()
+                }
+
                 latitude = arguments?.getDouble("latitude")!!
                 longitude = arguments?.getDouble("longitude")!!
                 viewModel.getAddress(latitude, longitude)
@@ -150,7 +159,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                     binding.titleEditText.setText(memo.title)
                     binding.contentEditText.setText(memo.content)
                     binding.locationTextView.text = "${memo.area1} ${memo.area2} ${memo.area3}"
-
                 }
             }
         }
@@ -167,6 +175,28 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.folders.collectLatest { folders ->
                     Log.d(TAG, folders.toString())
+                    val folderNames = folders.map { folder -> folder.name }.toMutableList()
+                    val folderAdapter =
+                        ArrayAdapter(requireContext(), R.layout.item_spinner, folderNames)
+                    binding.spinnerFolder.adapter = folderAdapter
+                    binding.spinnerFolder.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                p0: AdapterView<*>?,
+                                p1: View?,
+                                p2: Int,
+                                p3: Long
+                            ) {
+                                folderId = folders[p2].id
+                                Log.d(TAG, "현재 선택된 폴더 ID : $folderId")
+                            }
+
+                            override fun onNothingSelected(p0: AdapterView<*>?) {
+                                TODO("Not yet implemented")
+                            }
+
+                        }
+
                 }
             }
         }
@@ -198,8 +228,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                                 Toast.LENGTH_SHORT
                             ).show()
                             category = categories[p2]
-                        }
-                        else {
+                        } else {
                             CategoryAddDialog(
                                 onClickAddButton = { name ->
                                     viewModel.addCategory(name)

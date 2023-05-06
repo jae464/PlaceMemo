@@ -27,11 +27,14 @@ abstract class MemoDatabase: RoomDatabase() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 Executors.newSingleThreadExecutor().execute {
+                    // DEFAULT CATEGORY (추후 기타만 남기기)
                     db.execSQL("INSERT INTO category (category_name) VALUES ('음식점')")
                     db.execSQL("INSERT INTO category (category_name) VALUES ('관광지')")
                     db.execSQL("INSERT INTO category (category_name) VALUES ('카페')")
                     db.execSQL("INSERT INTO category (category_name) VALUES ('호텔')")
                     db.execSQL("INSERT INTO category (category_name) VALUES ('기타')")
+
+                    db.execSQL("INSERT INTO folder (folder_name) VALUES('기타')")
                 }
             }
         }

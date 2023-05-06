@@ -59,14 +59,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated")
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.d(TAG, "onMapReady")
         super.onMapReady(googleMap)
         googleMap.apply {
             setMinZoomPreference(6.0f)
