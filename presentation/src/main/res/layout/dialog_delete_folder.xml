@@ -3,6 +3,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="20dp"
+        android:background="@color/white"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <TextView
@@ -10,23 +13,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_delete"
+            android:paddingBottom="20dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
             android:text="정말 삭제하시겠습니까?" />
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_delete"
             app:layout_constraintTop_toBottomOf="@id/tv_check_delete"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="예"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/blue_200"
+            android:padding="12dp"
+            android:gravity="center"
+            android:text="삭제"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
+            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/tv_check_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="아니요"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/light_grey_500"
+            android:padding="12dp"
+            android:text="취소"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

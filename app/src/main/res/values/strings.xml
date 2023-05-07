@@ -1,12 +1,2 @@
 <resources>
-    <string name="app_name">PlaceMemo</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="category_array">
-        <item>음식점</item>
-        <item>관광지</item>
-        <item>카페</item>
-        <item>호텔</item>
-        <item>기타</item>
-    </string-array>
 </resources>
