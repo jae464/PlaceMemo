@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.R
 import com.jae464.presentation.databinding.FragmentFeedFolderBinding
@@ -20,12 +21,15 @@ class FeedFolderFragment :
     BaseFragment<FragmentFeedFolderBinding>(R.layout.fragment_feed_folder) {
 
     private lateinit var folderListAdapter: FolderListAdapter
+    private lateinit var itemTouchHelper: ItemTouchHelper
     private val viewModel: FeedViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         folderListAdapter = FolderListAdapter(requireContext(), parentFragmentManager)
+        val itemTouchHelperCallback = FolderItemTouchHelperCallback(folderListAdapter)
+        itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         initView()
         initListener()
         initObserver()
@@ -39,6 +43,7 @@ class FeedFolderFragment :
 
     private fun initView() {
         binding.rcvFolderList.adapter = folderListAdapter
+        itemTouchHelper.attachToRecyclerView(binding.rcvFolderList)
     }
 
     private fun initObserver() {
