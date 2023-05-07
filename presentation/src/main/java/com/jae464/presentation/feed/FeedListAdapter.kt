@@ -16,19 +16,22 @@ import com.jae464.presentation.home.HomeViewPagerAdapter
 import com.jae464.presentation.regionToString
 import java.io.File
 
-class FeedListAdapter(private val context: Context, private val onClick: (Int) -> (Unit), private var viewType: Int = VIEW_TYPE_CARD)
-    : PagingDataAdapter<Memo, FeedListAdapter.FeedViewHolder>(diff) {
+class FeedListAdapter(
+    private val context: Context,
+    private val onClick: (Int) -> (Unit),
+    private var viewType: Int = VIEW_TYPE_CARD
+) : PagingDataAdapter<Memo, FeedListAdapter.FeedViewHolder>(diff) {
 
     private val TAG = "FeedListAdapter"
 
-    sealed class FeedViewHolder(binding: ViewDataBinding):
+    sealed class FeedViewHolder(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            abstract fun bind(memo: Memo)
-        }
+        abstract fun bind(memo: Memo)
+    }
 
     inner class FeedGridViewHolder(
         private val binding: ItemMemoPreviewBinding
-    ): FeedViewHolder(binding) {
+    ) : FeedViewHolder(binding) {
 
         override fun bind(memo: Memo) {
             binding.memo = memo
@@ -38,7 +41,7 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
             }
 
             val imageUriList = memo.imageUriList ?: emptyList()
-            val imagePathList = imageUriList.map {uri ->
+            val imagePathList = imageUriList.map { uri ->
                 val dirPath = "${context.filesDir}/images"
                 val filePath = "$dirPath/${uri.substringAfterLast("/")}.jpg"
                 filePath
@@ -56,7 +59,7 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
 
     inner class FeedListViewHolder(
         private val binding: ItemMemoListViewBinding,
-    ): FeedViewHolder(binding) {
+    ) : FeedViewHolder(binding) {
 
         override fun bind(memo: Memo) {
             binding.memo = memo
@@ -70,13 +73,23 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         return when (this.viewType) {
             VIEW_TYPE_CARD -> {
-                val binding = ItemMemoPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = ItemMemoPreviewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
                 FeedGridViewHolder(binding)
             }
+
             VIEW_TYPE_LIST -> {
-                val binding = ItemMemoListViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = ItemMemoListViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
                 FeedListViewHolder(binding)
             }
+
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -93,7 +106,7 @@ class FeedListAdapter(private val context: Context, private val onClick: (Int) -
         const val VIEW_TYPE_CARD = 0
         const val VIEW_TYPE_LIST = 1
 
-        private val diff = object: DiffUtil.ItemCallback<Memo>() {
+        private val diff = object : DiffUtil.ItemCallback<Memo>() {
             override fun areItemsTheSame(oldItem: Memo, newItem: Memo): Boolean {
                 return oldItem == newItem
             }

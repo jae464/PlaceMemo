@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/white"
+        android:padding="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -11,7 +12,11 @@
             android:id="@+id/tv_folder_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="폴더명"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="#424242"
+            android:textStyle="bold"
+            android:text="폴더 이름을 입력하세요."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -19,13 +24,24 @@
             android:id="@+id/et_folder_name"
             app:layout_constraintTop_toBottomOf="@id/tv_folder_name"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            app:layout_constraintTop_toBottomOf="@id/et_folder_name"
+            app:layout_constraintEnd_toStartOf="@id/btn_add"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="취소"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_add"
+            android:backgroundTint="@color/blue_200"
             app:layout_constraintTop_toBottomOf="@id/et_folder_name"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
             android:text="추가"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

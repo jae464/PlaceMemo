@@ -24,7 +24,7 @@ interface FolderDao {
     )
     suspend fun isExistFolderName(folderName: String): Boolean
 
-    @Query("SELECT COUNT(memo_id) FROM folder_memo WHERE folder_id = :folderId")
+    @Query("SELECT COUNT(memo_id) FROM memo WHERE folder_id = :folderId")
     suspend fun getMemoCountByFolder(folderId: Long): Int
 
 }

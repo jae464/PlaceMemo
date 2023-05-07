@@ -25,7 +25,9 @@ class FolderRepositoryImpl @Inject constructor(
     override fun getAllFolder(): Flow<List<Folder>> {
         return folderDao.getAllFolder().map { list ->
             list.map {
-                folderEntityToFolder(it)
+                val memoCount = folderDao.getMemoCountByFolder(it.folderId)
+                Log.d("FolderRepositoryImpl", "memoCount : $memoCount")
+                folderEntityToFolder(it, memoCount)
             }
         }
     }

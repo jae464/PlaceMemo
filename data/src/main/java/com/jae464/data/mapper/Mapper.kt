@@ -51,10 +51,10 @@ fun userEntityToUser(userEntity: UserEntity?): User? {
 //    }
 //}
 
-fun folderEntityToFolder(folderEntity: FolderEntity): Folder {
+fun folderEntityToFolder(folderEntity: FolderEntity, memoCount: Int = 0): Folder {
     return Folder(
         id = folderEntity.folderId,
         name = folderEntity.folderName,
-        memoCount = 0
+        memoCount = memoCount
     )
 }
