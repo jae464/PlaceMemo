@@ -8,7 +8,9 @@ import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.toFolderEntity
 import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.repository.FolderRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FolderRepositoryImpl @Inject constructor(
@@ -35,8 +37,6 @@ class FolderRepositoryImpl @Inject constructor(
     override fun getFolderByName(folderName: String): Flow<Folder?> {
         return folderDao.getFolderByName(folderName).map {
             folderEntityToFolder(it)
-        }.catch {
-            emit(Folder(0,"",0))
         }
     }
 
@@ -46,5 +46,9 @@ class FolderRepositoryImpl @Inject constructor(
 
     override suspend fun getMemoCountByFolder(folderId: Long): Int {
         return folderDao.getMemoCountByFolder(folderId)
+    }
+
+    override suspend fun getFolderSize(): Int {
+        return folderDao.getFolderSize()
     }
 }

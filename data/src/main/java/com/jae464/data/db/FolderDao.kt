@@ -27,4 +27,7 @@ interface FolderDao {
     @Query("SELECT COUNT(memo_id) FROM memo WHERE folder_id = :folderId")
     suspend fun getMemoCountByFolder(folderId: Long): Int
 
+    @Query("SELECT COUNT(folder_id) FROM folder")
+    suspend fun getFolderSize(): Int
+
 }

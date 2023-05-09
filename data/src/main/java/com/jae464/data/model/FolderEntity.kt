@@ -12,19 +12,28 @@ data class FolderEntity(
     val folderId: Long = 0L,
     @ColumnInfo(name = "folder_name")
     val folderName: String,
+    @ColumnInfo(name = "folder_order")
+    val folderOrder: Int,
+    @ColumnInfo(name = "folder_default")
+    val isDefault: Boolean
+
 )
 
 fun FolderEntity.toFolder(): Folder {
     return Folder(
-        this.folderId,
-        this.folderName,
-        0
+        id = this.folderId,
+        name = this.folderName,
+        order = this.folderOrder,
+        isDefault = this.isDefault,
+        memoCount = 0
     )
 }
 
 fun Folder.toFolderEntity(): FolderEntity {
     return FolderEntity(
-        this.id,
-        this.name
+        folderId = this.id,
+        folderName = this.name,
+        folderOrder = this.order,
+        isDefault = this.isDefault
     )
 }

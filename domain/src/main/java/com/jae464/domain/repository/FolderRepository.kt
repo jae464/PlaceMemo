@@ -15,4 +15,6 @@ interface FolderRepository {
     suspend fun isExistFolderName(folderName: String): Boolean
 
     suspend fun getMemoCountByFolder(folderId: Long): Int
+
+    suspend fun getFolderSize(): Int
 }

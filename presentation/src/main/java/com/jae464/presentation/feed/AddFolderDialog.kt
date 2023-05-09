@@ -47,6 +47,8 @@ class AddFolderDialog: DialogFragment() {
                         }
                         is AddFolderEvent.NotExistFolderName -> {
                             viewModel.createFolder(Folder(name = binding.etFolderName.text.toString(), memoCount = 0))
+                        }
+                        is AddFolderEvent.CreateFolderCompleted -> {
                             dismiss()
                         }
                         else -> {
