@@ -20,7 +20,9 @@ class AddFolderViewModel @Inject constructor(
 
     fun createFolder(folder: Folder) {
         viewModelScope.launch {
-            folderRepository.createFolder(folder)
+            val newOrder = folderRepository.getFolderSize()
+            folderRepository.createFolder(folder.copy(order = newOrder))
+            _event.emit(AddFolderEvent.CreateFolderCompleted)
         }
     }
 

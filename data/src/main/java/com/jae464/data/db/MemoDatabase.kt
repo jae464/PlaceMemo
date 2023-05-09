@@ -34,7 +34,7 @@ abstract class MemoDatabase: RoomDatabase() {
                     db.execSQL("INSERT INTO category (category_name) VALUES ('호텔')")
                     db.execSQL("INSERT INTO category (category_name) VALUES ('기타')")
 
-                    db.execSQL("INSERT INTO folder (folder_name) VALUES('기타')")
+                    db.execSQL("INSERT INTO folder (folder_name, folder_order, folder_default) VALUES('기타', 0, true)")
                 }
             }
         }
