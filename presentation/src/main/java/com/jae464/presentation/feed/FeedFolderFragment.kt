@@ -9,10 +9,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.jae464.domain.model.feed.Folder
 import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.R
 import com.jae464.presentation.databinding.FragmentFeedFolderBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,7 @@ class FeedFolderFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        folderListAdapter = FolderListAdapter(requireContext(), parentFragmentManager)
+        folderListAdapter = FolderListAdapter(requireContext(), parentFragmentManager, this::updateFolderOrder)
         val itemTouchHelperCallback = FolderItemTouchHelperCallback(folderListAdapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         initView()
@@ -55,7 +57,10 @@ class FeedFolderFragment :
                 }
             }
         }
+    }
 
+    private fun updateFolderOrder(folderList: List<Folder>) {
+        Log.d("FeedFolderFragment", folderList.toString())
     }
 
 }

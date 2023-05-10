@@ -55,6 +55,7 @@ fun folderEntityToFolder(folderEntity: FolderEntity, memoCount: Int = 0): Folder
     return Folder(
         id = folderEntity.folderId,
         name = folderEntity.folderName,
+        order = folderEntity.folderOrder,
         memoCount = memoCount
     )
 }
