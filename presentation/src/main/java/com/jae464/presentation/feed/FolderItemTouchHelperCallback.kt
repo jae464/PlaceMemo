@@ -4,6 +4,9 @@ import android.graphics.Canvas
 import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 
 class FolderItemTouchHelperCallback(private val listener: OnFolderMoveListener) :
 ItemTouchHelper.Callback(){
@@ -12,6 +15,7 @@ ItemTouchHelper.Callback(){
 
     interface OnFolderMoveListener {
         fun onFolderMove(fromPosition: Int, toPosition: Int)
+        fun onFolderMoveFinished()
     }
 
     override fun getMovementFlags(
@@ -45,6 +49,7 @@ ItemTouchHelper.Callback(){
         super.clearView(recyclerView, viewHolder)
         Log.d(TAG, "clearView")
         viewHolder.itemView.alpha = 1.0f
+        listener.onFolderMoveFinished()
     }
 
     override fun onChildDraw(

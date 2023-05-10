@@ -5,23 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jae464.domain.model.feed.Folder
 import com.jae464.presentation.R
 import com.jae464.presentation.databinding.ItemFolderBinding
 
+
 class FolderListAdapter(
     private val context: Context,
-    private val supportFragmentManager: FragmentManager
+    private val supportFragmentManager: FragmentManager,
+    private val onFolderUpdate: (List<Folder>) -> Unit
 ) : ListAdapter<Folder, FolderListAdapter.FolderViewHolder>(diff),
     FolderItemTouchHelperCallback.OnFolderMoveListener {
 
     private val TAG = "FolderListAdapter"
+    private var folderList = mutableListOf<Folder>() // Room 에 Folder 순서 업데이트를 위한 폴더 리스트
 
     inner class FolderViewHolder(
         private val binding: ItemFolderBinding
@@ -62,6 +63,7 @@ class FolderListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
         val binding = ItemFolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        folderList = currentList.toMutableList()
         return FolderViewHolder(binding)
     }
 
@@ -84,10 +86,16 @@ class FolderListAdapter(
     }
 
     override fun onFolderMove(fromPosition: Int, toPosition: Int) {
-//        val movedItem = currentList[fromPosition]
-//        currentList.removeAt(fromPosition)
-//        currentList.add(toPosition, movedItem)
+        val folder = folderList[fromPosition]
+        folderList.removeAt(fromPosition)
+        folderList.add(toPosition, folder)
         notifyItemMoved(fromPosition, toPosition)
     }
+
+    override fun onFolderMoveFinished() {
+//        Log.d(TAG, folderList.toString())
+        onFolderUpdate(folderList)
+    }
+
 
 }
