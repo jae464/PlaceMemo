@@ -13,7 +13,7 @@ interface FolderDao {
     @Query("DELETE FROM folder WHERE folder_id = :folderId")
     suspend fun deleteFolder(folderId: Long)
 
-    @Query("SELECT * FROM folder")
+    @Query("SELECT * FROM folder ORDER BY folder_order ASC")
     fun getAllFolder(): Flow<List<FolderEntity>>
 
     @Query("SELECT * FROM folder WHERE folder_name = :folderName")
@@ -29,5 +29,11 @@ interface FolderDao {
 
     @Query("SELECT COUNT(folder_id) FROM folder")
     suspend fun getFolderSize(): Int
+
+    @Update
+    suspend fun updateFolder(folder: FolderEntity)
+
+    @Update
+    suspend fun updateFolders(folders: List<FolderEntity>)
 
 }

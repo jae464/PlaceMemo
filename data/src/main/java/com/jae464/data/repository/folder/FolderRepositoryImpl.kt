@@ -2,15 +2,11 @@ package com.jae464.data.repository.folder
 
 import android.util.Log
 import com.jae464.data.db.FolderDao
-import com.jae464.data.db.MemoDao
 import com.jae464.data.mapper.folderEntityToFolder
-import com.jae464.data.model.FolderEntity
 import com.jae464.data.model.toFolderEntity
 import com.jae464.domain.model.feed.Folder
 import com.jae464.domain.repository.FolderRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FolderRepositoryImpl @Inject constructor(
@@ -50,5 +46,11 @@ class FolderRepositoryImpl @Inject constructor(
 
     override suspend fun getFolderSize(): Int {
         return folderDao.getFolderSize()
+    }
+
+    override suspend fun updateFolders(folders: List<Folder>) {
+        folderDao.updateFolders(folders = folders.map {
+            it.toFolderEntity()
+        })
     }
 }

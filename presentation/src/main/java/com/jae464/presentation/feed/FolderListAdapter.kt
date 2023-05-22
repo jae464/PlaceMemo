@@ -93,7 +93,6 @@ class FolderListAdapter(
     }
 
     override fun onFolderMoveFinished() {
-//        Log.d(TAG, folderList.toString())
         onFolderUpdate(folderList)
     }
 
