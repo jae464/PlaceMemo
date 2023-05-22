@@ -59,8 +59,11 @@ class FeedFolderFragment :
         }
     }
 
-    private fun updateFolderOrder(folderList: List<Folder>) {
-        Log.d("FeedFolderFragment", folderList.toString())
+    private fun updateFolderOrder(folders: List<Folder>) {
+        val updatedFolders = folders.mapIndexed { index, folder ->
+            folder.copy(order = index)
+        }
+         viewModel.updateFolders(updatedFolders)
     }
 
 }

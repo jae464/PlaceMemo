@@ -17,4 +17,6 @@ interface FolderRepository {
     suspend fun getMemoCountByFolder(folderId: Long): Int
 
     suspend fun getFolderSize(): Int
+
+    suspend fun updateFolders(folders: List<Folder>)
 }

@@ -36,6 +36,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun updateFolders(folders: List<Folder>) {
+        viewModelScope.launch {
+            folderRepository.updateFolders(folders)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d("FeedViewModel", "onCleared")
