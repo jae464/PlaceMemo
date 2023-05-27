@@ -31,6 +31,8 @@ import com.jae464.presentation.databinding.FragmentPostBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 import com.jae464.presentation.R
+import com.jae464.presentation.common.AddDialog
+import com.jae464.presentation.common.AddDialogListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -50,6 +52,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
     private var imagePathList = mutableListOf<String>()
     private var imageViewList = mutableListOf<Bitmap?>()
+
+    private var addCategoryDialog: AddDialog? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -74,6 +78,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
 
         initAppBar()
         initData()
+        initDialog()
         initListener()
         initObserver()
 //        initSpinner()
@@ -128,7 +133,8 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             // 새 메모 업로드
             -1 -> {
                 if (arguments?.getDouble("latitude") == null
-                    || arguments?.getDouble("longitude") == null) {
+                    || arguments?.getDouble("longitude") == null
+                ) {
                     findNavController().popBackStack()
                 }
 
@@ -136,6 +142,23 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 longitude = arguments?.getDouble("longitude")!!
                 viewModel.getAddress(latitude, longitude)
             }
+        }
+    }
+
+    private fun initDialog() {
+        addCategoryDialog = AddDialog().apply {
+            setTitle("새로운 카테고리를 입력하세요.")
+            addDialogListener(object : AddDialogListener {
+                override fun onConfirmClick(name: String) {
+                    viewModel.addCategory(name)
+                }
+
+                override fun onCancelClick() {
+                    binding.categorySpinner.setSelection(0)
+                    dismiss()
+                }
+
+            })
         }
     }
 
@@ -206,6 +229,24 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                 findNavController().popBackStack()
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect {addCategoryEvent ->
+                    when(addCategoryEvent) {
+                        is AddCategoryEvent.ExistCategoryName -> {
+                            addCategoryDialog?.setErrorMessage("이미 존재하는 카테고리입니다.")
+                        }
+                        is AddCategoryEvent.AddCategoryCompleted -> {
+                            addCategoryDialog?.dismiss()
+                        }
+                        is AddCategoryEvent.EmptyCategoryName -> {
+                            addCategoryDialog?.setErrorMessage("카테고리 명을 입력해주세요.")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initSpinner(categories: List<Category>) {
@@ -220,26 +261,29 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p0 != null) {
-                        Log.d(TAG, p0.getItemAtPosition(p2).toString())
                         if (p2 < categories.size) {
-                            Toast.makeText(
-                                requireContext(),
-                                p0.getItemAtPosition(p2).toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
                             category = categories[p2]
                         } else {
-                            CategoryAddDialog(
-                                onClickAddButton = { name ->
-                                    viewModel.addCategory(name)
-                                },
-                                onClickCancelButton = {
-                                    binding.categorySpinner.setSelection(0)
-                                }
-                            ).show(
-                                requireActivity().supportFragmentManager,
-                                "add_category"
+                            addCategoryDialog?.show(
+                                requireActivity().supportFragmentManager, "add-category"
                             )
+//                            CategoryAddDialog(
+//                                onClickAddButton = { name ->
+//                                    // 카테고리 명이 비어있는 경우 예외처리
+//                                    if (name.isEmpty()) {
+//                                        Log.d(TAG, "추가하려는 카테고리 명이 비어있습니다.")
+//                                    }
+//                                    else {
+//                                        viewModel.addCategory(name)
+//                                    }
+//                                },
+//                                onClickCancelButton = {
+//                                    binding.categorySpinner.setSelection(0)
+//                                }
+//                            ).show(
+//                                requireActivity().supportFragmentManager,
+//                                "add_category"
+//                            )
                         }
                     }
                 }

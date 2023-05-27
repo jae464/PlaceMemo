@@ -17,9 +17,12 @@ import com.jae464.domain.repository.CategoryRepository
 import com.jae464.domain.repository.FolderRepository
 import com.jae464.domain.repository.LoginRepository
 import com.jae464.domain.repository.MemoRepository
+import com.jae464.presentation.feed.AddFolderEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,6 +41,9 @@ class PostViewModel @Inject constructor(
 ) : ViewModel() {
 
     val TAG = "PostViewModel"
+
+    private val _event = MutableSharedFlow<AddCategoryEvent>()
+    val event = _event.asSharedFlow()
 
     private val _address = MutableLiveData<Region?>()
     val address: LiveData<Region?> get() = _address
@@ -175,9 +181,26 @@ class PostViewModel @Inject constructor(
 
     fun addCategory(name: String) {
         viewModelScope.launch {
+            if (name.isEmpty()) {
+                Log.d(TAG,"카테고리명이 비어있습니다.")
+                _event.emit(AddCategoryEvent.EmptyCategoryName)
+                return@launch
+            }
+            val isExist = categoryRepository.isExistCategoryName(name)
+            if (isExist) {
+                Log.d(TAG, "이미 존재하는 카테고리 명입니다.")
+                _event.emit(AddCategoryEvent.ExistCategoryName)
+                return@launch
+            }
             categoryRepository.insertCategory(Category(0, name))
+            _event.emit(AddCategoryEvent.AddCategoryCompleted)
         }
     }
+}
 
-
+sealed class AddCategoryEvent {
+    object AddCategory: AddCategoryEvent()
+    object ExistCategoryName: AddCategoryEvent()
+    object AddCategoryCompleted: AddCategoryEvent()
+    object EmptyCategoryName: AddCategoryEvent()
 }
