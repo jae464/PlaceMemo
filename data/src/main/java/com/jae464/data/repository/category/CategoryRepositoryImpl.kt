@@ -31,8 +31,6 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
-
-
     override suspend fun deleteCategory(categoryId: Long) {
         TODO("Not yet implemented")
     }
@@ -44,5 +42,9 @@ class CategoryRepositoryImpl @Inject constructor(
             categoryEntity.id,
             categoryEntity.name
         )
+    }
+
+    override suspend fun isExistCategoryName(categoryName: String): Boolean {
+        return categoryDao.isExistCategoryName(categoryName)
     }
 }

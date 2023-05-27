@@ -40,11 +40,4 @@ class AddFolderViewModel @Inject constructor(
     }
 }
 
-sealed class AddFolderEvent {
-    data class CreateFolder(val folder: Folder): AddFolderEvent()
-    data class CheckNameAvailable(val name: String): AddFolderEvent()
-    object ExistFolderName: AddFolderEvent()
-    object NotExistFolderName: AddFolderEvent()
-    object CreateFolderCompleted: AddFolderEvent()
-}
 

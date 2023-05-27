@@ -39,11 +39,9 @@ class AddFolderDialog: DialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect {
-
                     when (it) {
                         is AddFolderEvent.ExistFolderName -> {
                             Toast.makeText(requireContext(), "이미 존재하는 폴더입니다.", Toast.LENGTH_SHORT).show()
-
                         }
                         is AddFolderEvent.NotExistFolderName -> {
                             viewModel.createFolder(Folder(name = binding.etFolderName.text.toString(), memoCount = 0))
@@ -66,8 +64,6 @@ class AddFolderDialog: DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         initListener()
-
-
     }
 
     private fun initListener() {

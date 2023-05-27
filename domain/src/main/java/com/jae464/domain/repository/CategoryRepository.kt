@@ -8,4 +8,5 @@ interface CategoryRepository {
     fun getAllCategory(): Flow<List<Category>>
     suspend fun deleteCategory(categoryId: Long)
     suspend fun getCategoryById(categoryId: Long): Category
+    suspend fun isExistCategoryName(categoryName: String): Boolean
 }
