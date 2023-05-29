@@ -170,7 +170,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                         val thumbnailImage = if (imagePathList.isEmpty()) null else imagePathList[0]
 
                         val thumbnailImageBitmap = thumbnailImage.let { path ->
-                            BitmapFactory.decodeFile("${context?.filesDir}/images/${path?.substringAfterLast("/")}.jpg")
+                            BitmapFactory.decodeFile("${context?.filesDir}/images/${memo.id}_$path.jpg")
                         }
 
                         // TODO Glide 로 이미지 비동기로 로드하는거 필요
@@ -287,8 +287,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     private fun displayMemoPreview(memo: Memo) {
         currentMarker?.remove()
 
-        val imageList = memo.imageUriList?.map {
-            "${context?.filesDir}/images/${it.substringAfterLast("/")}.jpg"
+        val imageList = memo.imageUriList?.map { imagePath ->
+            "${context?.filesDir}/images/${memo.id}_${imagePath}.jpg"
         } ?: emptyList()
 
 

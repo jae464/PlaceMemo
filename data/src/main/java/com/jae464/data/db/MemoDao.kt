@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MemoDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertMemo(memo: MemoEntity)
+   suspend fun insertMemo(memo: MemoEntity): Long
 
    @Update
    suspend fun updateMemo(memo: MemoEntity)

@@ -23,17 +23,25 @@ class ImageManager @Inject constructor(
 
     private val TAG = "ImageManager"
 
-    fun saveImage(imagePath: String) {
+    fun saveImages(memoId: Long, imagePathList: List<String>) {
+        imagePathList.forEach { imagePath ->
+            saveImage(memoId, imagePath)
+        }
+    }
+
+    fun saveImage(memoId: Long, imagePath: String) {
         Log.d(TAG, "SAVE IMAGE START")
+        Log.d(TAG, imagePath)
         Glide.with(context)
             .asBitmap()
             .load(imagePath.toUri())
-            .listener(ImageRequestListener(imagePath))
-            .override(100,100)
+            .listener(ImageRequestListener(memoId, imagePath))
+            .override(512,512)
             .submit()
     }
 
     inner class ImageRequestListener(
+        private val memoId: Long,
         private val imagePath: String,
     ): RequestListener<Bitmap> {
         override fun onLoadFailed(
@@ -55,7 +63,7 @@ class ImageManager @Inject constructor(
         ): Boolean {
             CoroutineScope(Dispatchers.IO).launch {
                 val dirPath = File(context.filesDir, DIR_NAME).apply { mkdirs() }
-                val filePath = File("${dirPath}/${imagePath.substringAfterLast("/")}.jpg")
+                val filePath = File("${dirPath}/${memoId}_${imagePath.substringAfterLast("/")}.jpg")
                 Log.d(TAG, "이미지 저장 경로 : $filePath")
                 withContext(Dispatchers.IO) {
                     FileOutputStream(filePath).use { out ->
@@ -70,21 +78,18 @@ class ImageManager @Inject constructor(
 
     }
 
-    fun getImagePathList(memoId: Int): List<String> {
-        val dirPath = "${context.filesDir}/images"
-        val filePath = File("$dirPath/$memoId")
-        Log.d(TAG, filePath.toString())
-
-        val fileList = filePath.listFiles()
-        fileList ?: return emptyList()
-        Log.d(TAG, fileList.toString())
-        val filePathList = fileList.map {file ->
-            file.path
+    fun getMemoImageFiles(memoId: Long): List<File> {
+        val dirPath = File("${context.filesDir}/images")
+        val fileList = dirPath.listFiles() ?: return emptyList()
+        return fileList.filter { file ->
+            file.name.startsWith("${memoId}_")
         }
+    }
 
-
-        return filePathList
-
+    fun deleteAllImages(memoId: Long) {
+        getMemoImageFiles(memoId).forEach {file ->
+            file.delete()
+        }
     }
 
     companion object {

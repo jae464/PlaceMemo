@@ -10,14 +10,15 @@ interface MemoLocalDataSource {
     fun getMemo(id: Int): Flow<MemoEntity>
     fun getAllMemo(): Flow<List<MemoEntity>>
     fun getAllMemoWithPage(sortBy: SortBy): Flow<PagingData<MemoEntity>>
-    suspend fun saveMemo(memo: MemoEntity)
+    suspend fun saveMemo(memo: MemoEntity): Long
     suspend fun updateMemo(memo: MemoEntity)
     fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>
     fun getMemoByCategoryWithPage(categoryId: Long, sortBy: SortBy): Flow<PagingData<MemoEntity>>
     fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
     fun getMemoByContent(content: String): Flow<List<MemoEntity>>
     suspend fun deleteMemo(id: Int)
-    suspend fun saveMemoImages(imagePathList: List<String>)
+    suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>)
+    fun updateMemoImages(memoId: Long, imagePathList: List<String>)
     suspend fun getFoldersWithMemos(): List<FolderWithMemos>
     fun getImagePathList(memoId: Int): List<String>
 }

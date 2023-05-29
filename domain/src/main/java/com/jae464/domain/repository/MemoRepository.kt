@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface MemoRepository {
     fun getMemo(id: Int): Flow<Memo>
 
-    suspend fun saveMemo(memo: Memo)
+    suspend fun saveMemo(memo: Memo): Long
     suspend fun saveMemoOnRemote(userId: String, memo: Memo)
 
     suspend fun updateMemo(memo: Memo)
@@ -26,8 +26,10 @@ interface MemoRepository {
     suspend fun deleteMemo(id: Int)
     suspend fun deleteMemoOnRemote(userId: String, memoId: Int)
 
-    suspend fun saveImages(imagePathList: List<String>)
+    suspend fun saveImages(memoId: Long, imagePathList: List<String>)
     suspend fun saveImagesOnRemote(imagePathList: List<String>)
+
+    fun updateImages(memoId: Long, imagePathList: List<String>)
 
     fun getImagePathList(memoId: Int): List<String>
 
