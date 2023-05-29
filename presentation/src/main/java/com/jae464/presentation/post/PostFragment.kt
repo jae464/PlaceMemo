@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
@@ -62,6 +64,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
             loadImage()
         } else {
             // TODO requestPermission 예외처리
+            Log.e(TAG, "이미지를 불러오는데 실패했습니다.")
         }
     }
     private val getImageLauncher = registerForActivityResult(
@@ -72,7 +75,18 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         setImageView(image)
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated")
         binding.imageRecyclerView.adapter = imageAdapter
         binding.postViewModel = viewModel
 
@@ -81,7 +95,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         initDialog()
         initListener()
         initObserver()
-//        initSpinner()
     }
 
     private fun initAppBar() {
@@ -176,12 +189,19 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.memo.collectLatest { memo ->
+                    Log.d(TAG, "memo collect")
                     memo ?: return@collectLatest
                     binding.titleEditText.setText(memo.title)
                     binding.contentEditText.setText(memo.content)
                     binding.locationTextView.text = "${memo.area1} ${memo.area2} ${memo.area3}"
+                    memo.imageUriList?.forEach {imageUri ->
+                        val dirPath = File(requireContext().filesDir, "images")
+                        val filePath = File("${dirPath}/${imageUri}.jpg")
+                        setImageView(filePath.toUri())
+                        imagePathList.add(imageUri)
+                    }
                 }
             }
         }
@@ -267,23 +287,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(R.layout.fragment_post) {
                             addCategoryDialog?.show(
                                 requireActivity().supportFragmentManager, "add-category"
                             )
-//                            CategoryAddDialog(
-//                                onClickAddButton = { name ->
-//                                    // 카테고리 명이 비어있는 경우 예외처리
-//                                    if (name.isEmpty()) {
-//                                        Log.d(TAG, "추가하려는 카테고리 명이 비어있습니다.")
-//                                    }
-//                                    else {
-//                                        viewModel.addCategory(name)
-//                                    }
-//                                },
-//                                onClickCancelButton = {
-//                                    binding.categorySpinner.setSelection(0)
-//                                }
-//                            ).show(
-//                                requireActivity().supportFragmentManager,
-//                                "add_category"
-//                            )
                         }
                     }
                 }

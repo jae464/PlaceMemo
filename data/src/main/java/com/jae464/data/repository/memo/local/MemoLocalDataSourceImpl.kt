@@ -13,6 +13,7 @@ import com.jae464.data.model.toMemo
 import com.jae464.domain.model.SortBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 import javax.inject.Inject
 
 class MemoLocalDataSourceImpl @Inject constructor(
@@ -47,7 +48,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun saveMemo(memo: MemoEntity) {
+    override suspend fun saveMemo(memo: MemoEntity): Long {
         return memoDao.insertMemo(memo)
     }
 
@@ -84,9 +85,23 @@ class MemoLocalDataSourceImpl @Inject constructor(
         memoDao.deleteMemo(id)
     }
 
-    override suspend fun saveMemoImages(imagePathList: List<String>) {
+    override suspend fun saveMemoImages(memoId: Long, imagePathList: List<String>) {
         imagePathList.forEach { imagePath ->
-            imageManager.saveImage(imagePath)
+            imageManager.saveImage(memoId, imagePath)
+        }
+    }
+
+    override fun updateMemoImages(memoId: Long, imagePathList: List<String>) {
+        // TODO 만약 메모 수정 시 삭제된 이미지가 없으면 해당 이미지 폴더에서 제거하기
+        val currentImages = imageManager.getMemoImageFiles(memoId).map {
+            it.path.substringAfterLast("${memoId}_")
+        }
+        Log.d(TAG, currentImages.toString())
+        imagePathList.forEach { imagePath ->
+            if (!currentImages.contains("${imagePath.substringAfterLast("/")}.jpg")) {
+                Log.d(TAG, "${imagePath} 는 없는 이미지이므로 저장합니다.")
+                imageManager.saveImage(memoId, imagePath)
+            }
         }
     }
 
@@ -95,7 +110,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getImagePathList(memoId: Int): List<String> {
-        return imageManager.getImagePathList(memoId)
+        return emptyList()
     }
 
 }

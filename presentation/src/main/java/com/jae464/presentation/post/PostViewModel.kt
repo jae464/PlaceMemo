@@ -19,11 +19,14 @@ import com.jae464.domain.repository.LoginRepository
 import com.jae464.domain.repository.MemoRepository
 import com.jae464.presentation.feed.AddFolderEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -49,8 +52,19 @@ class PostViewModel @Inject constructor(
     val address: LiveData<Region?> get() = _address
 
     private var user = FirebaseAuth.getInstance().currentUser
+    private val memoId = MutableStateFlow(-1)
 
-    val memo = MutableStateFlow<Memo?>(null)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val memo = memoId
+        .filter { it != -1 }
+        .flatMapLatest { memoId ->
+            memoRepository.getMemo(memoId)
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            null
+        )
 
     val categories = categoryRepository.getAllCategory().stateIn(
         viewModelScope,
@@ -69,10 +83,13 @@ class PostViewModel @Inject constructor(
 
         // 새 메모가 아닌 경우 navigation argument 로 메모 아이디를 넘겨받은 후 메모 업데이트
         if (savedStateHandle.get<Int>("memoId") != -1) {
+//            viewModelScope.launch {
+//                memoRepository.getMemo(savedStateHandle.get<Int>("memoId") ?: 0).collectLatest {
+//                    memo.value = it
+//                }
+//            }
             viewModelScope.launch {
-                memoRepository.getMemo(savedStateHandle.get<Int>("memoId") ?: 0).collectLatest {
-                    memo.value = it
-                }
+                memoId.emit(savedStateHandle.get<Int>("memoId") ?: -1)
             }
         }
     }
@@ -93,7 +110,9 @@ class PostViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val region = _address.value
-
+            val imageNameList = imageUriList.map { imageUri ->
+                imageUri.substringAfterLast("/")
+            }
             val memo = Memo(
                 id = id,
                 title = title,
@@ -105,11 +124,12 @@ class PostViewModel @Inject constructor(
                 area1 = region?.area1 ?: "",
                 area2 = region?.area2 ?: "",
                 area3 = region?.area3 ?: "",
-                imageUriList = imageUriList
+                imageUriList = imageNameList
             )
-
-            memoRepository.saveMemo(memo)
-            saveImage(imageUriList)
+            val savedMemoId = memoRepository.saveMemo(memo)
+            Log.d(TAG, "저장된 메모 아이디 : $savedMemoId")
+            memoRepository.saveImages(savedMemoId, imageUriList)
+            // TODO 이미지 저장이 실패 했을 경우?
 
 //            val newMemo = memo.copy(id = memoId)
 //
@@ -124,18 +144,25 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun updateMemo(title: String, content: String, category: Category, folderId: Long, imageUriList: List<String>) {
+    fun updateMemo(
+        title: String,
+        content: String,
+        category: Category,
+        folderId: Long,
+        imageUriList: List<String>
+    ) {
         val beforeMemo = memo.value ?: return
+        val imageNameList = imageUriList.map { imageUri ->
+            imageUri.substringAfterLast("/")
+        }
         val newMemo = Memo(
             beforeMemo.id, title, content, beforeMemo.latitude, beforeMemo.longitude,
-            category, folderId, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageUriList
+            category, folderId, beforeMemo.area1, beforeMemo.area2, beforeMemo.area3, imageNameList
         )
-
         viewModelScope.launch {
-
             // Local Room update
             memoRepository.updateMemo(newMemo)
-            saveImage(imageUriList)
+            memoRepository.updateImages(newMemo.id.toLong(), imageUriList)
 
             // Remote Firebase update
             if (user != null) {
@@ -147,18 +174,18 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    private fun saveImage(imageUriList: List<String>) {
-
-        if (imageUriList.isEmpty()) return
-        viewModelScope.launch {
-            Log.d(TAG, "이미지 저장 시작")
-            memoRepository.saveImages(imageUriList)
-            Log.d(TAG, "이미지 저장 완료")
-        }
-
-        // 네트워크 연결되어 있을 시 FireBase Store 에 저장
-        saveImageOnRemote(imageUriList)
-    }
+//    private fun saveImage(imageUriList: List<String>) {
+//
+//        if (imageUriList.isEmpty()) return
+//        viewModelScope.launch {
+//            Log.d(TAG, "이미지 저장 시작")
+//            memoRepository.saveImages(imageUriList)
+//            Log.d(TAG, "이미지 저장 완료")
+//        }
+//
+//        // 네트워크 연결되어 있을 시 FireBase Store 에 저장
+//        saveImageOnRemote(imageUriList)
+//    }
 
     fun getAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
@@ -182,7 +209,7 @@ class PostViewModel @Inject constructor(
     fun addCategory(name: String) {
         viewModelScope.launch {
             if (name.isEmpty()) {
-                Log.d(TAG,"카테고리명이 비어있습니다.")
+                Log.d(TAG, "카테고리명이 비어있습니다.")
                 _event.emit(AddCategoryEvent.EmptyCategoryName)
                 return@launch
             }
@@ -199,8 +226,8 @@ class PostViewModel @Inject constructor(
 }
 
 sealed class AddCategoryEvent {
-    object AddCategory: AddCategoryEvent()
-    object ExistCategoryName: AddCategoryEvent()
-    object AddCategoryCompleted: AddCategoryEvent()
-    object EmptyCategoryName: AddCategoryEvent()
+    object AddCategory : AddCategoryEvent()
+    object ExistCategoryName : AddCategoryEvent()
+    object AddCategoryCompleted : AddCategoryEvent()
+    object EmptyCategoryName : AddCategoryEvent()
 }

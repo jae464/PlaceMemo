@@ -34,7 +34,7 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveMemo(memo: Memo) {
+    override suspend fun saveMemo(memo: Memo): Long {
         return memoLocalDataSource.saveMemo(memo.toMemoEntity())
     }
 
@@ -116,12 +116,16 @@ class MemoRepositoryImpl @Inject constructor(
         memoRemoteDataSource.deleteMemo(userId, memoId)
     }
 
-    override suspend fun saveImages(imagePathList: List<String>) {
-        memoLocalDataSource.saveMemoImages(imagePathList)
+    override suspend fun saveImages(memoId: Long, imagePathList: List<String>) {
+        memoLocalDataSource.saveMemoImages(memoId, imagePathList)
     }
 
     override suspend fun saveImagesOnRemote(imagePathList: List<String>) {
         TODO("Not yet implemented")
+    }
+
+    override fun updateImages(memoId: Long, imagePathList: List<String>) {
+        memoLocalDataSource.updateMemoImages(memoId, imagePathList)
     }
 
     override fun getImagePathList(memoId: Int): List<String> {
