@@ -92,14 +92,14 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
 
         locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        checkPermission()
-
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            100,
-            5f
-        ) { location ->
-            Log.d("BaseMapFragment", location.toString())
+        if(checkPermission()) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                100,
+                5f
+            ) { location ->
+                Log.d("BaseMapFragment", location.toString())
+            }
         }
 
         return binding.root
@@ -170,7 +170,7 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
 
     }
 
-    private fun checkPermission() {
+    private fun checkPermission(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -180,8 +180,9 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-            return
+            return false
         }
+        return true
     }
 
     override fun onDestroyView() {
