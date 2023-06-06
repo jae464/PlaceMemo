@@ -240,13 +240,6 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     }
 
-    private fun clearChipGroup() {
-//        binding.chipTypeFood.isChecked = false
-//        binding.chipTypeCafe.isChecked = false
-//        binding.chipTypeHotel.isChecked = false
-//        binding.chipTypeOther.isChecked = false
-    }
-
     override fun onMarkerClick(marker: Marker): Boolean {
 
         if (marker.tag == "current") {

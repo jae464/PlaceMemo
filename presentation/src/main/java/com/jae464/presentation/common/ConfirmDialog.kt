@@ -15,6 +15,8 @@ class ConfirmDialog: DialogFragment() {
 
     private lateinit var binding: DialogConfirmationBinding
     private var confirmDialogListener: ConfirmDialogListener? = null
+    private var title = ""
+    private var confirm = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +30,9 @@ class ConfirmDialog: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tvTitle.text = title
+        binding.btnConfirm.text = confirm
+        binding.btnCancel.text = "취소"
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         binding.btnConfirm.setOnClickListener {
             confirmDialogListener?.onConfirmClick()
@@ -39,6 +44,14 @@ class ConfirmDialog: DialogFragment() {
 
     fun setConfirmDialogListener(listener: ConfirmDialogListener) {
         this.confirmDialogListener = listener
+    }
+
+    fun setTitle(title: String) {
+        this.title = title
+    }
+
+    fun setConfirmText(text: String) {
+        this.confirm = text
     }
 
 }

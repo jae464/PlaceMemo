@@ -3,7 +3,7 @@ package com.jae464.presentation.feed
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.DialogFragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,10 +14,8 @@ import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.R
 import com.jae464.presentation.common.AddDialog
 import com.jae464.presentation.common.AddDialogListener
-import com.jae464.presentation.common.ConfirmDialog
 import com.jae464.presentation.databinding.FragmentFeedFolderBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -33,7 +31,12 @@ class FeedFolderFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        folderListAdapter = FolderListAdapter(requireContext(), parentFragmentManager, this::updateFolderOrder)
+        folderListAdapter = FolderListAdapter(
+            requireContext(),
+            parentFragmentManager,
+            this::updateFolderOrder,
+            this::deleteFolder
+        )
         val itemTouchHelperCallback = FolderItemTouchHelperCallback(folderListAdapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         initDialog()
@@ -45,10 +48,11 @@ class FeedFolderFragment :
     private fun initDialog() {
         addDialog = AddDialog().apply {
             setTitle("생성할 폴더 이름을 입력하세요.")
-            addDialogListener(object: AddDialogListener {
+            addDialogListener(object : AddDialogListener {
                 override fun onConfirmClick(name: String) {
                     viewModel.createFolder(Folder(name = name, memoCount = 0))
                 }
+
                 override fun onCancelClick() {
                     closeDialog()
                 }
@@ -81,16 +85,19 @@ class FeedFolderFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { addFolderEvent ->
-                    when(addFolderEvent) {
+                    when (addFolderEvent) {
                         is AddFolderEvent.ExistFolderName -> {
                             addDialog?.setErrorMessage("이미 존재하는 이름입니다.")
                         }
+
                         is AddFolderEvent.CreateFolderCompleted -> {
                             addDialog?.dismiss()
                         }
+
                         is AddFolderEvent.EmptyFolderName -> {
                             addDialog?.setErrorMessage("폴더명을 입력해주세요.")
                         }
+
                         else -> {
 
                         }
@@ -104,7 +111,15 @@ class FeedFolderFragment :
         val updatedFolders = folders.mapIndexed { index, folder ->
             folder.copy(order = index)
         }
-         viewModel.updateFolders(updatedFolders)
+        viewModel.updateFolders(updatedFolders)
+    }
+
+    private fun deleteFolder(folder: Folder) {
+        if (folder.isDefault) {
+            Toast.makeText(requireContext(), "기본 폴더는 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        viewModel.deleteFolder(folder.id)
     }
 
 }

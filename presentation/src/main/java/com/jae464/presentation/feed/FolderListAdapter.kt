@@ -11,18 +11,22 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jae464.domain.model.feed.Folder
 import com.jae464.presentation.R
+import com.jae464.presentation.common.ConfirmDialog
+import com.jae464.presentation.common.ConfirmDialogListener
 import com.jae464.presentation.databinding.ItemFolderBinding
 
 
 class FolderListAdapter(
     private val context: Context,
     private val supportFragmentManager: FragmentManager,
-    private val onFolderUpdate: (List<Folder>) -> Unit
+    private val onFolderUpdate: (List<Folder>) -> Unit,
+    private val onFolderDelete: (Folder) -> Unit
 ) : ListAdapter<Folder, FolderListAdapter.FolderViewHolder>(diff),
     FolderItemTouchHelperCallback.OnFolderMoveListener {
 
     private val TAG = "FolderListAdapter"
     private var folderList = mutableListOf<Folder>() // Room 에 Folder 순서 업데이트를 위한 폴더 리스트
+    private var deleteDialog: ConfirmDialog? = null
 
     inner class FolderViewHolder(
         private val binding: ItemFolderBinding
@@ -42,12 +46,20 @@ class FolderListAdapter(
                         }
 
                         R.id.delete -> {
-                            Log.d(TAG, menuItem.itemId.toString())
-                            // TODO 폴더 삭제 다이얼로그 띄우기
-                            DeleteFolderDialog(folder.id).show(
-                                supportFragmentManager,
-                                "delete_folder"
-                            )
+
+                            deleteDialog?.setConfirmDialogListener(object: ConfirmDialogListener {
+                                override fun onConfirmClick() {
+                                    onFolderDelete(folder)
+                                    deleteDialog?.dismiss()
+                                }
+
+                                override fun onCancelClick() {
+                                    deleteDialog?.dismiss()
+                                }
+
+                            })
+                            deleteDialog?.show(supportFragmentManager, "delete-folder")
+
 
                             true
                         }
@@ -64,11 +76,19 @@ class FolderListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
         val binding = ItemFolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         folderList = currentList.toMutableList()
+        initDialog()
         return FolderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
         holder.bind(currentList[position])
+    }
+
+    private fun initDialog() {
+        deleteDialog = ConfirmDialog().apply {
+            setTitle("정말 삭제하시겠습니까?")
+            setConfirmText("삭제")
+        }
     }
 
     companion object {
