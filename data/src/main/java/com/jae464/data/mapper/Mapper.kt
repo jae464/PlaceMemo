@@ -29,33 +29,12 @@ fun userEntityToUser(userEntity: UserEntity?): User? {
     )
 }
 
-//fun categoryToInt(category: Category): Int {
-//    return when (category) {
-//        Category.RESTAURANT -> 0
-//        Category.TOURIST -> 1
-//        Category.CAFE -> 2
-//        Category.HOTEL -> 3
-//        Category.OTHER -> 4
-//        Category.ALL -> 5
-//    }
-//}
-//
-//fun intToCategory(index: Int): Category {
-//    return when (index) {
-//        0 -> Category.RESTAURANT
-//        1 -> Category.TOURIST
-//        2 -> Category.CAFE
-//        3 -> Category.HOTEL
-//        4 -> Category.OTHER
-//        else -> Category.OTHER
-//    }
-//}
-
 fun folderEntityToFolder(folderEntity: FolderEntity, memoCount: Int = 0): Folder {
     return Folder(
         id = folderEntity.folderId,
         name = folderEntity.folderName,
         order = folderEntity.folderOrder,
+        isDefault = folderEntity.isDefault,
         memoCount = memoCount
     )
 }

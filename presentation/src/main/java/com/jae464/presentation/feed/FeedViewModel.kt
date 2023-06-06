@@ -65,6 +65,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun deleteFolder(folderId: Long) {
+        viewModelScope.launch {
+            folderRepository.deleteFolder(folderId)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d("FeedViewModel", "onCleared")
