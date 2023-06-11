@@ -3,6 +3,7 @@ package com.jae464.presentation.feed
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.FragmentManager
@@ -20,7 +21,7 @@ class FolderListAdapter(
     private val context: Context,
     private val supportFragmentManager: FragmentManager,
     private val onFolderUpdate: (List<Folder>) -> Unit,
-    private val onFolderDelete: (Folder) -> Unit
+    private val onFolderDelete: (Folder) -> Unit,
 ) : ListAdapter<Folder, FolderListAdapter.FolderViewHolder>(diff),
     FolderItemTouchHelperCallback.OnFolderMoveListener {
 
@@ -35,8 +36,8 @@ class FolderListAdapter(
             binding.folder = folder
             binding.ivFolderEdit.setOnClickListener {
                 val popupMenu = PopupMenu(context, binding.ivFolderEdit)
-                popupMenu.menuInflater.inflate(R.menu.folder_menu, popupMenu.menu)
 
+                popupMenu.menuInflater.inflate(R.menu.folder_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.edit -> {
@@ -46,7 +47,6 @@ class FolderListAdapter(
                         }
 
                         R.id.delete -> {
-
                             deleteDialog?.setConfirmDialogListener(object: ConfirmDialogListener {
                                 override fun onConfirmClick() {
                                     onFolderDelete(folder)
@@ -65,6 +65,21 @@ class FolderListAdapter(
                         }
 
                         else -> false
+                    }
+                }
+                if (!folder.isDefault) {
+                    val setDefaultMenu = popupMenu.menu.add(Menu.NONE, Menu.NONE, 0, "기본 폴더로 지정")
+                    setDefaultMenu.setOnMenuItemClickListener {
+                        folderList.forEachIndexed { index, item->
+                            if (item.isDefault) {
+                                folderList[index] = item.copy(isDefault = false)
+                            }
+                            if (folder.id == item.id) {
+                                folderList[index] = item.copy(isDefault = true)
+                            }
+                        }
+                        onFolderUpdate(folderList)
+                        true
                     }
                 }
 
