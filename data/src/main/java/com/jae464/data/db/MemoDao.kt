@@ -35,13 +35,28 @@ interface MemoDao {
    fun getMemoByCategory(categoryId: Long): Flow<List<MemoEntity>>
 
    @Query("SELECT * FROM memo WHERE category_id = :categoryId ORDER BY created_at DESC")
-   fun getMemoByCategoryWithPage(categoryId: Long): PagingSource<Int, MemoEntity>
+   fun getMemoByCategoryWithPageSortByDesc(categoryId: Long): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo WHERE category_id = :categoryId ORDER BY created_at ASC")
+   fun getMemoByCategoryWithPageSortByAsc(categoryId: Long): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo WHERE folder_id = :folderId ORDER BY created_at DESC")
+   fun getAllMemoByFolderSortByDescWithPage(folderId: Long): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo WHERE folder_id = :folderId ORDER BY created_at ASC")
+   fun getAllMemoByFolderSortByAscWithPage(folderId: Long): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo WHERE folder_id = :folderId AND category_id = :categoryId ORDER BY created_at DESC")
+   fun getMemoByFolderWithCategorySortByDescWithPage(folderId: Long, categoryId: Long): PagingSource<Int, MemoEntity>
+
+   @Query("SELECT * FROM memo WHERE folder_id = :folderId AND category_id = :categoryId ORDER BY created_at ASC")
+   fun getMemoByFolderWithCategorySortByAscWithPage(folderId: Long, categoryId: Long): PagingSource<Int, MemoEntity>
 
    @Query("SELECT * FROM memo WHERE title LIKE '%' || :title || '%'")
    fun getMemoByTitle(title: String): Flow<List<MemoEntity>>
 
    @Transaction
-   @Query("SELECT * FROM folder")
-   suspend fun getFoldersWithMemos(): List<FolderWithMemos>
+   @Query("SELECT * FROM folder WHERE folder_id = :folderId")
+   suspend fun getFoldersWithMemos(folderId: Long): List<FolderWithMemos>
 
 }

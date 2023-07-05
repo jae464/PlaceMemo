@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.paging.map
@@ -25,6 +26,7 @@ import com.jae464.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.R
 import com.jae464.presentation.databinding.FragmentFeedCategoryBinding
+import com.jae464.presentation.post.PostFragmentArgs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -32,9 +34,11 @@ import kotlinx.coroutines.launch
 class FeedCategoryFragment :
     BaseFragment<FragmentFeedCategoryBinding>(R.layout.fragment_feed_category) {
 
-    private val TAG: String = "FeedCategoryFragment"
     private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedCategoryViewModel by viewModels()
+    private val folderId by lazy {
+        arguments?.getLong(FOLDER_ID_KEY, -1)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,6 +47,7 @@ class FeedCategoryFragment :
         binding.feedRecyclerView.adapter = listAdapter
         binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        initAppbar()
         initView()
         initObserver()
         initListener()
@@ -86,6 +91,15 @@ class FeedCategoryFragment :
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 return
             }
+        }
+    }
+
+    private fun initAppbar() {
+        Log.d(TAG, folderId.toString())
+        if (folderId != null) {
+            val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+            binding.toolbarFeedCategory.setupWithNavController(findNavController(), appBarConfiguration)
+            binding.appbarFeedCategory.visibility = View.VISIBLE
         }
     }
 
@@ -176,7 +190,10 @@ class FeedCategoryFragment :
     }
 
     companion object {
-        const val CARD_VIEW_TYPE = 0
-        const val LIST_VIEW_TYPE = 1
+        private const val TAG = "FeedCategoryFragment"
+        private const val CARD_VIEW_TYPE = 0
+        private const val LIST_VIEW_TYPE = 1
+
+        const val FOLDER_ID_KEY = "folderId"
     }
 }

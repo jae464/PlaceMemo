@@ -1,5 +1,6 @@
 package com.jae464.presentation.feed
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
@@ -11,7 +12,9 @@ class FeedStateAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         when (position) {
             0 -> return FeedFolderFragment()
-            1 -> return FeedCategoryFragment()
+            1 -> {
+                return FeedCategoryFragment()
+            }
         }
         return FeedFolderFragment()
     }

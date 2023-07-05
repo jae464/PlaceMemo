@@ -108,6 +108,32 @@ class MemoRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun getAllMemoByFolder(folderId: Long, sortBy: SortBy): Flow<PagingData<Memo>> {
+        return memoLocalDataSource.getAllMemoByFolder(folderId, sortBy).map { pagingData ->
+            Log.d("MemoRepositoryImpl", pagingData.toString())
+            pagingData.map { memoEntity ->
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                Log.d("MemoRepositoryImpl", memoEntity.toString())
+                memoEntity.toMemo(category)
+            }
+        }
+    }
+
+    override fun getAllMemoByFolderWithCategory(
+        folderId: Long,
+        categoryId: Long,
+        sortBy: SortBy
+    ): Flow<PagingData<Memo>> {
+        return memoLocalDataSource.getAllMemoByFolderWithCategory(folderId, categoryId, sortBy).map { pagingData ->
+            pagingData.map { memoEntity ->
+                val categoryEntity = categoryDao.getCategoryById(categoryId = memoEntity.categoryId)
+                val category = Category(categoryEntity.id, categoryEntity.name)
+                memoEntity.toMemo(category)
+            }
+        }
+    }
+
     override suspend fun deleteMemo(id: Int) {
         memoLocalDataSource.deleteMemo(id)
     }

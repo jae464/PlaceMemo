@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.jae464.domain.model.feed.Folder
 import com.jae464.presentation.base.BaseFragment
@@ -35,7 +36,8 @@ class FeedFolderFragment :
             requireContext(),
             parentFragmentManager,
             this::updateFolderOrder,
-            this::deleteFolder
+            this::deleteFolder,
+            this::moveToFeed
         )
         val itemTouchHelperCallback = FolderItemTouchHelperCallback(folderListAdapter)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
@@ -120,6 +122,13 @@ class FeedFolderFragment :
             return
         }
         viewModel.deleteFolder(folder.id)
+    }
+
+    private fun moveToFeed(folderId: Long) {
+        val bundle = Bundle().apply {
+            putLong(FeedCategoryFragment.FOLDER_ID_KEY, folderId)
+        }
+        findNavController().navigate(R.id.action_feed_to_feedCategoryFragment, bundle)
     }
 
 }
