@@ -23,6 +23,9 @@ interface MemoRepository {
     fun getMemoByTitle(title: String): Flow<List<Memo>>
     fun getMemoByContent(content: String): Flow<List<Memo>>
 
+    fun getAllMemoByFolder(folderId: Long, sortBy: SortBy): Flow<PagingData<Memo>>
+    fun getAllMemoByFolderWithCategory(folderId: Long, categoryId: Long, sortBy: SortBy): Flow<PagingData<Memo>>
+
     suspend fun deleteMemo(id: Int)
     suspend fun deleteMemoOnRemote(userId: String, memoId: Int)
 

@@ -40,7 +40,7 @@ class MemoLocalDataSourceImpl @Inject constructor(
                 initialLoadSize = 10
             ),
             pagingSourceFactory = {
-                when(sortBy) {
+                when (sortBy) {
                     SortBy.DESC -> memoDao.getAllMemoWithPageSortByDesc()
                     SortBy.ASC -> memoDao.getAllMemoWithPageSortByAsc()
                 }
@@ -60,7 +60,10 @@ class MemoLocalDataSourceImpl @Inject constructor(
         return memoDao.getMemoByCategory(categoryId)
     }
 
-    override fun getMemoByCategoryWithPage(categoryId: Long, sortBy: SortBy): Flow<PagingData<MemoEntity>> {
+    override fun getMemoByCategoryWithPage(
+        categoryId: Long,
+        sortBy: SortBy
+    ): Flow<PagingData<MemoEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
@@ -68,7 +71,11 @@ class MemoLocalDataSourceImpl @Inject constructor(
                 initialLoadSize = 10
             ),
             pagingSourceFactory = {
-                memoDao.getMemoByCategoryWithPage(categoryId)
+                when (sortBy) {
+                    SortBy.DESC -> memoDao.getMemoByCategoryWithPageSortByDesc(categoryId)
+                    SortBy.ASC -> memoDao.getMemoByCategoryWithPageSortByAsc(categoryId)
+                }
+
             }
         ).flow
     }
@@ -80,6 +87,50 @@ class MemoLocalDataSourceImpl @Inject constructor(
     override fun getMemoByContent(content: String): Flow<List<MemoEntity>> {
         return memoDao.getMemoByTitle(content)
     }
+
+    override fun getAllMemoByFolder(folderId: Long, sortBy: SortBy): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                when (sortBy) {
+                    SortBy.DESC -> memoDao.getAllMemoByFolderSortByDescWithPage(folderId)
+                    SortBy.ASC -> memoDao.getAllMemoByFolderSortByAscWithPage(folderId)
+                }
+            }
+        ).flow
+    }
+
+    override fun getAllMemoByFolderWithCategory(
+        folderId: Long,
+        categoryId: Long,
+        sortBy: SortBy
+    ): Flow<PagingData<MemoEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = {
+                when (sortBy) {
+                    SortBy.DESC -> memoDao.getMemoByFolderWithCategorySortByDescWithPage(
+                        folderId,
+                        categoryId
+                    )
+
+                    SortBy.ASC -> memoDao.getMemoByFolderWithCategorySortByAscWithPage(
+                        folderId,
+                        categoryId
+                    )
+                }
+            }
+        ).flow
+    }
+
 
     override suspend fun deleteMemo(id: Int) {
         memoDao.deleteMemo(id)
@@ -107,8 +158,8 @@ class MemoLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFoldersWithMemos(): List<FolderWithMemos> {
-        return memoDao.getFoldersWithMemos()
+    override suspend fun getFolderWithMemos(folderId: Long): List<FolderWithMemos> {
+        return memoDao.getFoldersWithMemos(folderId)
     }
 
     override fun getImagePathList(memoId: Int): List<String> {
