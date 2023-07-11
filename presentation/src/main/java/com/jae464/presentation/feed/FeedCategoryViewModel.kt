@@ -37,13 +37,13 @@ class FeedCategoryViewModel @Inject constructor(
     val memos = selectedCategory.flatMapLatest { selectedCategory ->
         sortBy.flatMapLatest { sortBy ->
             folderId.flatMapLatest { folderId ->
-                if (folderId == -1L) {
+                if (folderId == -1L) { // 모든 메모를 보여주는 경우
                     if (selectedCategory == null) {
                         repository.getAllMemoWithPage(sortBy)
                     } else {
                         repository.getMemoByCategoryWithPage(selectedCategory.id, sortBy)
                     }
-                } else {
+                } else { // Folder ID 가 있어서, 해당 폴더의 메모만 보여주는 경우
                     if (selectedCategory == null) {
                         repository.getAllMemoByFolder(folderId, sortBy)
                     } else {

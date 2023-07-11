@@ -124,9 +124,11 @@ class FeedFolderFragment :
         viewModel.deleteFolder(folder.id)
     }
 
-    private fun moveToFeed(folderId: Long) {
+    private fun moveToFeed(folder: Folder) {
         val bundle = Bundle().apply {
-            putLong(FeedCategoryFragment.FOLDER_ID_KEY, folderId)
+            putLong(FeedCategoryFragment.FOLDER_ID_KEY, folder.id)
+            putString(FeedCategoryFragment.FOLDER_NAME_KEY, folder.name)
+            putInt(FeedCategoryFragment.MEMO_COUNT_KEY, folder.memoCount)
         }
         findNavController().navigate(R.id.action_feed_to_feedCategoryFragment, bundle)
     }

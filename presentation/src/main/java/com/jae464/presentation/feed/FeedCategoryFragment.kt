@@ -37,7 +37,7 @@ class FeedCategoryFragment :
     private var listAdapter: FeedListAdapter? = null
     private val viewModel: FeedCategoryViewModel by viewModels()
     private val folderId by lazy {
-        arguments?.getLong(FOLDER_ID_KEY, -1)
+        arguments?.getLong(FOLDER_ID_KEY, -1L)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,6 +99,7 @@ class FeedCategoryFragment :
         if (folderId != null) {
             val appBarConfiguration = AppBarConfiguration(findNavController().graph)
             binding.toolbarFeedCategory.setupWithNavController(findNavController(), appBarConfiguration)
+            binding.toolbarFeedCategory.title = arguments?.getString(FOLDER_NAME_KEY, "")
             binding.appbarFeedCategory.visibility = View.VISIBLE
         }
     }
@@ -195,5 +196,7 @@ class FeedCategoryFragment :
         private const val LIST_VIEW_TYPE = 1
 
         const val FOLDER_ID_KEY = "folderId"
+        const val FOLDER_NAME_KEY = "folderName"
+        const val MEMO_COUNT_KEY = "memoCount"
     }
 }

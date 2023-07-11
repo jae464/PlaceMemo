@@ -1,6 +1,5 @@
 package com.jae464.presentation.home
 
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
