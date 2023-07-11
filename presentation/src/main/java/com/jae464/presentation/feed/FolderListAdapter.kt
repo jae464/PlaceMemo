@@ -22,7 +22,7 @@ class FolderListAdapter(
     private val supportFragmentManager: FragmentManager,
     private val onFolderUpdate: (List<Folder>) -> Unit,
     private val onFolderDelete: (Folder) -> Unit,
-    private val onMoveToFeed: (Long) -> Unit
+    private val onMoveToFeed: (Folder) -> Unit
 ) : ListAdapter<Folder, FolderListAdapter.FolderViewHolder>(diff),
     FolderItemTouchHelperCallback.OnFolderMoveListener {
 
@@ -36,7 +36,7 @@ class FolderListAdapter(
         fun bind(folder: Folder) {
             binding.folder = folder
             binding.clFolder.setOnClickListener {
-                onMoveToFeed(folder.id)
+                onMoveToFeed(folder)
             }
             binding.ivFolderEdit.setOnClickListener {
                 val popupMenu = PopupMenu(context, binding.ivFolderEdit)
