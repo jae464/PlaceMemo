@@ -6,27 +6,6 @@
     app:startDestination="@id/home">
 
     <fragment
-        android:id="@+id/feed"
-        android:name="com.jae464.presentation.feed.FeedFragment"
-        android:label="피드"
-        tools:layout="@layout/fragment_feed">
-        <action
-            android:id="@+id/action_feed_to_detail_memo"
-            app:destination="@id/detail_memo">
-            <argument
-                android:name="memoId"
-                app:argType="integer" />
-        </action>
-        <action
-            android:id="@+id/action_feed_to_feedCategoryFragment"
-            app:destination="@id/feedCategoryFragment">
-            <argument
-                android:name="folderId"
-                app:argType="long" />
-        </action>
-    </fragment>
-
-    <fragment
         android:id="@+id/mypage"
         android:name="com.jae464.presentation.mypage.MyPageFragment"
         android:label="마이페이지"
@@ -126,22 +105,43 @@
             app:destination="@id/friend_list" />
     </fragment>
 
-    <fragment
-        android:id="@+id/feed_folder"
-        android:name="com.jae464.presentation.feed.FeedFolderFragment"
-        android:label="FeedFolderFragment"
-        tools:layout="@layout/fragment_feed_folder" />
-
-    <fragment
-        android:id="@+id/feedCategoryFragment"
-        android:name="com.jae464.presentation.feed.FeedCategoryFragment"
-        android:label=""
-        tools:layout="@layout/fragment_feed_category"
-        >
-        <argument
-            android:name="folderId"
-            app:argType="long"
-            android:defaultValue="-1L" />
-    </fragment>
+    <navigation android:id="@+id/feed_navigation"
+        app:startDestination="@id/feed">
+        <fragment
+            android:id="@+id/feed"
+            android:name="com.jae464.presentation.feed.FeedFragment"
+            android:label="피드"
+            tools:layout="@layout/fragment_feed">
+            <action
+                android:id="@+id/action_feed_to_detail_memo"
+                app:destination="@id/detail_memo">
+                <argument
+                    android:name="memoId"
+                    app:argType="integer" />
+            </action>
+            <action
+                android:id="@+id/action_feed_to_feedCategoryFragment"
+                app:destination="@id/feedCategoryFragment">
+                <argument
+                    android:name="folderId"
+                    app:argType="long" />
+            </action>
+        </fragment>
+        <fragment
+            android:id="@+id/feed_folder"
+            android:name="com.jae464.presentation.feed.FeedFolderFragment"
+            android:label="FeedFolderFragment"
+            tools:layout="@layout/fragment_feed_folder" />
+        <fragment
+            android:id="@+id/feedCategoryFragment"
+            android:name="com.jae464.presentation.feed.FeedCategoryFragment"
+            android:label=""
+            tools:layout="@layout/fragment_feed_category">
+            <argument
+                android:name="folderId"
+                android:defaultValue="-1L"
+                app:argType="long" />
+        </fragment>
+    </navigation>
 
 </navigation>
