@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
         tools:context=".presentation.feed.FeedFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -15,68 +14,142 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white"
             android:visibility="gone"
             tools:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
-                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-                android:id="@+id/toolbar_feed_category"
-                style="@style/customToolbarStyle"
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                app:layout_scrollFlags="scroll|enterAlways"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize" />
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.Toolbar
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+                        android:id="@+id/toolbar_feed_category"
+                        style="@style/customToolbarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_chip_view"
+                        android:layout_marginHorizontal="16dp"
+                        app:layout_constraintTop_toBottomOf="@id/toolbar_feed_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_setting_feed"
+                            android:src="@drawable/baseline_tune_24"
+                            android:layout_gravity="center"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp" />
+
+<!--                        <Spinner-->
+<!--                            android:id="@+id/spinner_sort"-->
+<!--                            android:layout_marginVertical="8dp"-->
+<!--                            android:layout_marginHorizontal="16dp"-->
+<!--                            app:layout_constraintStart_toStartOf="parent"-->
+<!--                            app:layout_constraintTop_toTopOf="parent"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content" />-->
+
+<!--                        <Spinner-->
+<!--                            android:id="@+id/spinner_view_mode"-->
+<!--                            android:layout_marginVertical="8dp"-->
+<!--                            android:layout_marginHorizontal="16dp"-->
+<!--                            app:layout_constraintStart_toEndOf="@id/spinner_sort"-->
+<!--                            app:layout_constraintTop_toTopOf="parent"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content" />-->
+
+                        <HorizontalScrollView
+                            android:id="@+id/hsv_chip_group"
+                            android:scrollbars="none"
+                            android:paddingVertical="16dp"
+                            android:paddingHorizontal="16dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/chip_category"
+                                style="@style/Widget.MaterialComponents.ChipGroup"
+                                android:layout_width="wrap_content"
+                                app:selectionRequired="true"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:singleSelection="true">
+
+                            </com.google.android.material.chip.ChipGroup>
+
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
 
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <Spinner
-            android:id="@+id/spinner_sort"
-            android:layout_marginVertical="8dp"
-            android:layout_marginHorizontal="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner_sort"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            android:layout_marginHorizontal="16dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content" />-->
 
-        <Spinner
-            android:id="@+id/spinner_view_mode"
-            android:layout_marginVertical="8dp"
-            android:layout_marginHorizontal="16dp"
-            app:layout_constraintStart_toEndOf="@id/spinner_sort"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner_view_mode"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            android:layout_marginHorizontal="16dp"-->
+<!--            app:layout_constraintStart_toEndOf="@id/spinner_sort"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content" />-->
 
-        <HorizontalScrollView
-            android:id="@+id/hsv_chip_group"
-            android:scrollbars="none"
-            android:paddingVertical="16dp"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintTop_toBottomOf="@id/spinner_sort"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/hsv_chip_group"-->
+<!--            android:scrollbars="none"-->
+<!--            android:paddingVertical="16dp"-->
+<!--            android:paddingHorizontal="16dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/spinner_sort"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_category"
-                style="@style/Widget.MaterialComponents.ChipGroup"
-                android:layout_width="wrap_content"
-                app:selectionRequired="true"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:singleSelection="true">
+<!--            <com.google.android.material.chip.ChipGroup-->
+<!--                android:id="@+id/chip_category"-->
+<!--                style="@style/Widget.MaterialComponents.ChipGroup"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                app:selectionRequired="true"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:singleSelection="true">-->
 
-            </com.google.android.material.chip.ChipGroup>
+<!--            </com.google.android.material.chip.ChipGroup>-->
 
-        </HorizontalScrollView>
+<!--        </HorizontalScrollView>-->
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/memo_scroll_view"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintTop_toBottomOf="@id/hsv_chip_group"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -106,7 +179,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
