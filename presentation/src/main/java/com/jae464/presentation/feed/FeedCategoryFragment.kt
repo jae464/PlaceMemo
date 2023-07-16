@@ -25,6 +25,7 @@ import com.jae464.domain.model.SortBy
 import com.jae464.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.R
+import com.jae464.presentation.common.FeedSettingDialog
 import com.jae464.presentation.databinding.FragmentFeedCategoryBinding
 import com.jae464.presentation.post.PostFragmentArgs
 import kotlinx.coroutines.flow.collectLatest
@@ -48,59 +49,65 @@ class FeedCategoryFragment :
         binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         initAppbar()
-        initView()
+//        initView()
         initObserver()
         initListener()
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
-    private fun initView() {
-        val sortItems = resources.getStringArray(R.array.sort_array)
-        val sortSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, sortItems)
-        binding.spinnerSort.adapter = sortSpinnerAdapter
-        binding.spinnerSort.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
-
-                when(p2) {
-                    0 -> viewModel.setSortBy(SortBy.DESC)
-                    1 -> viewModel.setSortBy(SortBy.ASC)
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                return
-            }
-
-        }
-
-        val viewModeItems = resources.getStringArray(R.array.view_mode_array)
-        val viewModeSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, viewModeItems)
-        binding.spinnerViewMode.adapter = viewModeSpinnerAdapter
-        binding.spinnerViewMode.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                listAdapter = FeedListAdapter(requireContext(), this@FeedCategoryFragment::goToDetailPage, p2)
-                binding.feedRecyclerView.adapter = listAdapter
-                binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                viewLifecycleOwner.lifecycleScope.launch {
-                    listAdapter?.submitData(viewModel.memos.value)
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                return
-            }
-        }
-    }
+//    private fun initView() {
+//        val sortItems = resources.getStringArray(R.array.sort_array)
+//        val sortSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, sortItems)
+//        binding.spinnerSort.adapter = sortSpinnerAdapter
+//        binding.spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+//                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
+//
+//                when (p2) {
+//                    0 -> viewModel.setSortBy(SortBy.DESC)
+//                    1 -> viewModel.setSortBy(SortBy.ASC)
+//                }
+//            }
+//
+//            override fun onNothingSelected(p0: AdapterView<*>?) {
+//                return
+//            }
+//
+//        }
+//
+//        val viewModeItems = resources.getStringArray(R.array.view_mode_array)
+//        val viewModeSpinnerAdapter =
+//            ArrayAdapter(requireContext(), R.layout.item_spinner, viewModeItems)
+//        binding.spinnerViewMode.adapter = viewModeSpinnerAdapter
+//        binding.spinnerViewMode.onItemSelectedListener =
+//            object : AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+//                    listAdapter = FeedListAdapter(
+//                        requireContext(),
+//                        this@FeedCategoryFragment::goToDetailPage,
+//                        p2
+//                    )
+//                    binding.feedRecyclerView.adapter = listAdapter
+//                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//                    viewLifecycleOwner.lifecycleScope.launch {
+//                        listAdapter?.submitData(viewModel.memos.value)
+//                    }
+//                }
+//
+//                override fun onNothingSelected(p0: AdapterView<*>?) {
+//                    return
+//                }
+//            }
+//    }
 
     private fun initAppbar() {
-        Log.d(TAG, folderId.toString())
-        if (folderId != null) {
-            val appBarConfiguration = AppBarConfiguration(findNavController().graph)
-            binding.toolbarFeedCategory.setupWithNavController(findNavController(), appBarConfiguration)
-            binding.toolbarFeedCategory.title = arguments?.getString(FOLDER_NAME_KEY, "")
-            binding.appbarFeedCategory.visibility = View.VISIBLE
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        binding.toolbarFeedCategory.setupWithNavController(findNavController(), appBarConfiguration)
+        binding.toolbarFeedCategory.title = arguments?.getString(FOLDER_NAME_KEY, "")
+        binding.appbarFeedCategory.visibility = View.VISIBLE
+        if (folderId == null) {
+            binding.toolbarFeedCategory.visibility = View.GONE
         }
     }
 
@@ -150,14 +157,27 @@ class FeedCategoryFragment :
     }
 
     private fun initListener() {
+        binding.ivSettingFeed.setOnClickListener {
+            FeedSettingDialog().apply {
 
+            }
+                .show(requireActivity().supportFragmentManager, "Feed-Setting-Dialog")
+        }
     }
 
     private fun goToDetailPage(memoId: Int) {
-        val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
-        findNavController().navigate(
-            action
-        )
+        if (folderId == null) {
+            val action = FeedFragmentDirections.actionFeedToDetailMemo(memoId)
+            findNavController().navigate(
+                action
+            )
+        }
+        else {
+            val action = FeedCategoryFragmentDirections.actionFeedCategoryFragmentToDetailMemo(memoId)
+            findNavController().navigate(
+                action
+            )
+        }
     }
 
     private fun addDefaultChip() {

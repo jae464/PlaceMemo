@@ -141,7 +141,13 @@
                 android:name="folderId"
                 android:defaultValue="-1L"
                 app:argType="long" />
+            <action
+                android:id="@+id/action_feedCategoryFragment_to_detail_memo"
+                app:destination="@id/detail_memo" />
         </fragment>
+        <action
+            android:id="@+id/action_global_detail_memo"
+            app:destination="@id/detail_memo" />
     </navigation>
 
 </navigation>
