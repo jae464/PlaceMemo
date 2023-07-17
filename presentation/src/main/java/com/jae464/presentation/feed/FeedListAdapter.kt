@@ -103,8 +103,8 @@ class FeedListAdapter(
 
     companion object {
 
-        const val VIEW_TYPE_CARD = 0
-        const val VIEW_TYPE_LIST = 1
+        const val VIEW_TYPE_LIST = 0
+        const val VIEW_TYPE_CARD = 1
 
         private val diff = object : DiffUtil.ItemCallback<Memo>() {
             override fun areItemsTheSame(oldItem: Memo, newItem: Memo): Boolean {

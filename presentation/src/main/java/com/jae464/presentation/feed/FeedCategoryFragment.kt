@@ -26,7 +26,9 @@ import com.jae464.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.R
 import com.jae464.presentation.common.FeedSettingDialog
+import com.jae464.presentation.common.FeedSettingDialogListener
 import com.jae464.presentation.databinding.FragmentFeedCategoryBinding
+import com.jae464.presentation.model.ViewType
 import com.jae464.presentation.post.PostFragmentArgs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,7 +42,7 @@ class FeedCategoryFragment :
     private val folderId by lazy {
         arguments?.getLong(FOLDER_ID_KEY, -1L)
     }
-
+    private var feedSettingDialog: FeedSettingDialog? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,12 +52,38 @@ class FeedCategoryFragment :
 
         initAppbar()
 //        initView()
+        initDialog()
         initObserver()
         initListener()
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
+    private fun initDialog() {
+        feedSettingDialog = FeedSettingDialog().apply {
+            setFeedSettingDialogListener(object: FeedSettingDialogListener {
+                override fun onSortChanged(sortBy: SortBy) {
+                    Log.d(TAG, sortBy.toString())
+                    viewModel.setSortBy(sortBy)
+                }
+
+                override fun onViewChanged(viewType: ViewType) {
+                    Log.d(TAG, viewType.toString())
+                    listAdapter = FeedListAdapter(
+                        requireContext(),
+                        this@FeedCategoryFragment::goToDetailPage,
+                        viewType.ordinal
+                    )
+                    binding.feedRecyclerView.adapter = listAdapter
+                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        listAdapter?.submitData(viewModel.memos.value)
+                    }
+                }
+
+            })
+        }
+    }
 //    private fun initView() {
 //        val sortItems = resources.getStringArray(R.array.sort_array)
 //        val sortSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, sortItems)
@@ -100,6 +128,8 @@ class FeedCategoryFragment :
 //                }
 //            }
 //    }
+
+
 
     private fun initAppbar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
@@ -158,10 +188,7 @@ class FeedCategoryFragment :
 
     private fun initListener() {
         binding.ivSettingFeed.setOnClickListener {
-            FeedSettingDialog().apply {
-
-            }
-                .show(requireActivity().supportFragmentManager, "Feed-Setting-Dialog")
+            feedSettingDialog?.show(requireActivity().supportFragmentManager,"Feed-Setting-Dialog")
         }
     }
 
