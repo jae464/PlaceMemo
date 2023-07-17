@@ -51,7 +51,6 @@ class FeedCategoryFragment :
         binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         initAppbar()
-//        initView()
         initDialog()
         initObserver()
         initListener()
@@ -84,52 +83,6 @@ class FeedCategoryFragment :
             })
         }
     }
-//    private fun initView() {
-//        val sortItems = resources.getStringArray(R.array.sort_array)
-//        val sortSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner, sortItems)
-//        binding.spinnerSort.adapter = sortSpinnerAdapter
-//        binding.spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//                Log.d(TAG, p0?.getItemAtPosition(p2).toString())
-//
-//                when (p2) {
-//                    0 -> viewModel.setSortBy(SortBy.DESC)
-//                    1 -> viewModel.setSortBy(SortBy.ASC)
-//                }
-//            }
-//
-//            override fun onNothingSelected(p0: AdapterView<*>?) {
-//                return
-//            }
-//
-//        }
-//
-//        val viewModeItems = resources.getStringArray(R.array.view_mode_array)
-//        val viewModeSpinnerAdapter =
-//            ArrayAdapter(requireContext(), R.layout.item_spinner, viewModeItems)
-//        binding.spinnerViewMode.adapter = viewModeSpinnerAdapter
-//        binding.spinnerViewMode.onItemSelectedListener =
-//            object : AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//                    listAdapter = FeedListAdapter(
-//                        requireContext(),
-//                        this@FeedCategoryFragment::goToDetailPage,
-//                        p2
-//                    )
-//                    binding.feedRecyclerView.adapter = listAdapter
-//                    binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        listAdapter?.submitData(viewModel.memos.value)
-//                    }
-//                }
-//
-//                override fun onNothingSelected(p0: AdapterView<*>?) {
-//                    return
-//                }
-//            }
-//    }
-
-
 
     private fun initAppbar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
