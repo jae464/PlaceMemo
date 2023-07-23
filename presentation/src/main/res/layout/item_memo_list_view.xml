@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/memo_list_view"
-        android:background="@color/white"
+        android:background="@drawable/bg_bottompost"
         android:layout_marginVertical="8dp"
         android:elevation="1dp"
         android:padding="8dp"
