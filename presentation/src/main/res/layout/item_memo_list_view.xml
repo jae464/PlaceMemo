@@ -14,45 +14,98 @@
         android:id="@+id/memo_list_view"
         android:background="@color/white"
         android:layout_marginVertical="8dp"
+        android:elevation="1dp"
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp">
 
-        <TextView
-            android:id="@+id/memo_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="@{memo.title}"
+        <LinearLayout
+            android:id="@+id/ll_content"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_memo_thumbnail"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="제목" />
-
-        <TextView
-            android:id="@+id/memo_location"
-            android:drawableLeft="@drawable/ic_baseline_location_on_24"
-            android:drawablePadding="4dp"
-            android:layout_marginTop="4dp"
-            tools:text="위치정보"
-            app:layout_constraintTop_toBottomOf="@id/memo_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/memo_content"
-            android:text="@{memo.content}"
-            android:layout_width="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="4"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/memo_location"
-            tools:text="내용" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_category_name"
+                tools:text="카테고리"
+                android:textSize="12sp"
+                android:textColor="@color/blue_200"
+                android:text="@{memo.category.name}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                tools:text="주소"
+                android:maxLines="1"
+                android:drawableTint="@color/light_grey_500"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawableLeftCompat="@drawable/ic_baseline_location_on_24" />
+
+            <TextView
+                tools:text="제목"
+                android:maxLines="1"
+                android:layout_marginTop="12dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:text="@{memo.title}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_memo_thumbnail"
+            app:layout_constraintStart_toEndOf="@id/ll_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/black"
+            tools:src="@drawable/ic_sample_profile"
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/memo_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:ellipsize="end"-->
+<!--            android:maxLines="1"-->
+<!--            android:textSize="24sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="@{memo.title}"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            tools:text="제목" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/memo_location"-->
+<!--            android:drawableLeft="@drawable/ic_baseline_location_on_24"-->
+<!--            android:drawablePadding="4dp"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            tools:text="위치정보"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/memo_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/memo_content"-->
+<!--            android:text="@{memo.content}"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            android:ellipsize="end"-->
+<!--            android:maxLines="4"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/memo_location"-->
+<!--            tools:text="내용" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.jae464.presentation.feed
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.paging.PagingDataAdapter
@@ -12,14 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jae464.domain.model.post.Memo
 import com.jae464.presentation.databinding.ItemMemoListViewBinding
 import com.jae464.presentation.databinding.ItemMemoPreviewBinding
+import com.jae464.presentation.extension.setImage
 import com.jae464.presentation.home.HomeViewPagerAdapter
+import com.jae464.presentation.model.ViewType
 import com.jae464.presentation.regionToString
 import java.io.File
 
 class FeedListAdapter(
     private val context: Context,
     private val onClick: (Int) -> (Unit),
-    private var viewType: Int = VIEW_TYPE_CARD
+    private var viewType: ViewType = ViewType.CARD_VIEW_TYPE
 ) : PagingDataAdapter<Memo, FeedListAdapter.FeedViewHolder>(diff) {
 
     private val TAG = "FeedListAdapter"
@@ -43,16 +46,19 @@ class FeedListAdapter(
             val imageUriList = memo.imageUriList ?: emptyList()
             val imagePathList = imageUriList.map { uri ->
                 val dirPath = "${context.filesDir}/images"
-                val filePath = "$dirPath/${uri.substringAfterLast("/")}.jpg"
+                val filePath = "$dirPath/${memo.id}_${uri.substringAfterLast("/")}.jpg"
                 filePath
             }
-
-            Log.d(TAG, imagePathList.toString())
 
             if (imagePathList.isNotEmpty()) {
                 val viewPagerAdapter = HomeViewPagerAdapter(imagePathList)
                 binding.thumbnailViewPager.adapter = viewPagerAdapter
                 binding.dotIndicator.attachTo(binding.thumbnailViewPager)
+            }
+            else {
+                binding.clImageView.visibility = View.GONE
+                binding.clContentView.visibility = View.VISIBLE
+                binding.tvContent.text = memo.content
             }
         }
     }
@@ -63,7 +69,19 @@ class FeedListAdapter(
 
         override fun bind(memo: Memo) {
             binding.memo = memo
-            binding.memoLocation.text = regionToString(memo.area1, memo.area2, memo.area3)
+            binding.tvAddress.text = regionToString(memo.area1, memo.area2, memo.area3)
+            val imageUriList = memo.imageUriList ?: emptyList()
+            val imagePathList = imageUriList.map { uri ->
+                val dirPath = "${context.filesDir}/images"
+                val filePath = "$dirPath/${memo.id}_${uri.substringAfterLast("/")}.jpg"
+                filePath
+            }
+            if (imagePathList.isNotEmpty()) {
+                binding.ivMemoThumbnail.setImage(imagePathList[0])
+            }
+            else {
+                binding.ivMemoThumbnail.visibility = View.GONE
+            }
             binding.memoListView.setOnClickListener {
                 onClick(memo.id)
             }
@@ -72,7 +90,7 @@ class FeedListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         return when (this.viewType) {
-            VIEW_TYPE_CARD -> {
+            ViewType.CARD_VIEW_TYPE -> {
                 val binding = ItemMemoPreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -81,7 +99,7 @@ class FeedListAdapter(
                 FeedGridViewHolder(binding)
             }
 
-            VIEW_TYPE_LIST -> {
+            ViewType.LIST_VIEW_TYPE -> {
                 val binding = ItemMemoListViewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
