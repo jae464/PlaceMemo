@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.paging.map
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -46,16 +47,25 @@ class FeedCategoryFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, LIST_VIEW_TYPE)
-        binding.feedRecyclerView.adapter = listAdapter
-        binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         initAppbar()
+        initView()
         initDialog()
         initObserver()
         initListener()
         // Firebase 메모 불러오기 테스트
         // viewModel.getAllMemoByUser(FirebaseAuth.getInstance().currentUser!!.uid)
+    }
+
+    private fun initView() {
+        listAdapter = FeedListAdapter(requireContext(), this::goToDetailPage, viewModel.viewType.value)
+        binding.feedRecyclerView.adapter = listAdapter
+        binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        binding.feedRecyclerView.addItemDecoration(
+//            DividerItemDecoration(
+//                requireContext(),
+//                DividerItemDecoration.VERTICAL
+//            )
+//        )
     }
 
     private fun initDialog() {
@@ -68,16 +78,18 @@ class FeedCategoryFragment :
 
                 override fun onViewChanged(viewType: ViewType) {
                     Log.d(TAG, viewType.toString())
+                    viewModel.setViewType(viewType)
                     listAdapter = FeedListAdapter(
                         requireContext(),
                         this@FeedCategoryFragment::goToDetailPage,
-                        viewType.ordinal
+                        viewType
                     )
                     binding.feedRecyclerView.adapter = listAdapter
                     binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                     viewLifecycleOwner.lifecycleScope.launch {
                         listAdapter?.submitData(viewModel.memos.value)
                     }
+
                 }
 
             })

@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -101,7 +102,24 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
             // 현재 보여지고 있는 메모가 있는 경우 해당 메모를 지운다.
             if (binding.memoPreview.memoCardView.visibility == View.VISIBLE) {
+                val anim = TranslateAnimation(
+                    0f, 0f,
+                    0f, binding.memoPreview.memoCardView.height.toFloat()
+                )
+                anim.duration = 250
+                binding.memoPreview.memoCardView.animation = anim
                 binding.memoPreview.memoCardView.visibility = View.GONE
+                binding.currentLocationButton.visibility = View.VISIBLE
+                return@setOnMapClickListener
+            }
+            if (binding.lvMemoPreview.memoListView.visibility == View.VISIBLE) {
+                val anim = TranslateAnimation(
+                    0f, 0f,
+                    0f, binding.lvMemoPreview.memoListView.height.toFloat()
+                )
+                anim.duration = 250
+                binding.lvMemoPreview.memoListView.animation = anim
+                binding.lvMemoPreview.memoListView.visibility = View.GONE
                 binding.currentLocationButton.visibility = View.VISIBLE
                 return@setOnMapClickListener
             }
@@ -137,6 +155,13 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             )
         }
 
+        binding.lvMemoPreview.memoListView.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeToDetailMemo(currentMemoId)
+            findNavController().navigate(
+                action
+            )
+        }
+
         binding.drawerNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.login -> {
@@ -144,6 +169,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                     startActivity(intent)
                     true
                 }
+
                 else -> false
             }
         }
@@ -184,7 +210,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                                     }
                                 }
 
-                        val thumbnailBitmap = createDrawableFromView(requireContext(), thumbnailMarkerView.root)
+                        val thumbnailBitmap =
+                            createDrawableFromView(requireContext(), thumbnailMarkerView.root)
 
                         Log.d(TAG, memo.title)
 
@@ -203,10 +230,10 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.categories.collectLatest {categories ->
+                viewModel.categories.collectLatest { categories ->
                     binding.chipGroupType.removeAllViews()
                     addDefaultChip()
-                    categories.forEach {category ->
+                    categories.forEach { category ->
                         binding.chipGroupType.addView(
                             Chip(
                                 requireContext(),
@@ -216,7 +243,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                                 text = category.name
                                 isCheckable = true
                                 checkedIcon = null
-                                chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.blue_200))
+                                chipStrokeColor = ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.blue_200
+                                    )
+                                )
                                 chipStrokeWidth = 4f
                                 setChipBackgroundColorResource(R.color.bg_chip)
                                 setOnClickListener {
@@ -285,15 +317,40 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         } ?: emptyList()
 
 
-        binding.memoPreview.memo = memo
-        binding.memoPreview.locationTextView.text =
-            regionToString(memo.area1, memo.area2, memo.area3)
 
-        viewPagerAdapter = HomeViewPagerAdapter(imageList)
-        binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
-        binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
+        if (imageList.isNotEmpty()) {
+            binding.memoPreview.memo = memo
+            binding.memoPreview.locationTextView.text =
+                regionToString(memo.area1, memo.area2, memo.area3)
+            viewPagerAdapter = HomeViewPagerAdapter(imageList)
+            binding.memoPreview.thumbnailViewPager.adapter = viewPagerAdapter
+            binding.memoPreview.dotIndicator.attachTo(binding.memoPreview.thumbnailViewPager)
+            binding.memoPreview.clImageView.visibility = View.VISIBLE
+            binding.memoPreview.clContentView.visibility = View.GONE
+            binding.lvMemoPreview.memoListView.visibility = View.GONE
+            val anim = TranslateAnimation(
+                0f, 0f,
+                binding.memoPreview.memoCardView.height.toFloat(), 0f
+            )
+            anim.duration = 250
+            binding.memoPreview.memoCardView.animation = anim
+            binding.lvMemoPreview.memoListView.visibility = View.GONE
+            binding.memoPreview.memoCardView.visibility = View.VISIBLE
+        } else {
+            binding.lvMemoPreview.memo = memo
+            binding.lvMemoPreview.tvAddress.text =
+                regionToString(memo.area1, memo.area2, memo.area3)
+            binding.lvMemoPreview.ivMemoThumbnail.visibility = View.GONE
+            val anim = TranslateAnimation(
+                0f, 0f,
+                binding.lvMemoPreview.memoListView.height.toFloat(), 0f
+            )
+            anim.duration = 250
+            binding.lvMemoPreview.memoListView.animation = anim
+            binding.memoPreview.memoCardView.visibility = View.GONE
+            binding.lvMemoPreview.memoListView.visibility = View.VISIBLE
+        }
 
-        binding.memoPreview.memoCardView.visibility = View.VISIBLE
         binding.currentLocationButton.visibility = View.GONE
         binding.postButton.visibility = View.GONE
     }

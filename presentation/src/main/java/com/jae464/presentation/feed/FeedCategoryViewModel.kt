@@ -11,6 +11,7 @@ import com.jae464.domain.model.post.Category
 import com.jae464.domain.model.post.Memo
 import com.jae464.domain.repository.CategoryRepository
 import com.jae464.domain.repository.MemoRepository
+import com.jae464.presentation.model.ViewType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -29,6 +30,8 @@ class FeedCategoryViewModel @Inject constructor(
     private val selectedCategory = MutableStateFlow<Category?>(null)
     private val sortBy = MutableStateFlow(SortBy.DESC)
     private val folderId = MutableStateFlow(-1L)
+    private val _viewType = MutableStateFlow(ViewType.CARD_VIEW_TYPE)
+    val viewType = _viewType.asStateFlow()
 
     init {
         folderId.value = savedStateHandle.get<Long>(FeedCategoryFragment.FOLDER_ID_KEY) ?: -1L
@@ -74,6 +77,10 @@ class FeedCategoryViewModel @Inject constructor(
 
     fun setSortBy(sortBy: SortBy) {
         this.sortBy.value = sortBy
+    }
+
+    fun setViewType(viewType: ViewType) {
+        this._viewType.value = viewType
     }
 
     companion object {
