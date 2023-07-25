@@ -1,6 +1,10 @@
 package com.jae464.placememo.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.jae464.data.db.CategoryDao
 import com.jae464.data.db.FolderDao
@@ -18,6 +22,7 @@ import javax.inject.Singleton
 @Module
 class LocalDataBaseModule {
 
+    private val USER_PREFERENCES = "user_preferences"
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): MemoDatabase {
@@ -28,6 +33,16 @@ class LocalDataBaseModule {
             .allowMainThreadQueries()
             .addCallback(MemoDatabase.callback)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = {
+                context.preferencesDataStoreFile(USER_PREFERENCES)
+            }
+        )
     }
 
     @Provides
