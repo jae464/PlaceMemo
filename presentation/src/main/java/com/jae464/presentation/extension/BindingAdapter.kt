@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
 
 @BindingAdapter("bindImage")
 fun bindImage(view: ImageView, filePath: String) {
