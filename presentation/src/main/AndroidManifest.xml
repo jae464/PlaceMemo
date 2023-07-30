@@ -13,6 +13,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCN4-KrgynPbnQyuwErdoc2DPyRJC_jyXA" />
 
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value= "${NAVER_API_KEY}"/>
+
         <activity
             android:name="com.jae464.presentation.MainActivity"
             android:exported="true">

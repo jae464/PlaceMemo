@@ -12,7 +12,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 def googleAPIKey = properties.getProperty('google_api_key')
-
+def naverAPIKey = properties.getProperty('naver_api_key_id')
 android {
     compileSdk 31
 
@@ -24,6 +24,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [GOOGLE_API_KEY: googleAPIKey]
+        manifestPlaceholders = [NAVER_API_KEY: naverAPIKey]
         buildConfigField("String", "GOOGLE_API_KEY", properties.getProperty("google_api_key"))
         buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key_id"))
         buildConfigField("String", "NAVER_API_KEY", properties.getProperty("naver_api_key_secret"))

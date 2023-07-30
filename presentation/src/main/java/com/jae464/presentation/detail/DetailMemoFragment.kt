@@ -13,51 +13,65 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.jae464.presentation.base.BaseMapFragment
 import com.jae464.presentation.databinding.FragmentDetailMemoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.jae464.presentation.home.HomeViewPagerAdapter
-import com.jae464.presentation.regionToString
 import com.jae464.presentation.R
+import com.jae464.presentation.base.BaseFragment
+import com.jae464.presentation.map.CustomGoogleMap
+import com.jae464.presentation.map.OnMapReadyListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fragment_detail_memo) {
+class DetailMemoFragment: BaseFragment<FragmentDetailMemoBinding>(R.layout.fragment_detail_memo) {
 
     private val args: DetailMemoFragmentArgs by navArgs()
     private val viewModel: DetailMemoViewModel by viewModels()
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
-    private lateinit var mapFragment: SupportMapFragment
+    private lateinit var googleMapFragment: SupportMapFragment
+    private lateinit var googleMap: CustomGoogleMap
     val TAG = "DetailMemoFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("DetailMemoFragment", "view created")
         binding.viewModel = viewModel
-        initAppBar()
-//        initView()
-        initObserver()
-        initListener()
+
+        initGoogleMap()
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        super.onMapReady(googleMap)
-        map.apply {
-            setMinZoomPreference(6.0f)
-            setMaxZoomPreference(16.0f)
-        }
-        mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment = mapFragment.also {
+    private fun initGoogleMap() {
+        googleMapFragment = childFragmentManager.findFragmentById(R.id.fragment_google_map) as SupportMapFragment
+        googleMapFragment.apply {
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
+        googleMap = CustomGoogleMap(object: OnMapReadyListener {
+            override fun onMapReady() {
+                initAppBar()
+                initObserver()
+                initListener()
+            }
+        })
+        googleMapFragment.getMapAsync(googleMap)
+
     }
+
+//    override fun onMapReady(googleMap: GoogleMap) {
+//        super.onMapReady(googleMap)
+//        map.apply {
+//            setMinZoomPreference(6.0f)
+//            setMaxZoomPreference(16.0f)
+//        }
+//        googleMapFragment = childFragmentManager.findFragmentById(R.id.fcv_google_map) as SupportMapFragment
+//        googleMapFragment = googleMapFragment.also {
+//            val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
+//            SupportgoogleMapFragment.newInstance(mapOptions)
+//        }
+//    }
 
     private fun initAppBar() {
         val appBarConfiguration = AppBarConfiguration(findNavController().graph)
@@ -85,24 +99,28 @@ class DetailMemoFragment: BaseMapFragment<FragmentDetailMemoBinding>(R.layout.fr
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memo.collectLatest { memo ->
+                    Log.d(TAG, memo.toString())
                     if (memo != null) {
                         binding.memo = memo
                         binding.memoLocation.text = "${memo.area1} ${memo.area2} ${memo.area3}"
 
-                        map.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    memo.latitude,
-                                    memo.longitude
-                                ), 36F
-                            )
-                        )
+                        googleMap.setCurrentLocation(memo.latitude, memo.longitude)
+                        googleMap.setCurrentMarker(memo.latitude, memo.longitude)
 
-                        map.addMarker(
-                            MarkerOptions()
-                                .position(LatLng(memo.latitude, memo.longitude))
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        )
+//                        map.moveCamera(
+//                            CameraUpdateFactory.newLatLngZoom(
+//                                LatLng(
+//                                    memo.latitude,
+//                                    memo.longitude
+//                                ), 36F
+//                            )
+//                        )
+//
+//                        map.addMarker(
+//                            MarkerOptions()
+//                                .position(LatLng(memo.latitude, memo.longitude))
+//                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+//                        )
 
                         // ViewPager 초기화
                         initView(memo.imageUriList ?: emptyList())

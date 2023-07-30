@@ -19,12 +19,25 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
     private val TAG = "FeedFragment"
 
+//    private lateinit var map : CustomMap
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initTabLayout()
         initAppBar()
         initListener()
+//        testCustomMap()
     }
+
+//    private fun testCustomMap() {
+//        map = CustomGoogleMap()
+//        var mapFragment = childFragmentManager.findFragmentById(R.id.fcv_google_map) as SupportMapFragment
+//        mapFragment = mapFragment.also {
+//           val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
+//           SupportMapFragment.newInstance(mapOptions)
+//        }
+//        mapFragment.getMapAsync(map as CustomGoogleMap)
+//
+//    }
 
     private fun initTabLayout() {
         val adapter = FeedStateAdapter(this)

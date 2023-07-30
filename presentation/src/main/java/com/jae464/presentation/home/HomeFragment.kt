@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -27,19 +28,20 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.jae464.domain.model.post.Memo
 import com.jae464.presentation.R
+import com.jae464.presentation.base.BaseFragment
 import com.jae464.presentation.base.BaseMapFragment
 import com.jae464.presentation.databinding.FragmentHomeBinding
 import com.jae464.presentation.databinding.ItemMemoMarkerBinding
 import com.jae464.presentation.login.LoginActivity
+import com.jae464.presentation.map.CustomGoogleMap
+import com.jae464.presentation.map.OnMapReadyListener
 import com.jae464.presentation.regionToString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -47,42 +49,79 @@ import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
-class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home),
-    GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
+//    GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener
+{
 
-    private val TAG: String = "HomeFragment"
     private val viewModel: HomeViewModel by viewModels()
+
     private lateinit var mapFragment: SupportMapFragment
-    private var currentMarker: Marker? = null
+//    private var currentMarker: Marker? = null
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
     private var currentMemoId = -1
     private var user = FirebaseAuth.getInstance().currentUser
+
+    private lateinit var googleMap: CustomGoogleMap
+    private lateinit var googleMapFragment: SupportMapFragment
+
+    private lateinit var locationManager: LocationManager
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.memoPreview.memoCardView.visibility = View.INVISIBLE
-    }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        super.onMapReady(googleMap)
-        googleMap.apply {
-            setMinZoomPreference(6.0f)
-            setMaxZoomPreference(16.0f)
-        }
-
-        setCurrentLocation()
-
-        mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment = mapFragment.also {
+        googleMapFragment = childFragmentManager.findFragmentById(R.id.fcv_google_map) as SupportMapFragment
+        googleMapFragment.apply {
             val mapOptions = GoogleMapOptions().useViewLifecycleInFragment(true)
             SupportMapFragment.newInstance(mapOptions)
         }
 
-        initObserver()
-        initListener()
-        initAppBar()
-        viewModel.getAllMemo()
+        googleMap = CustomGoogleMap(object: OnMapReadyListener {
+            override fun onMapReady() {
+                initGoogleMapListener()
+                initObserver()
+                initListener()
+                initAppBar()
+                googleMap.setCurrentLocation(sampleLat, sampleLng)
+                viewModel.getAllMemo()
+            }
+        })
+
+        googleMapFragment.getMapAsync(googleMap)
+    }
+
+    private fun initGoogleMapListener() {
+        googleMap.setOnInfoWindowClickListener {
+            googleMap.currentMarker ?: return@setOnInfoWindowClickListener
+
+            val bundle = Bundle().apply {
+                putDouble("latitude", googleMap.currentMarker!!.position.latitude)
+                putDouble("longitude", googleMap.currentMarker!!.position.longitude)
+            }
+
+            findNavController().navigate(
+                R.id.action_home_to_post,
+                bundle
+            )
+        }
+
+        googleMap.setOnMarkerClickListener {marker ->
+            if (marker.tag == "current") {
+                googleMap.removeMarker(marker)
+                return@setOnMarkerClickListener false
+            }
+            else {
+                val memo = marker.tag as Memo
+                currentMemoId = memo.id
+                googleMap.setCurrentLocation(memo.latitude, memo.longitude)
+                displayMemoPreview(memo)
+            }
+            true
+        }
+
     }
 
     private fun initAppBar() {
@@ -98,9 +137,8 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
     }
 
     private fun initListener() {
-        map.setOnMapClickListener { location ->
+        googleMap.setOnMapClickListener { lat, lng ->
 
-            // 현재 보여지고 있는 메모가 있는 경우 해당 메모를 지운다.
             if (binding.memoPreview.memoCardView.visibility == View.VISIBLE) {
                 val anim = TranslateAnimation(
                     0f, 0f,
@@ -124,17 +162,16 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                 return@setOnMapClickListener
             }
 
-            displayCurrentMarker(location)
+            googleMap.setCurrentMarker(lat, lng)
+            viewModel.getAddressName(lat, lng)
+            binding.postButton.visibility = View.VISIBLE
         }
 
-        map.setOnMarkerClickListener(this)
-        map.setOnInfoWindowClickListener(this)
-
         binding.postButton.setOnClickListener {
-            currentMarker ?: return@setOnClickListener
+            googleMap.currentMarker ?: return@setOnClickListener
             val bundle = Bundle().apply {
-                putDouble("latitude", currentMarker!!.position.latitude)
-                putDouble("longitude", currentMarker!!.position.longitude)
+                putDouble("latitude", googleMap.currentMarker!!.position.latitude)
+                putDouble("longitude", googleMap.currentMarker!!.position.longitude)
             }
 
             findNavController().navigate(
@@ -144,11 +181,11 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         }
 
         binding.currentLocationButton.setOnClickListener {
-            setCurrentLocation()
+//            setCurrentLocation()
         }
 
-        // TODO 메모 프리뷰를 클릭하면, 해당 메모의 디테일 페이지로 이동한다.
         binding.memoPreview.memoCardView.setOnClickListener {
+
             val action = HomeFragmentDirections.actionHomeToDetailMemo(currentMemoId)
             findNavController().navigate(
                 action
@@ -187,7 +224,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filteredMemoList.collectLatest { memoList ->
-                    map.clear()
+//                    map.clear()
                     memoList.map { memo ->
                         Log.d(TAG, memo.toString())
 
@@ -215,13 +252,7 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
                         Log.d(TAG, memo.title)
 
-                        val memoMarker = map.addMarker(
-                            MarkerOptions()
-                                .position(LatLng(memo.latitude, memo.longitude))
-                                .icon(BitmapDescriptorFactory.fromBitmap((thumbnailBitmap!!)))
-
-                        )
-                        memoMarker?.tag = memo
+                        googleMap.addMemoMarker(memo, thumbnailBitmap!!)
                     }
 
                 }
@@ -262,55 +293,53 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
             }
         }
 
-
-
         viewModel.currentAddress.observe(viewLifecycleOwner) {
-            currentMarker?.snippet = it
-            currentMarker?.showInfoWindow()
+            googleMap.setCurrentMarkerSnippet(it)
+            googleMap.showInfoWindow()
         }
 
 
     }
 
-    override fun onMarkerClick(marker: Marker): Boolean {
-
-        if (marker.tag == "current") {
-            marker.remove()
-            binding.postButton.visibility = View.GONE
-            return false
-        }
-
-        val memo = marker.tag as Memo
-        currentMemoId = memo.id
-        val cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 16F)
-
-        map.animateCamera(cameraUpdate, 200, null)
-
-        displayMemoPreview(memo)
-
-        return true
-    }
+//    override fun onMarkerClick(marker: Marker): Boolean {
+//
+//        if (marker.tag == "current") {
+//            marker.remove()
+//            binding.postButton.visibility = View.GONE
+//            return false
+//        }
+//
+//        val memo = marker.tag as Memo
+//        currentMemoId = memo.id
+//        val cameraUpdate =
+//            CameraUpdateFactory.newLatLngZoom(LatLng(memo.latitude, memo.longitude), 16F)
+//
+////        map.animateCamera(cameraUpdate, 200, null)
+//
+//        displayMemoPreview(memo)
+//
+//        return true
+//    }
 
     private fun displayCurrentMarker(location: LatLng) {
-        currentMarker?.remove()
-        currentMarker = map.addMarker(
-            MarkerOptions()
-                .position(LatLng(location.latitude, location.longitude))
-                .title("주소")
-        )
-
-        currentMarker?.tag = "current"
-        val cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16F)
-
-        map.animateCamera(cameraUpdate, 500, null)
-        viewModel.getAddressName(location.latitude, location.longitude)
-        binding.postButton.visibility = View.VISIBLE
+//        currentMarker?.remove()
+//        currentMarker = map.addMarker(
+//            MarkerOptions()
+//                .position(LatLng(location.latitude, location.longitude))
+//                .title("주소")
+//        )
+//
+//        currentMarker?.tag = "current"
+//        val cameraUpdate =
+//            CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16F)
+//
+//        map.animateCamera(cameraUpdate, 500, null)
+//        viewModel.getAddressName(location.latitude, location.longitude)
+//        binding.postButton.visibility = View.VISIBLE
     }
 
     private fun displayMemoPreview(memo: Memo) {
-        currentMarker?.remove()
+//        currentMarker?.remove()
 
         val imageList = memo.imageUriList?.map { imagePath ->
             "${context?.filesDir}/images/${memo.id}_${imagePath}.jpg"
@@ -357,22 +386,23 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
 
     override fun onDestroyView() {
         super.onDestroyView()
-        map.clear()
+//        map.clear()
     }
 
-    override fun onInfoWindowClick(p0: Marker) {
-        currentMarker ?: return
-
-        val bundle = Bundle().apply {
-            putDouble("latitude", currentMarker!!.position.latitude)
-            putDouble("longitude", currentMarker!!.position.longitude)
-        }
-
-        findNavController().navigate(
-            R.id.action_home_to_post,
-            bundle
-        )
-    }
+//    override fun onInfoWindowClick(p0: Marker) {
+//
+//        currentMarker ?: return
+//
+//        val bundle = Bundle().apply {
+//            putDouble("latitude", currentMarker!!.position.latitude)
+//            putDouble("longitude", currentMarker!!.position.longitude)
+//        }
+//
+//        findNavController().navigate(
+//            R.id.action_home_to_post,
+//            bundle
+//        )
+//    }
 
     private fun createDrawableFromView(context: Context, view: View): Bitmap? {
         val displayMetrics = DisplayMetrics()
@@ -447,6 +477,12 @@ class HomeFragment : BaseMapFragment<FragmentHomeBinding>(R.layout.fragment_home
                 }
             }
         )
+    }
+
+    companion object {
+        private const val TAG = "HomeFragment"
+        private const val sampleLat = 37.554891
+        private const val sampleLng = 126.970814
     }
 }
 

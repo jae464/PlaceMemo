@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -30,6 +28,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import com.jae464.presentation.R
+import com.jae464.presentation.map.CustomGoogleMap
 
 abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: Int) : Fragment(),
     OnMapReadyCallback {
@@ -38,7 +37,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
-    // Location Manager & FusedLocation Client
     private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -48,13 +46,13 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
     private lateinit var locationCallback: LocationCallback
 
     lateinit var map: GoogleMap
+    lateinit var customMap : CustomGoogleMap
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -87,7 +85,7 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         _binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        (childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment)
+        (childFragmentManager.findFragmentById(R.id.fcv_google_map) as SupportMapFragment)
             .getMapAsync(this)
 
         locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -104,7 +102,6 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
 
         return binding.root
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -138,13 +135,13 @@ abstract class BaseMapFragment<T : ViewDataBinding>(@LayoutRes val layoutRes: In
         ) {
             Log.d(TAG, "위치 권한이 없는 상태입니다.")
 
-            map.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(
-                        37.554891, 126.970814
-                    ), 16f
-                ), 1000, null
-            )
+//            map.animateCamera(
+//                CameraUpdateFactory.newLatLngZoom(
+//                    LatLng(
+//                        37.554891, 126.970814
+//                    ), 16f
+//                ), 1000, null
+//            )
             return
         }
 
