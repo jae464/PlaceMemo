@@ -30,6 +30,10 @@ class HomeViewModel @Inject constructor(
 
     val filteredMemoList = MutableStateFlow<List<Memo>>(emptyList())
 
+    private val _currentLocation = MutableStateFlow(Pair(37.554891, 126.970814))
+    val currentLocation: StateFlow<Pair<Double, Double>>
+        get() = _currentLocation
+
     val memoList = memoRepository.getAllMemo().stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
@@ -57,6 +61,10 @@ class HomeViewModel @Inject constructor(
         filteredMemoList.value = memoList.value.filter { memo ->
             memo.category == category
         }
+    }
+
+    fun updateCurrentLocation(lat: Double, lng: Double) {
+        _currentLocation.value = Pair(lat, lng)
     }
 
 }

@@ -67,6 +67,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
     private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate")
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,7 +98,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
                 initObserver()
                 initListener()
                 initAppBar()
-                googleMap.setCurrentLocation(sampleLat, sampleLng)
+//                googleMap.setCurrentLocation(sampleLat, sampleLng)
                 viewModel.getAllMemo()
             }
         })
@@ -116,7 +129,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
             else {
                 val memo = marker.tag as Memo
                 currentMemoId = memo.id
-                googleMap.setCurrentLocation(memo.latitude, memo.longitude)
+//                googleMap.setCurrentLocation(memo.latitude, memo.longitude)
+                viewModel.updateCurrentLocation(memo.latitude, memo.longitude)
                 displayMemoPreview(memo)
             }
             true
@@ -298,6 +312,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
             googleMap.showInfoWindow()
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentLocation.collectLatest {
+                    googleMap.setCurrentLocation(it.first, it.second)
+                }
+            }
+        }
+
 
     }
 
@@ -386,7 +408,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home)
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "onDestroyView")
 //        map.clear()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy")
     }
 
 //    override fun onInfoWindowClick(p0: Marker) {
